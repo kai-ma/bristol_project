@@ -2,6 +2,7 @@
 
 ## A strangers chat app for emotional healing and personal growth.
 ## Acceptance criteria
+The user stories marked with the emoticon 🔥 are interesting ideas other similar stranger chat apps don't have.
 ### 1. Anonymous letter to solve troubles.
 
 **As a sender, I hope to share and consult my troubles with strangers through anonymous letters and keep in touch with them on this topic.**
@@ -94,7 +95,7 @@
 
 
 
-**🔥 As a person not good at communication, I want the app help me break the ice with my new friends.**
+**🔥 As a person not good at communication, I want the app helps me break the ice with my new friends.**
 
 - Turn on icebreaking option in the chat window with a friend.
 - Push an icebreaker question/topic for both people every day.
