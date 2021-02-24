@@ -22,7 +22,7 @@
 
 
 
-**♥ I hope there are interesting rules for the use of stamps to make the app more interesting.**
+**🔥 I hope there are interesting rules for the use of stamps to make the app more interesting.**
 
 - Slow messaging for ordinary stamp—— a three-hour delay(close to the feeling of writing letters)
 - Different kind of stamp: ordinary stamp、accelerated stamp(instant messaging)、super stamp(no need to pay stamp for this conversation)
@@ -41,7 +41,7 @@
 
 
 
-**♥ I want to see other people's high-quality consultations and answers, which may solve my troubles.**
+**🔥 I want to see other people's high-quality consultations and answers, which may solve my troubles.**
 
 - The Book of Answers shows high quality conversations by topics: like Self / Family / Campus/ Love /Marriage/  Friendship / Social / Workplace / Disease / Psychology and so on
 - Recommend option in the conversation. Click recommend, then select the topic, the other person in the conversation will receive a recommendation request.
@@ -94,7 +94,7 @@
 
 
 
-**♥ As a person not good at communication, I want the app help me break the ice with my new friends.**
+**🔥 As a person not good at communication, I want the app help me break the ice with my new friends.**
 
 - Turn on icebreaking option in the chat window with a friend.
 - Push an icebreaker question/topic for both people every day.
@@ -102,7 +102,7 @@
 
 
 
-**♥ I hope there are some chat rooms for hot topics (Movies / Series / Musics / Games / Stocks / News) created by the system, where friends can be invited to chat in this chat room for this topic.**
+**🔥 I hope there are some chat rooms for hot topics (Movies / Series / Musics / Games / Stocks / News) created by the system, where friends can be invited to chat in this chat room for this topic.**
 
 - Create/Delete/Modify chat rooms in administer platform.
 - Invite friends to join the chat room.
