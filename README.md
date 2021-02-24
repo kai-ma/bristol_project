@@ -1,7 +1,7 @@
 # Final project of Kaixiang Ma 
 
 ## A strangers chat app for emotional healing and personal growth.
-
+## Acceptance criteria
 ### 1. Anonymous letter to solve troubles.
 
 **As a sender, I hope to share and consult my troubles with strangers through anonymous letters and keep in touch with them on this topic.**
