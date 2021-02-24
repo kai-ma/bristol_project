@@ -31,7 +31,7 @@
 
 
 
-**I want a level up rules to make the app more interesting and not be disturbed by too many letters  and consultations. **
+**I want a level up rules to make the app more interesting and not be disturbed by too many letters  and consultations.**
 
 - Show user's level and corresponding maximum number of letters will be received everyday and maximum letters to be reply everyday, exclude conversations already existed which only consume stamp, and every day free stamp of each level.
 - Show all levels and corresponding privilege.
@@ -59,9 +59,9 @@
 - Administer system shows list of reports. Approve/Deduct EXP/Suspend/Freeze option. 
 - Notify the outcome of report to both people of the conversation.
 
- **UML Use case diagrams for this part: **
+ **UML Use case diagrams for this part:**
 
-![](./pictures/UML of letter part.jpg)
+![](./pictures/UML-of-letter-part.jpg)
 
 
 
@@ -107,5 +107,5 @@ Optional: The higher the level of the creator, the longer the chat room will las
 
  **UML Use case diagrams for this part**
 
-![](./pictures/UML of chat part.jpg)
+![](./pictures/UML-of-chat-part.jpg)
 
