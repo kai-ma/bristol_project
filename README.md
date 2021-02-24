@@ -22,7 +22,7 @@
 
 
 
-**I hope there are interesting rules for the use of stamps to make the app more interesting.**
+**♥ I hope there are interesting rules for the use of stamps to make the app more interesting.**
 
 - Slow messaging for ordinary stamp—— a three-hour delay(close to the feeling of writing letters)
 - Different kind of stamp: ordinary stamp、accelerated stamp(instant messaging)、super stamp(no need to pay stamp for this conversation)
@@ -41,7 +41,7 @@
 
 
 
-**I want to see other people's high-quality consultations and answers, which may solve my troubles.**
+**♥ I want to see other people's high-quality consultations and answers, which may solve my troubles.**
 
 - The Book of Answers shows high quality conversations by topics: like Self / Family / Campus/ Love /Marriage/  Friendship / Social / Workplace / Disease / Psychology and so on
 - Recommend option in the conversation. Click recommend, then select the topic, the other person in the conversation will receive a recommendation request.
@@ -61,7 +61,7 @@
 
  **UML Use case diagrams for this part:**
 
-![](./pictures/UML-of-letter-part.jpg)
+![](./pictures/UML_of_letter_part.jpg)
 
 
 
@@ -70,11 +70,18 @@
 **As a user who prefers instant chat, I want to set up temporary themed chat rooms based on my current mood or current topics of interest and chat with strangers who have same mood or interested with the same topic.**
 
 - Create/Join/Exit/Collect chat rooms.
+
 - Delete/Modify chat rooms(creator 's authority).
+
 - Send instant messages in the chat room.
+
 - Display the list of members in the chat room now. Display messages of new members joining/exiting.
+
 - Delete chat history when exiting.
+
 - Report option with comments. (For lewd or harassing, junk and any unfriendly content).
+
+  
 
 **I want to add friends in the chat room and be able to chat with friends at any time.**
 
@@ -87,7 +94,7 @@
 
 
 
-**As a person not good at communication, I want the app help me break the ice with my new friends.**
+**♥ As a person not good at communication, I want the app help me break the ice with my new friends.**
 
 - Turn on icebreaking option in the chat window with a friend.
 - Push an icebreaker question/topic for both people every day.
@@ -95,7 +102,7 @@
 
 
 
-**I hope there are some chat rooms for hot topics (Movies / Series / Musics / Games / Stocks / News) created by the system, where friends can be invited to chat in this chat room for this topic.**
+**♥ I hope there are some chat rooms for hot topics (Movies / Series / Musics / Games / Stocks / News) created by the system, where friends can be invited to chat in this chat room for this topic.**
 
 - Create/Delete/Modify chat rooms in administer platform.
 - Invite friends to join the chat room.
@@ -103,9 +110,11 @@
 - Approve / Refuse join the chat room.
 - Show error message if the chat room has been deleted.
 
+
+
 Optional: The higher the level of the creator, the longer the chat room will last or the higher level, the more chat rooms can be created in a single month 
 
  **UML Use case diagrams for this part**
 
-![](./pictures/UML-of-chat-part.jpg)
+![](./pictures/UML_of_chat_part.jpg)
 
