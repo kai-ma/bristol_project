@@ -1,8 +1,8 @@
-# Final_Project
+# Final project of Kaixiang Ma 
 
-### A strangers chat app for emotional healing and personal growth.
+## A strangers chat app for emotional healing and personal growth.
 
-#### 1. Anonymous letter to solve troubles.
+### 1. Anonymous letter to solve troubles.
 
 **As a sender, I hope to share and consult my troubles with strangers through anonymous letters and keep in touch with them on this topic.**
 
@@ -59,13 +59,13 @@
 - Administer system shows list of reports. Approve/Deduct EXP/Suspend/Freeze option. 
 - Notify the outcome of report to both people of the conversation.
 
- **UML Use case diagrams for this part:**
+### UML Use case diagrams for this part:
 
 ![](./pictures/UML_of_letter_part.jpg)
 
 
 
-#### 2. Instant chat, share this moment together.
+### 2. Instant chat, share this moment together.
 
 **As a user who prefers instant chat, I want to set up temporary themed chat rooms based on my current mood or current topics of interest and chat with strangers who have same mood or interested with the same topic.**
 
@@ -114,7 +114,7 @@
 
 Optional: The higher the level of the creator, the longer the chat room will last or the higher level, the more chat rooms can be created in a single month 
 
- **UML Use case diagrams for this part**
+ ### UML Use case diagrams for this part
 
 ![](./pictures/UML_of_chat_part.jpg)
 
