@@ -95,14 +95,6 @@ The user stories marked with the emoticon 🔥 are interesting ideas other simil
 
 
 
-**🔥 As a person not good at communication, I want the app helps me break the ice with my new friends.**
-
-- Turn on icebreaking option in the chat window with a friend.
-- Push an icebreaker question/topic for both people every day.
-- Feedback for icebreaker: Useful/Useless/I have better icebreaker.
-
-
-
 **🔥 I hope there are some chat rooms for hot topics (Movies / Series / Musics / Games / Stocks / News) created by the system, where friends can be invited to chat in this chat room for this topic.**
 
 - Create/Delete/Modify chat rooms in administer platform.
@@ -116,6 +108,13 @@ The user stories marked with the emoticon 🔥 are interesting ideas other simil
 Optional: The higher the level of the creator, the longer the chat room will last or the higher level, the more chat rooms can be created in a single month 
 
  ### UML Use case diagrams for this part
+ 
+ 
+**Optional: As a person not good at communication, I want the app helps me break the ice with my new friends.**
+
+- Turn on icebreaking option in the chat window with a friend.
+- Push an icebreaker question/topic for both people every day.
+- Feedback for icebreaker: Useful/Useless/I have better icebreaker.
 
 ![](./pictures/UML_of_chat_part.jpg)
 
