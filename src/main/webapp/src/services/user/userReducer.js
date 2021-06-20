@@ -1,26 +1,24 @@
-import * as UT from "./userTypes";
+import * as UT from './userTypes';
 
 const initialState = {
-	users: [],
-	error: "",
+	user: '', error: ''
 };
 
 const reducer = (state = initialState, action) => {
 	switch (action.type) {
-		case UT.FETCH_USER_REQUEST:
+		case UT.REGISTER_REQUEST:
 			return {
-                //如果是FETCH_USER_REQUEST，copy state。
 				...state,
 			};
-		case UT.FETCH_USER_SUCCESS:
+		case UT.SUCCESS:
 			return {
-				users: action.payload,
-				error: "",
+				user: action.payload,
+                error: ''
 			};
-		case UT.FETCH_USER_FAILURE:
+		case UT.FAILURE:
 			return {
-				users: [],
-				error: action.payload,
+				book: '',
+                error: action.payload
 			};
 		default:
 			return state;

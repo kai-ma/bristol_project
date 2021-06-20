@@ -1,24 +1,33 @@
 import * as AT from './authTypes';
+import axios from 'axios';
+import qs from 'qs'
 
 export const authenticateUser = (email, password) => {
+    console.log("email is " + email);
+    const credentials = {
+        email: email,
+        password: password
+    };
     return dispatch => {
-        dispatch({
-            type: AT.LOGIN_REQUEST
-        });
-        if(email === "test" && password === "test") {
-            dispatch(success(true));
-        } else {
-            dispatch(failure());
-        }
+        axios.post("http://localhost:8080/user/login", qs.stringify(credentials))
+            .then(response => {
+                // let token = response.data.token;
+                console.log(response.data);
+                // localStorage.setItem('jwtToken', token);
+                dispatch(success(true));
+            })
+            .catch(error => {
+                dispatch(failure());
+            });
     };
 };
-
 
 export const logoutUser = () => {
     return dispatch => {
         dispatch({
             type: AT.LOGOUT_REQUEST
         });
+        // localStorage.removeItem('jwtToken');
         dispatch(success(false));
     };
 };

@@ -61,10 +61,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserModel validateLogin(String email, String encryptPassword) throws Exception {
-        //1.通过用户的手机号获取用户信息
         UserDO userDO = userDOMapper.selectByEmail(email);
         if (userDO == null) {
-            throw new Exception("empty email");
+            throw new Exception("no such user.");
         }
         UserPasswordDO userPasswordDO = userPasswordDOMapper.selectByUserId(userDO.getId());
 
@@ -112,6 +111,5 @@ public class UserServiceImpl implements UserService {
         userPasswordDO.setUserid(userModel.getId());
         return userPasswordDO;
     }
-
 
 }
