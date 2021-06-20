@@ -9,8 +9,8 @@ import Home from "./components/Home";
 import AnswerBook from "./components/AnswerBook";
 import Me from "./components/Me";
 import Footer from "./components/Footer";
-import Register from "./components/User/Register";
-import Login from "./components/User/Login";
+import Register from "./components/Register";
+import Login from "./components/Login";
 
 function App() {
 	const marginTop = {
@@ -26,17 +26,9 @@ function App() {
 						<Switch>
 							<Route path="/" exact component={Welcome} />
 							<Route path="/home" exact component={Home} />
-							<Route
-								path="/answerbook"
-								exact
-								component={AnswerBook}
-							/>
+							<Route path="/answerbook" exact component={AnswerBook}/>
 							<Route path="/me" exact component={Me} />
-							<Route
-								path="/register"
-								exact
-								component={Register}
-							/>
+							<Route path="/register" exact component={Register}/>
 							<Route path="/login" exact component={Login} />
 							<Route path="/logout" exact component={Login} />
 						</Switch>

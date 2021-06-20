@@ -11,6 +11,7 @@ export const authenticateUser = (email, password) => {
     };
 };
 
+//todo: 这种单行的可以直接写到dispatch里面
 const loginRequest = () => {
     return {
         type: LOGIN_REQUEST

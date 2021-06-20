@@ -1,24 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {
-	Row,
-	Col,
-	Card,
-	Form,
-	InputGroup,
-	FormControl,
-	Button,
-	Alert,
-} from "react-bootstrap";
+import { Row, Col, Card, Form, InputGroup, FormControl, Button, Alert,} from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-	faSignInAlt,
-	faEnvelope,
-	faLock,
-	faUndo,
-} from "@fortawesome/free-solid-svg-icons";
-import { authenticateUser } from "../../services/index";
+import {faSignInAlt, faEnvelope, faLock, faUndo,} from "@fortawesome/free-solid-svg-icons";
+import { authenticateUser } from "../services/index";
 
+//用rcc快捷键，创建react的component
 class Login extends Component {
 	constructor(props) {
 		super(props);
@@ -37,6 +24,7 @@ class Login extends Component {
 		});
 	};
 
+    //校验登录是否合法
 	validateUser = () => {
 		this.props.authenticateUser(this.state.email, this.state.password);
 		setTimeout(() => {
@@ -44,6 +32,7 @@ class Login extends Component {
 				return this.props.history.push("/");
 			} else {
 				this.resetLoginForm();
+                //state.error发生变化的时候，下面的error会显示
 				this.setState({ error: "Invalid email and password" });
 			}
 		}, 500);
@@ -70,9 +59,7 @@ class Login extends Component {
 									<InputGroup>
 										<InputGroup.Prepend>
 											<InputGroup.Text>
-												<FontAwesomeIcon
-													icon={faEnvelope}
-												/>
+												<FontAwesomeIcon icon={faEnvelope}/>
 											</InputGroup.Text>
 										</InputGroup.Prepend>
 										<FormControl
@@ -93,9 +80,7 @@ class Login extends Component {
 									<InputGroup>
 										<InputGroup.Prepend>
 											<InputGroup.Text>
-												<FontAwesomeIcon
-													icon={faLock}
-												/>
+												<FontAwesomeIcon icon={faLock}/>
 											</InputGroup.Text>
 										</InputGroup.Prepend>
 										<FormControl
@@ -125,6 +110,7 @@ class Login extends Component {
 							>
 								<FontAwesomeIcon icon={faSignInAlt} /> Login
 							</Button>{" "}
+
 							<Button
 								size="sm"
 								type="button"

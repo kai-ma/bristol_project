@@ -10,7 +10,6 @@ import {
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-	faPhone,
 	faEnvelope,
 	faLock,
 	faUndo,
@@ -25,7 +24,7 @@ export default class Register extends Component {
 	}
 
 	initialState = {
-		name: "",
+		username: "",
 		email: "",
 		password: "",
 	};
@@ -41,7 +40,7 @@ export default class Register extends Component {
 	};
 
 	render() {
-		const { name, email, password } = this.state;
+		const { username, email, password } = this.state;
 
 		return (
 			<Row className="justify-content-md-center">
@@ -62,10 +61,11 @@ export default class Register extends Component {
 											</InputGroup.Text>
 										</InputGroup.Prepend>
 										<FormControl
+											required
 											autoComplete="off"
 											type="text"
 											name="name"
-											value={name}
+											value={username}
 											onChange={this.userChange}
 											className={"bg-dark text-white"}
 											placeholder="Enter Name"
@@ -111,7 +111,7 @@ export default class Register extends Component {
 											autoComplete="off"
 											type="password"
 											name="password"
-											valfue={password}
+											value={password}
 											onChange={this.userChange}
 											className={"bg-dark text-white"}
 											placeholder="Enter Password"
@@ -119,28 +119,6 @@ export default class Register extends Component {
 									</InputGroup>
 								</Form.Group>
 							</Form.Row>
-							{/* <Form.Row>
-								<Form.Group as={Col}>
-									<InputGroup>
-										<InputGroup.Prepend>
-											<InputGroup.Text>
-												<FontAwesomeIcon
-													icon={faPhone}
-												/>
-											</InputGroup.Text>
-										</InputGroup.Prepend>
-										<FormControl
-											autoComplete="off"
-											type="text"
-											name="contact"
-											value={contact}
-											onChange={this.userChange}
-											className={"bg-dark text-white"}
-											placeholder="Enter Contact Number"
-										/>
-									</InputGroup>
-								</Form.Group>
-							</Form.Row> */}
 						</Card.Body>
 						<Card.Footer style={{ "text-align": "right" }}>
 							<Button
