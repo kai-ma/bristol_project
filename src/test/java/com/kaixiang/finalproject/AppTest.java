@@ -1,4 +1,4 @@
-package com.kaixiang.final_project;
+package com.kaixiang.finalproject;
 
 import static org.junit.Assert.assertTrue;
 

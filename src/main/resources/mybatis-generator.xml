@@ -12,7 +12,7 @@
 
         </jdbcConnection>
         <!--生成data object存放位置  数据库miaosha会分别建立dataobject到下面的目录-->
-        <javaModelGenerator targetPackage="com.kaixiang.final_project.dataobject" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="com.kaixiang.finalproject.dataobject" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
@@ -22,19 +22,19 @@
         </sqlMapGenerator>
         <!--生成Dao类存放位置-->
         <!--客户端代码，生成针对model对象和xml配置文件的代码-->
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.kaixiang.final_project.dao"
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.kaixiang.finalproject.dao"
                              targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="user_info" domainObjectName="UserDO" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false">
-        </table>
-        <table tableName="user_password" domainObjectName="UserPasswordDO" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false">
-        </table>
+<!--        <table tableName="user_info" domainObjectName="UserDO" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
+<!--        </table>-->
+<!--        <table tableName="user_password" domainObjectName="UserPasswordDO" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
+<!--        </table>-->
 
         <!--生成对应表及类名
         <table tableName="user_info" domainObjectName="UserDO" enableCountByExample="false"

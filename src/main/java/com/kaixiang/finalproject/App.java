@@ -1,7 +1,7 @@
-package com.kaixiang.final_project;
+package com.kaixiang.finalproject;
 
-import com.kaixiang.final_project.dao.UserDOMapper;
-import com.kaixiang.final_project.dataobject.UserDO;
+import com.kaixiang.finalproject.dao.UserDOMapper;
+import com.kaixiang.finalproject.dataobject.UserDO;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -9,12 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Hello world!
- */
-
-@SpringBootApplication(scanBasePackages = {"com.kaixiang.final_project"})
-@MapperScan("com.kaixiang.final_project.dao")
+@SpringBootApplication(scanBasePackages = {"com.kaixiang.finalproject"})
+@MapperScan("com.kaixiang.finalproject.dao")
 @RestController
 public class App {
 

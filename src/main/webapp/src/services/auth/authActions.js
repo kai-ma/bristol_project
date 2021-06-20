@@ -1,8 +1,10 @@
-import {LOGIN_REQUEST, LOGOUT_REQUEST, SUCCESS, FAILURE} from './authTypes';
+import * as AT from './authTypes';
 
 export const authenticateUser = (email, password) => {
     return dispatch => {
-        dispatch(loginRequest());
+        dispatch({
+            type: AT.LOGIN_REQUEST
+        });
         if(email === "test" && password === "test") {
             dispatch(success(true));
         } else {
@@ -11,36 +13,26 @@ export const authenticateUser = (email, password) => {
     };
 };
 
-//todo: 这种单行的可以直接写到dispatch里面
-const loginRequest = () => {
-    return {
-        type: LOGIN_REQUEST
-    };
-};
 
 export const logoutUser = () => {
     return dispatch => {
-        dispatch(logoutRequest());
+        dispatch({
+            type: AT.LOGOUT_REQUEST
+        });
         dispatch(success(false));
-    };
-};
-
-const logoutRequest = () => {
-    return {
-        type: LOGOUT_REQUEST
     };
 };
 
 const success = isLoggedIn => {
     return {
-        type: SUCCESS,
+        type: AT.SUCCESS,
         payload: isLoggedIn
     };
 };
 
 const failure = () => {
     return {
-        type: FAILURE,
+        type: AT.FAILURE,
         payload: false
     };
 }; 
