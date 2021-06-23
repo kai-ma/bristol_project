@@ -14,4 +14,6 @@ public interface UserService {
      * telephone是用户传入的telephone，encrptPassword：加密后的密码
      */
     UserModel validateLogin(String email, String encryptPassword) throws Exception;
+
+    UserModel getUserModelByEmail(String email) throws Exception;
 }

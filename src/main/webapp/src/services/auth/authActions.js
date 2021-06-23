@@ -12,8 +12,7 @@ export const authenticateUser = (email, password) => {
         axios.post("http://localhost:8080/user/login", qs.stringify(credentials))
             .then(response => {
                 // let token = response.data.token;
-                console.log(response.data);
-                // localStorage.setItem('jwtToken', token);
+                localStorage.setItem('jwtToken', response.data);
                 dispatch(success(true));
             })
             .catch(error => {
@@ -27,7 +26,7 @@ export const logoutUser = () => {
         dispatch({
             type: AT.LOGOUT_REQUEST
         });
-        // localStorage.removeItem('jwtToken');
+        localStorage.removeItem('jwtToken');
         dispatch(success(false));
     };
 };
