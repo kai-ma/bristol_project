@@ -24,8 +24,8 @@ class Login extends Component {
 		});
 	};
 
-    //校验登录是否合法
-	validateUser = () => {
+    //validate login
+	login = () => {
 		this.props.authenticateUser(this.state.email, this.state.password);
 		setTimeout(() => {
 			if (this.props.auth.isLoggedIn) {
@@ -102,7 +102,7 @@ class Login extends Component {
 								size="sm"
 								type="button"
 								variant="success"
-								onClick={this.validateUser}
+								onClick={this.login}
 								disabled={
 									this.state.email.length === 0 ||
 									this.state.password.length === 0

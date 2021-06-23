@@ -10,8 +10,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -49,6 +57,7 @@ public class UserServiceImpl implements UserService {
         try {
             userDOMapper.insertSelective(userDO);
         } catch (DuplicateKeyException e) {
+            //todo:这样抛出错误是有问题的，前端会显示500错误
             throw new Exception("重复注册");
         }
 
@@ -61,13 +70,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserModel validateLogin(String email, String encryptPassword) throws Exception {
-        UserDO userDO = userDOMapper.selectByEmail(email);
-        if (userDO == null) {
-            throw new Exception("no such user.");
-        }
-        UserPasswordDO userPasswordDO = userPasswordDOMapper.selectByUserId(userDO.getId());
-
-        UserModel userModel = convertFromDataObject(userDO, userPasswordDO);
+        UserModel userModel = getUserModelByEmail(email);
 
         //2.对比数据库中用户信息内的加密密码和用户输入的密码是否匹配
         if (!StringUtils.equals(encryptPassword, userModel.getEncryptPassword())) {
@@ -77,7 +80,19 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Override
+    public UserModel getUserModelByEmail(String email) throws Exception {
+        UserDO userDO = userDOMapper.selectByEmail(email);
+        if (userDO == null) {
+            throw new Exception("no such user.");
+        }
+        UserPasswordDO userPasswordDO = userPasswordDOMapper.selectByUserId(userDO.getId());
+
+        return convertFromDataObject(userDO, userPasswordDO);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     private UserModel convertFromDataObject(UserDO userDO, UserPasswordDO userPasswordDO) {
         if (userDO == null) {

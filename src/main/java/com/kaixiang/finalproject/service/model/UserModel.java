@@ -19,6 +19,8 @@ public class UserModel {
 
     private String encryptPassword;
 
+    private String role;
+
     public Integer getId() {
         return id;
     }
@@ -81,5 +83,13 @@ public class UserModel {
 
     public void setEncryptPassword(String encryptPassword) {
         this.encryptPassword = encryptPassword;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
