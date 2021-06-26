@@ -1,6 +1,8 @@
 package com.kaixiang.cure.controller;
 
 import com.kaixiang.cure.controller.viewobject.UserVO;
+import com.kaixiang.cure.error.BusinessException;
+import com.kaixiang.cure.error.EnumBusinessError;
 import com.kaixiang.cure.security.JwtTokenUtil;
 import com.kaixiang.cure.service.UserService;
 import com.kaixiang.cure.service.impl.UserDetailsServiceImpl;
@@ -24,7 +26,7 @@ import java.security.NoSuchAlgorithmException;
 @Controller("user")
 @RequestMapping("/user")
 @CrossOrigin(origins = "http://localhost:3000")
-public class UserController {
+public class UserController extends BaseController{
 
     @Autowired
     private UserService userService;
@@ -43,12 +45,12 @@ public class UserController {
      */
     @RequestMapping("/get")
     @ResponseBody
-    public UserVO getUser(@RequestParam(name = "id") Integer id) {
+    public UserVO getUser(@RequestParam(name = "id") Integer id) throws BusinessException {
         UserModel userModel = userService.getUserById(id);
-        if (userModel != null) {
-            return convertFromModel(userModel);
+        if (userModel == null) {
+            throw new BusinessException(EnumBusinessError.USER_NOT_EXIST);
         } else {
-            return new UserVO();
+            return convertFromModel(userModel);
         }
     }
 

@@ -4,6 +4,8 @@ import com.kaixiang.cure.dao.UserDOMapper;
 import com.kaixiang.cure.dao.UserPasswordDOMapper;
 import com.kaixiang.cure.dataobject.UserDO;
 import com.kaixiang.cure.dataobject.UserPasswordDO;
+import com.kaixiang.cure.error.BusinessException;
+import com.kaixiang.cure.error.EnumBusinessError;
 import com.kaixiang.cure.service.UserService;
 import com.kaixiang.cure.service.model.UserModel;
 import org.apache.commons.lang3.StringUtils;
@@ -40,7 +42,7 @@ public class UserServiceImpl implements UserService {
     public void register(UserModel userModel) throws Exception {
         //为什么必须判空？ 工作中service层和Controller层可能不是一个人做的
         if (userModel == null) {
-            throw new Exception("shif");
+            throw new BusinessException(EnumBusinessError.UNKNOWN_ERROR);
         }
 
         //todo: ValidationResult result = validator.validate(userModel);
@@ -49,8 +51,7 @@ public class UserServiceImpl implements UserService {
         try {
             userDOMapper.insertSelective(userDO);
         } catch (DuplicateKeyException e) {
-            //todo:这样抛出错误是有问题的，前端会显示500错误
-            throw new Exception("重复注册");
+            throw new BusinessException(EnumBusinessError.DUPLICATE_REGISTER);
         }
 
         //userModel复制一下userDO的自增id

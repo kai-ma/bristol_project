@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+//todo: 对token各种异常的拦截和返回通用错误码
 @Configuration
 @EnableWebSecurity// 这个注解必须加，开启Security
 @EnableGlobalMethodSecurity(prePostEnabled = true)//保证post之前的注解可以使用
