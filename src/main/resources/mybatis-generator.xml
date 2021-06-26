@@ -12,7 +12,7 @@
 
         </jdbcConnection>
         <!--生成data object存放位置  数据库miaosha会分别建立dataobject到下面的目录-->
-        <javaModelGenerator targetPackage="com.kaixiang.finalproject.dataobject" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="com.kaixiang.cure.dataobject" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
@@ -22,7 +22,7 @@
         </sqlMapGenerator>
         <!--生成Dao类存放位置-->
         <!--客户端代码，生成针对model对象和xml配置文件的代码-->
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.kaixiang.finalproject.dao"
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.kaixiang.cure.dao"
                              targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>

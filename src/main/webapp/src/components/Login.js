@@ -25,17 +25,27 @@ class Login extends Component {
 	};
 
     //validate login
-	login = () => {
-		this.props.authenticateUser(this.state.email, this.state.password);
-		setTimeout(() => {
-			if (this.props.auth.isLoggedIn) {
-				return this.props.history.push("/");
-			} else {
-				this.resetLoginForm();
-                //state.error发生变化的时候，下面的error会显示
-				this.setState({ error: "Invalid email and password" });
-			}
-		}, 500);
+	login =  async () => {
+
+		await this.props.authenticateUser(this.state.email, this.state.password);
+        
+        if (this.props.auth.isLoggedIn) {
+            return this.props.history.push("/");
+        } else {
+            this.resetLoginForm();
+            //state.error发生变化的时候，下面的error会显示
+            this.setState({ error: "Invalid email and password" });
+        }
+
+	   	// setTimeout(() => {
+		// 	if (this.props.auth.isLoggedIn) {
+		// 		return this.props.history.push("/");
+		// 	} else {
+		// 		this.resetLoginForm();
+        //         //state.error发生变化的时候，下面的error会显示
+		// 		this.setState({ error: "Invalid email and password" });
+		// 	}
+		// }, 500);
 	};
 
 	resetLoginForm = () => {
