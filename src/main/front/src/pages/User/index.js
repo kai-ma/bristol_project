@@ -1,7 +1,7 @@
 import  React,{Component} from 'react';
 import { NavBar, Icon } from 'antd-mobile';
 
-export default class Home extends Component {
+export default class User extends Component {
   render() {
     return (
       <div>
@@ -11,7 +11,7 @@ export default class Home extends Component {
                 rightContent={[
         <Icon key="1" type="ellipsis" />,
       ]}
-        >home</NavBar>
+        >user</NavBar>
       </div>
     )
   }
