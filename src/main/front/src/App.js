@@ -8,16 +8,19 @@ import Login from "./pages/Login";
 
 function App() {
 	return (
-		<Switch>
-			<Route path="/" exact component={Home} />
-			<Route path="/conversations" exact component={Conversations} />
-			<Route path="/answerbook" exact component={AnswerBook} />
-			<Route path="/user" exact component={User} />
-			<Route path="/register" exact component={Register} />
-			<Route path="/login" exact component={Login} />
-			{/* 其他所有的url都到home页面 */}
-			<Route path="/*" exact component={Home} />
-		</Switch>
+		<div>
+			{/* 前后可以加载一些公用的内容 */}
+			<Switch>
+				<Route path="/" exact component={Home} />
+				<Route path="/conversations" exact component={Conversations} />
+				<Route path="/answerbook" exact component={AnswerBook} />
+				<Route path="/user" exact component={User} />
+				<Route path="/register" exact component={Register} />
+				<Route path="/login" exact component={Login} />
+				{/* 其他所有的url都到home页面 */}
+				<Route path="/*" exact component={Home} />
+			</Switch>
+		</div>
 	);
 }
 
