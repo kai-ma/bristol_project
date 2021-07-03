@@ -5,6 +5,8 @@ import AnswerBook from "./pages/AnswerBook";
 import User from "./pages/User";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Content from "./pages/AnswerBook/subpages/Content";
+
 
 function App() {
 	return (
@@ -17,6 +19,7 @@ function App() {
 				<Route path="/user" exact component={User} />
 				<Route path="/register" exact component={Register} />
 				<Route path="/login" exact component={Login} />
+                <Route path="/answerbook/content*" exact component={Content} />
 				{/* 其他所有的url都到home页面 */}
 				<Route path="/*" exact component={Home} />
 			</Switch>
