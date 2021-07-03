@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Grid, WingBlank, WhiteSpace } from "antd-mobile";
 import { withRouter } from "react-router-dom";
 import get from "@src/fetch/get.js";
-
+import Http from "@src/fetch/http.js";
 class Category extends Component {
 	constructor(props) {
 		super(props);
@@ -17,59 +17,19 @@ class Category extends Component {
 		return this.props.history.push("/answerbook/content" + index);
 	};
 
-	// async componentDidMount() {
-	// 	let books = await Http({ url: "/books", method: "get" });
-	//     console.log("22" + books);
-	// 	this.setState({ books: books });
-	// 	console.log("24" + this.state.books);
-	// }
-
 	componentWillMount() {}
 
 	componentDidMount() {
-		const result = get("/api/books");
-		result
-			.then((res) => {
-				return res.json();
-			})
-			.then((json) => {
-				// 处理获取的数据
-                console.log(json);
-				const books = json.bookList;
-				if (books.length) {
-					this.setState({
-						books: books,
-					});
-				}
-				console.log(this.state.books);
-			})
-			.catch((ex) => {
-				// 发生错误
-				// if (__DEV__) {
-				console.error("首页广告模块获取数据报错, ", ex.message);
-				// }
-			});
-
-		// console.log("22" + books);
-		// this.setState({ books: books });
-		// console.log("24" + this.state.books);
+        Http({url : "/books", method: "get"}).then(res => {
+            this.setState({
+                books: res,
+            });
+        },err =>{
+            console.log(err)
+        });
 	}
 
 	render() {
-		const data = Array.from(new Array(2)).map((_val, i) => ({
-			icon: "https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png",
-			text: `name${i}`,
-			index: i,
-		}));
-		console.log(data);
-
-		// const invokeHttp = async () => {
-		// 	const result = await Http({ url: "/books", method: "get" });
-		// 	return result;
-		// };
-
-		// const books = await invokeHttp();
-
 		return (
 			<div>
 				<WingBlank size="lg">

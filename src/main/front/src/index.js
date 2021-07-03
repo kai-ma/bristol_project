@@ -5,7 +5,6 @@ import Layout from "./components/layouts";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./redux/store";
-import './mock/index';
 
 ReactDOM.render(
 	<BrowserRouter>
