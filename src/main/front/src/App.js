@@ -21,7 +21,7 @@ function App() {
 				<Route path="/answerbook" exact component={AnswerBook} />
 				<Route path="/user" exact component={User} />
                 <Route path="/send" exact component={Send} />
-                <Route path="/reply" exact component={Reply} />
+                <Route path="/reply/:id" exact component={Reply} />
                 <Route path="/letter/:id" exact component={Letter} />
 				<Route path="/register" exact component={Register} />
 				<Route path="/login" exact component={Login} />

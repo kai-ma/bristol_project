@@ -5,7 +5,7 @@ import {
 	InputItem,
 	NavBar,
 	Button,
-	Switch,
+	WhiteSpace,
 	Toast,
 } from "antd-mobile";
 import { createForm } from "rc-form";
@@ -28,7 +28,7 @@ class Send extends Component {
                 // if(input.content == null || input.content == ""){
                 //     Toast.fail("Content should not be empty");
                 // }
-                Toast.fail("Please input all the ");
+                Toast.fail("Please check your input, some input missing");
 				return;
 			} else {
                 //发送post请求
@@ -81,33 +81,10 @@ class Send extends Component {
 						placeholder="Please enter a pseudonym"
 					></InputItem>
 				</List>
-				{/* 这个应该放到reply里面 */}
-				<List
-					renderHeader={() => "Allow to be collected to answerbook"}
-				>
-					<List.Item
-						extra={
-							<Switch
-								{...getFieldProps("allowBeCollected", {
-									initialValue: true,
-									valuePropName: "checked",
-									rules: [{ required: true }],
-								})}
-								platform="ios"
-							/>
-						}
-					>
-						Get bonus if be collected
-					</List.Item>
-				</List>
-                {/* 空行 */}
-                <List
-					renderHeader={() => ""}
-				></List>
+                <WhiteSpace size="xl" />
 				<Button type="primary" onClick={this.handleSubmit}>
 					Send
 				</Button>
-                
 			</div>
 		);
 	}
@@ -115,4 +92,5 @@ class Send extends Component {
 
 export default createForm()(Send);
 
-//todo:焦点是干什么的
+//todo:所有表单都有这个问题，校验需要更严谨，提示应该更详细。怎么遍历所有检查某一项是不是空呢？
+//需要继续学习的地方:焦点是干什么的

@@ -44,7 +44,7 @@ class Home extends Component {
 	};
 
     handleClick = (letter) => {
-        console.log(letter);
+        // console.log(letter);
         this.props.history.push("/letter/" + letter.id);
     }
 
@@ -95,12 +95,13 @@ class Home extends Component {
 								</WingBlank>
 							</div>
 						))}
-						<WingBlank>
+						<WingBlank >
 							<Button
 								icon={<BsPencilSquare/>}
 								inline
-								size="small"
-								style={{ marginRight: "0px" }}
+								size="large"
+								style={{ marginRight: "2px" }}
+                                // style={{float:"right",marginBottom:10}}
                                 onClick={this.writeLetter}
 							>
 								write letter
