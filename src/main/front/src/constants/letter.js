@@ -1,2 +1,6 @@
 export const LETTER_UPDATE = 'LETTER_UPDATE'
-export const GET_LETTER = 'GET_LETTER'
+export const LOAD_LETTERS = 'LOAD_LETTERS'
+
+export const LETTERS_SUCCESS = 'LETTERS_SUCCESS'
+export const LETTERS_FAILURE = 'LETTERS_FAILURE'
+

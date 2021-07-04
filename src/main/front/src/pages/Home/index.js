@@ -1,68 +1,69 @@
 import React, { Component } from "react";
 import LetterCard from "../../components/LetterCard";
 import { connect } from "react-redux";
-import { update, load } from "../../redux/actions/letter";
+import { loadLetters } from "../../redux/actions/letter";
 
 class Home extends Component {
 	constructor(props) {
 		super(props);
+        console.log("init props");
+        console.log(this.props);
 		this.state = this.initialState;
 	}
 
-	// componentDidMount() {
-	// 	this.props.load();
-	//     let letter = this.props.letter;
-	//     if(letter!==null){
-	//         this.setState({
-	//             shortContent: letter.shortContent,
-	// 			subject: letter.subject,
-	// 			name: letter.name,
-	//         });
-	//     }
-	// }
+	componentDidMount() {
+        this.load();
+	}
 
-	componentDidMount = () => {
-		const letter = {
-			shortContent: "改变",
-			subject: "主题",
-			name: "姓名",
-		};
-        this.props.update(letter);
-		setTimeout(() => {
-            let letter = this.props.letter;
-			if (letter !== null) {
-				this.setState({
-					shortContent: letter.shortContent,
-					subject: letter.subject,
-					name: letter.name,
-				});
-			}
-		}, 3000);
+    load = async () => {
+        await this.props.loadLetters();
+        const letters = this.props.letters;
+        if (letters != null) {
+			console.log(letters);
+			this.setState({
+				letters: letters,
+			});
+		}
+    }
+
+    handleClick = async () => {
+        console.log("starting")
+		await this.props.loadLetters();
+        console.log(this.props);
+        const letters = this.props.letters;
+        if (letters != null) {
+			console.log(letters);
+			this.setState({
+				letters: letters,
+			});
+		}
+        console.log("finishing")
 	};
 
 	initialState = {
-		shortContent: "改变之前",
-		subject: "主题",
-		name: "姓名",
-	};
-
-	handleClick = () => {
-		console.log("click");
-		return this.props.history.push("/user");
+		letters: [],
 	};
 
 	render() {
-		const { shortContent, subject, name } = this.state;
-		console.log(shortContent);
+		// const { shortContent, subject, name } = this.state.letters[0];
+		const { letters } = this.state;
+
+		console.log(this.state);
 		return (
 			<div>
 				<h1> Welcome to cure!</h1>
-
-				<LetterCard
+				<div>
+					{letters.length === 0 ? (
+						<p1 onClick={this.handleClick}>No Books Available.</p1>
+					) : (
+						<p1 >{letters.length}</p1>
+					)}
+				</div>
+				{/* <LetterCard
 					shortContent={shortContent}
 					subject={subject}
 					name={name}
-				></LetterCard>
+				></LetterCard> */}
 			</div>
 		);
 	}
@@ -70,14 +71,13 @@ class Home extends Component {
 
 const mapStateToProps = (state) => {
 	return {
-		letter: state.letter,
+		letters: state.letters,
 	};
 };
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		update: (letter) => dispatch(update(letter)),
-		load: () => dispatch(load()),
+		loadLetters: () => dispatch(loadLetters()),
 	};
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

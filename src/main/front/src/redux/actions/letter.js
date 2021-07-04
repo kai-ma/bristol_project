@@ -1,5 +1,8 @@
 import * as actionTypes from "../../constants/letter";
+import Http from "@src/fetch/http.js";
 
+//是把数据从应用（这些数据有可能是服务器响应，用户输入或其它非 view 的数据 ）传到 store 的有效载荷。
+//它是 store 数据的唯一来源。
 export function update(data) {
 	return {
 		type: actionTypes.LETTER_UPDATE,
@@ -7,16 +10,33 @@ export function update(data) {
 	};
 }
 
-
-export function load() {
-    const data = {
-        shortContent: "改变",
-        subject: "主题",
-        name: "姓名",
-    };
-
-	return {
-		type: actionTypes.GET_LETTER,
-		data,
+export const loadLetters = () => {
+    return (dispatch) => {
+		dispatch({
+			type: actionTypes.LOAD_LETTERS,
+            payload: {},
+		});
+		Http({ url: "/loadletters", method: "get" }).then(
+			(res) => {
+				dispatch(letterSuccess(res));
+			},
+			(err) => {
+				dispatch(letterFailure(err));
+			}
+		);
 	};
 }
+
+const letterSuccess = (letters) => {
+	return {
+		type: actionTypes.LETTERS_SUCCESS,
+		payload: letters,
+	};
+};
+
+const letterFailure = (error) => {
+	return {
+		type: actionTypes.LETTERS_FAILURE,
+		payload: error,
+	};
+};

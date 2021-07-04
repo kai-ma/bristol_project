@@ -1,18 +1,28 @@
 import * as actionTypes from "../../constants/letter";
 
-//如果不填默认会报错
 const initialState = {
-	shortContent: "",
-	subject: "",
-	name: "",
+	letters: [],
+	error: "",
 };
 
-export default function userinfo(state = initialState, action) {
+const reducer = (state = initialState, action) => {
 	switch (action.type) {
 		case actionTypes.LETTER_UPDATE:
-		case actionTypes.GET_LETTER:
-			return action.data;
+		case actionTypes.LOAD_LETTERS:
+			return {...state};
+		case actionTypes.LETTERS_SUCCESS:
+			return {
+				letters: action.payload,
+				error: "",
+			};
+		case actionTypes.LETTERS_FAILURE:
+			return {
+				letters: "",
+				error: action.payload,
+			};
 		default:
 			return state;
 	}
-}
+};
+
+export default reducer;
