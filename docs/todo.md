@@ -3,6 +3,11 @@
 
 刷新到相同的信怎么办，尽量分派没有人回复过，没有人读过的信，如果都没有，就推荐看答案之书。可以给没有回复过的信里面加一个最后发给谁了的标记。
 
+
+loading bar
+https://www.npmjs.com/package/react-redux-loading-bar/v/5.0.0
+
+
 ## 前端组件
 https://mobile.ant.design/components/nav-bar-cn/
 nav bar可以用作详情页面里面的返回

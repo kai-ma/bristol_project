@@ -27,7 +27,7 @@ router.get("/api/books", async (ctx, next) => {
 	// };
 });
 
-// 刷新首页的letters
+// 加载首页的letters
 // require("./answerbook.js");
 router.get("/api/loadletters", async (ctx, next) => {
 	ctx.response.body = {
@@ -40,6 +40,32 @@ router.get("/api/loadletters", async (ctx, next) => {
 			},
 			{
 				shortContent: "信件2",
+				subject: "主题",
+				name: "姓名",
+			},
+		],
+	};
+});
+
+
+// 刷新首页的letters
+// require("./answerbook.js");
+router.get("/api/updateletters", async (ctx, next) => {
+	ctx.response.body = {
+		status: 200,
+		data: [
+			{
+				shortContent: "信件1",
+				subject: "主题",
+				name: "姓名",
+			},
+			{
+				shortContent: "信件2",
+				subject: "主题",
+				name: "姓名",
+			},
+            {
+				shortContent: "信件3",
 				subject: "主题",
 				name: "姓名",
 			},
