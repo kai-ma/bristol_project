@@ -5,7 +5,10 @@ import AnswerBook from "./pages/AnswerBook";
 import User from "./pages/User";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import Content from "./pages/AnswerBook/subpages/Content";
+import AnswerContent from "./pages/AnswerBook/subpages/Content";
+import Send from "./pages/Home/subpages/Send"
+import Reply from "./pages/Home/subpages/Reply"
+import Letter from "./pages/Home/subpages/Letter"
 
 
 function App() {
@@ -17,9 +20,12 @@ function App() {
 				<Route path="/conversations" exact component={Conversations} />
 				<Route path="/answerbook" exact component={AnswerBook} />
 				<Route path="/user" exact component={User} />
+                <Route path="/send" exact component={Send} />
+                <Route path="/reply" exact component={Reply} />
+                <Route path="/letter/:id" exact component={Letter} />
 				<Route path="/register" exact component={Register} />
 				<Route path="/login" exact component={Login} />
-                <Route path="/answerbook/content*" exact component={Content} />
+                <Route path="/answerbook/content*" exact component={AnswerContent} />
 				{/* 其他所有的url都到home页面 */}
 				<Route path="/*" exact component={Home} />
 			</Switch>

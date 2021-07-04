@@ -1,8 +1,17 @@
 import React, { Component } from "react";
-// import LetterCard from "../../components/LetterCard";
 import { connect } from "react-redux";
 import { updateLetters, loadLetters } from "../../redux/actions/letter";
-//可以参考：https://www.freecodecamp.org/news/loading-data-in-react-redux-thunk-redux-saga-suspense-hooks-666b21da1569/
+//redux可以参考：https://www.freecodecamp.org/news/loading-data-in-react-redux-thunk-redux-saga-suspense-hooks-666b21da1569/
+import { BsPencilSquare } from "react-icons/bs";
+
+import {
+	Card,
+	WingBlank,
+	WhiteSpace,
+	ActivityIndicator,
+	Button,
+} from "antd-mobile";
+
 class Home extends Component {
 	constructor(props) {
 		super(props);
@@ -10,40 +19,12 @@ class Home extends Component {
 	}
 
 	componentDidMount() {
-        this.load();
-        // await this.props.loadLetters();
-        // console.log(this.props);
-		// const letters = this.props.letter;
-		// const loading = this.props.loading;
-		// if (letters != null) {
-		// 	this.setState({
-		// 		letters: letters,
-		// 	});
-		// }
-	    // this.setState({
-	    //     loading: loading
-	    // });
+        console.log("componentDidMount");
+		this.props.loadLetters();
 	}
 
-
-	load = () => {
-		this.props.loadLetters();
-		setTimeout(() => {
-            console.log(this.props)
-			const letters = this.props.letter;
-			// const loading = this.props.loading;
-			if (letters != null) {
-				this.setState({
-					letters: letters,
-				});
-			}
-			// this.setState({
-			// 	loading: loading,
-			// });
-		}, 1500);
-	};
-
-	handleClick = () => {
+	updateLetters = () => {
+        console.log("updateLetters");
 		this.props.updateLetters();
 		console.log(this.props);
 		const letters = this.props.letters;
@@ -54,35 +35,81 @@ class Home extends Component {
 		}
 	};
 
+    writeLetter = () => {
+        this.props.history.push("/send");
+    }
+
 	initialState = {
 		letters: [],
 	};
 
-	render() {
-		// const { shortContent, subject, name } = this.state.letters[0];
-		// const { letters } = this.state;
+    handleClick = (letter) => {
+        console.log(letter);
+        this.props.history.push("/letter/" + letter.id);
+    }
 
-        if (this.props.loading) {
-            return <div>Loading</div>
-        }else{
-            console.log(this.state);
-        }
-        
-        if (this.props.error) {
-            return <div style={{ color: 'red' }}>ERROR: {this.props.error}</div>
-        }
+	render() {
+		// if (this.props.error) {
+		// 	return (
+		// 		<div style={{ color: "red" }}>ERROR: {this.props.error}</div>
+		// 	);
+		// }
+
+		const letters = this.props.letters;
+
 		return (
 			<div>
 				<h1> Welcome to cure!</h1>
-				<div>
-					{/* {loading ? <h1>Loading...</h1> : <h1>{letters.length}</h1>} */}
-                    <h1 onClick={this.handleClick}>{this.props.letters.length}</h1>
-				</div>
-				{/* <LetterCard
-					shortContent={shortContent}
-					subject={subject}
-					name={name}
-				></LetterCard> */}
+				{/* 根据loading判读是否显示loading图标 */}
+				{this.props.loading ? (
+					<div>
+						<ActivityIndicator
+							toast
+							text="Loading..."
+							size="small"
+						/>
+					</div>
+				) : (
+					<div>
+						<p onClick={this.updateLetters}>
+							{this.props.letters.length}
+							letters
+						</p>
+						{letters.map((letter, index) => (
+							<div key={index}>
+								<WingBlank size="lg">
+									<WhiteSpace size="lg" />
+									<Card onClick={() => this.handleClick(letter)}>
+										<Card.Header title={letter.subject} />
+										<Card.Body>
+											<WhiteSpace size="lg" />
+											<div>{letter.content.substring(0, letter.content.length > 100 ? 99 : letter.content.length - 1) + "..."}</div>
+											<WhiteSpace size="lg" />
+										</Card.Body>
+										<Card.Footer
+											// content="left footer"
+											extra={<div>{letter.name}</div>}
+										/>
+									</Card>
+									<WhiteSpace size="lg" />
+								</WingBlank>
+							</div>
+						))}
+						<WingBlank>
+							<Button
+								icon={<BsPencilSquare/>}
+								inline
+								size="small"
+								style={{ marginRight: "0px" }}
+                                onClick={this.writeLetter}
+							>
+								write letter
+							</Button>
+						</WingBlank>
+
+						<WhiteSpace />
+					</div>
+				)}
 			</div>
 		);
 	}
@@ -98,7 +125,11 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
 	return {
 		loadLetters: () => dispatch(loadLetters()),
-		updateLetters: () => dispatch(updateLetters())
+		updateLetters: () => dispatch(updateLetters()),
 	};
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
+
+
+//todo:从写信页面返回这个页面的时候会重新调用componentDidMount
+//card还可以加头像等，具体看antd-mobile的card教程
