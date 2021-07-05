@@ -27,7 +27,7 @@ class Reply extends Component {
 		// console.log(input);
 		this.props.form.validateFields((error, value) => {
 			if (error) {
-				Toast.fail("Please check your input, some input missing");
+				Toast.info(this.props.form.getFieldError(Object.keys(error)[0]));
 				return;
 			} else {
 				//发送post请求

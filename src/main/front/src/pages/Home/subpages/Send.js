@@ -25,10 +25,7 @@ class Send extends Component {
 		console.log(input);
 		this.props.form.validateFields((error, value) => {
 			if (error) {
-                // if(input.content == null || input.content == ""){
-                //     Toast.fail("Content should not be empty");
-                // }
-                Toast.fail("Please check your input, some input missing");
+                Toast.info(this.props.form.getFieldError(Object.keys(error)[0]));
 				return;
 			} else {
                 //发送post请求
@@ -65,7 +62,7 @@ class Send extends Component {
 				</List>
 				<List renderHeader={() => "Topic"}>
 					<InputItem
-						{...getFieldProps("inputclear", {
+						{...getFieldProps("topic", {
 							rules: [{ required: true }],
 						})}
 						clear

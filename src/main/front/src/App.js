@@ -3,8 +3,8 @@ import Home from "./pages/Home";
 import Conversations from "./pages/Conversations";
 import AnswerBook from "./pages/AnswerBook";
 import User from "./pages/User";
-import Register from "./pages/Register";
-import Login from "./pages/Login";
+import Register from "./pages/User/Register";
+import Login from "./pages/User/Login";
 import AnswerContent from "./pages/AnswerBook/subpages/Content";
 import Send from "./pages/Home/subpages/Send"
 import Reply from "./pages/Home/subpages/Reply"
@@ -24,7 +24,7 @@ function App() {
                 <Route path="/reply/:id" exact component={Reply} />
                 <Route path="/letter/:id" exact component={Letter} />
 				<Route path="/register" exact component={Register} />
-				<Route path="/login" exact component={Login} />
+				<Route path="/login/:router?" exact component={Login} />
                 <Route path="/answerbook/content*" exact component={AnswerContent} />
 				{/* 其他所有的url都到home页面 */}
 				<Route path="/*" exact component={Home} />
