@@ -11,11 +11,12 @@ export const login = (body, history) => {
 		await Http({ url: "/login", body: body }).then(
 			(res) => {
 				dispatch(loginSuccess(res));
-                Toast.info("login successfully!");
-				setTimeout(() =>{
+                localStorage.setItem('token', res.token);
+                localStorage.setItem('userid', res.id);
+                Toast.info("login successfully!", 2);
+                setTimeout(() =>{
                     history.push("/");
                 }, 2000);
-               
 			},
 			(err) => {
 				dispatch(loginFailure(err));

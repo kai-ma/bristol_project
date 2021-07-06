@@ -28,7 +28,7 @@ class Login extends Component {
 		const input = this.props.form.getFieldsValue();
 		this.props.form.validateFields((error, value) => {
 			if (error) {
-				Toast.error(
+				Toast.fail(
 					this.props.form.getFieldError(Object.keys(error)[0])
 				);
 				return;
@@ -106,3 +106,5 @@ export default connect(
 	mapStateToProps,
 	mapDispatchToProps
 )(createForm()(Login));
+
+//可以把title换成icon

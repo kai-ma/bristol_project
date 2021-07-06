@@ -11,7 +11,6 @@ class Category extends Component {
 	initialState = { books: [] };
 
 	handleClick = (data) => {
-		console.log(data);
 		const index = data.index;
 		return this.props.history.push("/answerbook/content" + index);
 	};

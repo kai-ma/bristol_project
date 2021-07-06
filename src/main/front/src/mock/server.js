@@ -2,53 +2,45 @@ const Koa = require("koa");
 const Router = require("koa-router");
 const app = new Koa();
 const router = new Router();
+const bodyParser = require("koa-bodyparser");
 
 router.post("/api/login", async (ctx, next) => {
-	ctx.response.body = {
-		status: 200,
-		data: [
-			{
+	const { password } = ctx.request.body;
+	if (password != "123456") {
+		ctx.response.body = {
+			status: 400,
+			errMsg: "Please input correct password.",
+		};
+	} else {
+		ctx.response.body = {
+			status: 200,
+			data: {
 				id: 123458,
 				subject: "Girl",
 				name: "amaica Kincaid",
+				token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJta3g0NDk5QDE2My5jb20iLCJleHAiOjE2MjQ2OTk0NjYsImlhdCI6MTYyNDY5MjI2Nn0.zdYWKH7C-XAJ5pXn5MlPLXvVSHLqYqK9GXWZrI2b-9c",
 			},
-		],
-	};
+		};
+	}
 });
-
-
-// router.post("/api/login", async (ctx, next) => {
-// 	ctx.response.body = {
-// 		status: 404,
-// 		data: [
-// 			{
-// 				id: 123458,
-// 				subject: "Girl",
-// 				name: "amaica Kincaid",
-// 			},
-// 		],
-// 	};
-// });
-
-// router.post("/api/register", async (ctx, next) => {
-// 	ctx.response.body = {
-// 		status: 200,
-// 		data: [
-// 			{
-// 				id: 123458,
-// 				subject: "Girl",
-// 				name: "amaica Kincaid",
-// 			},
-// 		],
-// 	};
-// });
 
 router.post("/api/register", async (ctx, next) => {
 	ctx.response.body = {
-		status: 300,
-		errMsg: "Please input correct email."
+		status: 200,
+		data: {
+			id: 123458,
+			subject: "Girl",
+			name: "amaica Kincaid",
+		},
 	};
 });
+
+// router.post("/api/register", async (ctx, next) => {
+// 	ctx.response.body = {
+// 		status: 300,
+// 		errMsg: "Please input correct email."
+// 	};
+// });
 
 // answerbook列表
 // require("./answerbook.js");
@@ -144,6 +136,7 @@ router.get("/", async (ctx, next) => {
 });
 
 // 开始服务并生成路由
+app.use(bodyParser());
 app.use(router.routes()).use(router.allowedMethods());
 app.listen(8090);
 console.log("app started at port 8090...");
