@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import {
 	List,
-	TextareaItem,
 	InputItem,
 	NavBar,
 	Button,
@@ -20,8 +19,8 @@ class Login extends Component {
 	}
 
 	componentDidMount() {
-        	// 如果成功 const router = this.props.match.params.router;
-    }
+		// 如果成功 const router = this.props.match.params.router;
+	}
 
 	initialState = {};
 
@@ -34,10 +33,8 @@ class Login extends Component {
 				);
 				return;
 			} else {
-				//todo 发送post请求
-				this.props.login(value).then((result) => {
-					console.log("success");
-				});
+				// console.log(this.props.history);
+				this.props.login(value, this.props.history);
 			}
 		});
 	};
@@ -53,15 +50,6 @@ class Login extends Component {
 				<NavBar mode="light">Login</NavBar>
 				<WhiteSpace size="xl" />
 				<InputItem
-					{...getFieldProps("name", {
-						rules: [{ required: true }],
-					})}
-					labelNumber={6}
-					placeholder="username"
-				>
-					UserName
-				</InputItem>
-				<InputItem
 					{...getFieldProps("email", {
 						rules: [{ required: true }],
 					})}
@@ -69,6 +57,15 @@ class Login extends Component {
 					placeholder="email"
 				>
 					Email
+				</InputItem>
+				<InputItem
+					{...getFieldProps("password", {
+						rules: [{ required: true }],
+					})}
+					labelNumber={6}
+					placeholder="password"
+				>
+					Password
 				</InputItem>
 				<WhiteSpace size="xl" />
 				<Button
@@ -101,7 +98,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		login: (value) => dispatch(login(value)),
+		login: (value, history) => dispatch(login(value, history)),
 	};
 };
 

@@ -3,7 +3,34 @@ const Router = require("koa-router");
 const app = new Koa();
 const router = new Router();
 
+router.post("/api/login", async (ctx, next) => {
+	ctx.response.body = {
+		status: 200,
+		data: [
+			{
+				id: 123458,
+				subject: "Girl",
+				name: "amaica Kincaid",
+			},
+		],
+	};
+});
+
+
 // router.post("/api/login", async (ctx, next) => {
+// 	ctx.response.body = {
+// 		status: 404,
+// 		data: [
+// 			{
+// 				id: 123458,
+// 				subject: "Girl",
+// 				name: "amaica Kincaid",
+// 			},
+// 		],
+// 	};
+// });
+
+// router.post("/api/register", async (ctx, next) => {
 // 	ctx.response.body = {
 // 		status: 200,
 // 		data: [
@@ -16,17 +43,10 @@ const router = new Router();
 // 	};
 // });
 
-
-router.post("/api/login", async (ctx, next) => {
+router.post("/api/register", async (ctx, next) => {
 	ctx.response.body = {
-		status: 404,
-		data: [
-			{
-				id: 123458,
-				subject: "Girl",
-				name: "amaica Kincaid",
-			},
-		],
+		status: 300,
+		errMsg: "Please input correct email."
 	};
 });
 

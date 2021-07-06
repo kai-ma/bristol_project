@@ -10,6 +10,7 @@ import {
 } from "antd-mobile";
 import { createForm } from "rc-form";
 import { FaSignInAlt, FaUserPlus } from "react-icons/fa";
+import Http from "@src/fetch/http.js";
 
 class Register extends Component {
 	constructor(props) {
@@ -30,7 +31,15 @@ class Register extends Component {
 				);
 				return;
 			} else {
-				//todo 发送post请求
+				Http({ url: "/register", body: value }).then(
+                    (res) => {
+                        console.log(res);
+                        Toast.info("Register successfully!", 1, this.props.history.push("/login"));
+                    },
+                    (err) => {
+                        // console.log(err);
+                    }
+                );
 			}
 		});
 	};
@@ -39,18 +48,7 @@ class Register extends Component {
 		this.props.history.push("/login");
 	};
 
-    async registerAsync(dispatch, rootState, payload){
-        // const result = await Http({
-        //   url: '/user/register',
-        //   body: payload
-        // });
-        // if(result){
-        //   // cookie.set('user', result);
-        //   localStorage.setItem('token', result.token);
-        //   localStorage.setItem('username', result.username);
-        //   Toast.success('注册成功');
-        // }
-      }
+
 
 	render() {
 		const { getFieldProps } = this.props.form;

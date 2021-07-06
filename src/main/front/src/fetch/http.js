@@ -37,18 +37,12 @@ export default function Http({
 				if (res.status === 200) {
 					resolve(res.data);
 				} else {
-					// if (res.status === 1001) {
-					// 	// location.href = '/login?from=' + location.pathname;
-					// 	location.hash = "#/login?from=" + location.pathname;
-					// 	localStorage.clear();
-					// }
-					Toast.fail(res.errMsg);
+					Toast.fail(res.errMsg, 1);
 					reject(res.errMsg);
 				}
 			})
 			.catch((err) => {
-				console.log(err);
-				Toast.fail(err);
+				Toast.fail(err, 1);
 				reject(err);
 			})
 			.finally(() => {

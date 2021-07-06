@@ -1,15 +1,21 @@
 import * as actionTypes from "../../constants/user";
 import Http from "@src/fetch/http.js";
+import { Toast } from "antd-mobile";
 
-export const login = (body) => {
-	return (dispatch) => {
+export const login = (body, history) => {
+	return async (dispatch) => {
 		dispatch({
 			type: actionTypes.LOGIN_REQUST,
 		});
 
-		Http({ url: "/login", body: body }).then(
+		await Http({ url: "/login", body: body }).then(
 			(res) => {
 				dispatch(loginSuccess(res));
+                Toast.info("login successfully!");
+				setTimeout(() =>{
+                    history.push("/");
+                }, 2000);
+               
 			},
 			(err) => {
 				dispatch(loginFailure(err));
