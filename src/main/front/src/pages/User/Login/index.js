@@ -63,7 +63,8 @@ class Login extends Component {
 						rules: [{ required: true }],
 					})}
 					labelNumber={6}
-					placeholder="password"
+                    type="password"
+					placeholder="****"
 				>
 					Password
 				</InputItem>

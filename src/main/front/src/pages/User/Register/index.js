@@ -24,6 +24,10 @@ class Register extends Component {
 
 	handleSubmit = () => {
 		const input = this.props.form.getFieldsValue();
+        if(input.confirm_password !== input.password) {
+            Toast.fail("Confirmation password is not identical.", 1);
+            return;
+        }
 		this.props.form.validateFields((error, value) => {
 			if (error) {
 				Toast.info(
@@ -32,14 +36,18 @@ class Register extends Component {
 				return;
 			} else {
 				Http({ url: "/register", body: value }).then(
-                    (res) => {
-                        console.log(res);
-                        Toast.info("Register successfully!", 1, this.props.history.push("/login"));
-                    },
-                    (err) => {
-                        // console.log(err);
-                    }
-                );
+					(res) => {
+						console.log(res);
+						Toast.info(
+							"Register successfully!",
+							1,
+							this.props.history.push("/login")
+						);
+					},
+					(err) => {
+						// console.log(err);
+					}
+				);
 			}
 		});
 	};
@@ -47,8 +55,6 @@ class Register extends Component {
 	navToLogin = () => {
 		this.props.history.push("/login");
 	};
-
-
 
 	render() {
 		const { getFieldProps } = this.props.form;
@@ -79,22 +85,24 @@ class Register extends Component {
 						{...getFieldProps("password", {
 							rules: [{ required: true }],
 						})}
-						placeholder="password"
+						type="password"
+						placeholder="****"
 						labelNumber={6}
 					>
 						Password
 					</InputItem>
-                    {/* <InputItem
-						{...getFieldProps("password", {
+					<InputItem
+						{...getFieldProps("confirm_password", {
 							rules: [{ required: true }],
 						})}
 						placeholder="confirm password"
+                        type="password"
 						labelNumber={6}
 					>
 						Confirm
-					</InputItem> */}
+					</InputItem>
 				</List>
-                <WhiteSpace size="xl" />
+				<WhiteSpace size="xl" />
 				<Button
 					type="primary"
 					onClick={this.handleSubmit}
@@ -102,7 +110,7 @@ class Register extends Component {
 				>
 					Register
 				</Button>
-                <List renderHeader={() => "Have account? Go to login"}></List>
+				<List renderHeader={() => "Have account? Go to login"}></List>
 				<Button
 					type="primary"
 					onClick={this.navToLogin}

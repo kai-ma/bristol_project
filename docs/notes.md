@@ -1,4 +1,7 @@
 ## react路由配置
+可以设置一个初始状态，是否加载。如果props这个属性不为空，或者没有点击button，就不需要重新加载。
+
+## react路由配置
 
 可选参数的写法：<Route path='/index/:hello?' /> 后边的问号表示这个参数是可选的
 
@@ -14,3 +17,38 @@
 
 ## todo
 当mock不开启时，怎么不把报错显示到屏幕上？也就是加一个errorbase。
+
+
+
+控制letter显示:
+```js
+<div>
+                        {this.props.loading ? (
+                            <div>loading...</div>
+                        ) : (
+                            <div>
+                                {conversationsStarted.map(
+                                    (conversations, index) => (
+                                        <div key={index}>
+                                            {conversations.map(
+                                                (letter, i) => (
+                                                    <div>
+                                                        {letter.type === 1 ? (
+                                                            null
+                                                        ) : (
+                                                            <LetterCard
+                                                                letter={
+                                                                    letter
+                                                                }
+                                                            ></LetterCard>
+                                                        )}
+                                                    </div>
+                                                )
+                                            )}
+                                        </div>
+                                    )
+                                )}
+                            </div>
+                        )}
+                    </div>
+```

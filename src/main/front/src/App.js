@@ -1,6 +1,6 @@
 import { Switch, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import Conversations from "./pages/Conversations";
+import LetterBox from "./pages/LetterBox";
 import AnswerBook from "./pages/AnswerBook";
 import User from "./pages/User";
 import Register from "./pages/User/Register";
@@ -9,6 +9,7 @@ import AnswerContent from "./pages/AnswerBook/subpages/Content";
 import Send from "./pages/Home/subpages/Send"
 import Reply from "./pages/Home/subpages/Reply"
 import Letter from "./pages/Home/subpages/Letter"
+import Conversation from "./pages/LetterBox/Conversation"
 import PrivateRoute from './router/PrivateRoute';
 
 function App() {
@@ -17,7 +18,8 @@ function App() {
 			{/* 前后可以加载一些公用的内容 */}
 			<Switch>
 				<Route path="/" exact component={Home} />
-				<PrivateRoute path="/conversations" exact component={Conversations} />
+				<PrivateRoute path="/letterbox" exact component={LetterBox} />
+				<PrivateRoute path="/conversation/:id" exact component={Conversation} />
 				<PrivateRoute path="/answerbook" exact component={AnswerBook} />
 				<PrivateRoute path="/user" exact component={User} />
                 <PrivateRoute path="/send" exact component={Send} />

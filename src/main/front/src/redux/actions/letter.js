@@ -9,14 +9,14 @@ export const loadLetters = () => {
 			type: actionTypes.LOAD_LETTERS,
 		});
 
-        Http({ url: "/loadletters", method: "get" }).then(
-            (res) => {
-                dispatch(letterSuccess(res));
-            },
-            (err) => {
-                dispatch(letterFailure(err));
-            }
-        )
+		Http({ url: "/loadletters", method: "get" }).then(
+			(res) => {
+				dispatch(letterSuccess(res));
+			},
+			(err) => {
+				dispatch(letterFailure(err));
+			}
+		);
 
 		// setTimeout(
 		// 	() =>
@@ -39,14 +39,14 @@ export const updateLetters = () => {
 			type: actionTypes.UPDATE_LETTERS,
 		});
 
-        Http({ url: "/updateletters", method: "get" }).then(
-            (res) => {
-                dispatch(letterSuccess(res));
-            },
-            (err) => {
-                dispatch(letterFailure(err));
-            }
-        )
+		Http({ url: "/updateletters", method: "get" }).then(
+			(res) => {
+				dispatch(letterSuccess(res));
+			},
+			(err) => {
+				dispatch(letterFailure(err));
+			}
+		);
 	};
 };
 
@@ -60,6 +60,37 @@ const letterSuccess = (letters) => {
 const letterFailure = (error) => {
 	return {
 		type: actionTypes.LETTERS_FAILURE,
+		payload: error,
+	};
+};
+
+export const loadConversationsStarted = () => {
+	return (dispatch) => {
+		dispatch({
+			type: actionTypes.LOAD_CONVERSATIONS_STARTED,
+		});
+
+		Http({ url: "/loadconversations/started", method: "get" }).then(
+			(res) => {
+                dispatch(conversationStartedSuccess(res));
+			},
+			(err) => {
+				dispatch(conversationFailure(err));
+			}
+		);
+	};
+};
+
+const conversationStartedSuccess = (res) => {
+	return {
+		type: actionTypes.CONVERSATION_STARTED_SUCCESS,
+		payload: res,
+	};
+};
+
+const conversationFailure = (error) => {
+	return {
+		type: actionTypes.CONVERSATION_STARTED_FAILURE,
 		payload: error,
 	};
 };

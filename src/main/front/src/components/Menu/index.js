@@ -21,10 +21,10 @@ class Menu extends Component {
           link: '/'
         },
         {
-          title: 'conversations',
+          title: 'LetterBox',
           selectedIcon: <AiFillMail style={{fontSize: '1.5rem'}}/>,
           icon: <AiOutlineMail style={{fontSize: '1.5rem'}}/>,
-          link: '/conversations'
+          link: '/letterbox'
         },
         {
             title: 'AnswerBook',
