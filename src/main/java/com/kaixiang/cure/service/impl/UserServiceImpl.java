@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void register(UserModel userModel) throws Exception {
+    public void register(UserModel userModel) throws BusinessException {
         //为什么必须判空？ 工作中service层和Controller层可能不是一个人做的
         if (userModel == null) {
             throw new BusinessException(EnumBusinessError.UNKNOWN_ERROR);
@@ -56,7 +56,6 @@ public class UserServiceImpl implements UserService {
 
         //userModel复制一下userDO的自增id
         userModel.setId(userDO.getId());
-        System.out.println("user id is :" + userModel.getId());
         UserPasswordDO userPasswordDO = convertPassWordFromModel(userModel);
         userPasswordDOMapper.insertSelective(userPasswordDO);
     }
@@ -74,11 +73,8 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserModel getUserModelByEmail(String email) throws Exception {
+    public UserModel getUserModelByEmail(String email) {
         UserDO userDO = userDOMapper.selectByEmail(email);
-        if (userDO == null) {
-            throw new Exception("no such user.");
-        }
         UserPasswordDO userPasswordDO = userPasswordDOMapper.selectByUserId(userDO.getId());
 
         return convertFromDataObject(userDO, userPasswordDO);

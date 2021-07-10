@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, List, Toast, WhiteSpace } from "antd-mobile";
+import { Button, List, Toast, WhiteSpace, InputItem, NavBar } from "antd-mobile";
 import { FaSignInAlt, FaSignOutAlt, FaUserPlus } from "react-icons/fa";
 import { isLogin } from "@src/utils";
 
@@ -31,6 +31,8 @@ export default class User extends Component {
 			<div>
 				{isLogin() ? (
 					<div>
+						<NavBar mode="light">User</NavBar>
+						<h2>Stamps left: 10</h2>
 						<Button
 							type="warning"
 							onClick={this.handleLogOut}

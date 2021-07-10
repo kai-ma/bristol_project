@@ -15,5 +15,5 @@ public interface UserService {
      */
     UserModel validateLogin(String email, String encryptPassword) throws Exception;
 
-    UserModel getUserModelByEmail(String email) throws Exception;
+    UserModel getUserModelByEmail(String email);
 }

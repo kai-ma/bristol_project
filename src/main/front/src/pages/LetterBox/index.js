@@ -35,7 +35,7 @@ class LetterBox extends Component {
 				<div>
 					<Tabs
 						tabs={tabs}
-						initialPage={1}
+						initialPage={0}
 						onChange={(tab, index) => {
 							console.log("onChange", index, tab);
 						}}
@@ -67,7 +67,7 @@ class LetterBox extends Component {
 								backgroundColor: "#fff",
 							}}
 						>
-							Content of second tab
+							You haven't replied any letters.
 						</div>
 					</Tabs>
 					<WhiteSpace />

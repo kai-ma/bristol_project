@@ -19,12 +19,12 @@ class Home extends Component {
 	}
 
 	componentDidMount() {
-        console.log("componentDidMount");
+		console.log("componentDidMount");
 		this.props.loadLetters();
 	}
 
 	updateLetters = () => {
-        console.log("updateLetters");
+		console.log("updateLetters");
 		this.props.updateLetters();
 		console.log(this.props);
 		const letters = this.props.letters;
@@ -35,18 +35,18 @@ class Home extends Component {
 		}
 	};
 
-    writeLetter = () => {
-        this.props.history.push("/send");
-    }
+	writeLetter = () => {
+		this.props.history.push("/send");
+	};
 
 	initialState = {
 		letters: [],
 	};
 
-    handleClick = (letter) => {
-        // console.log(letter);
-        this.props.history.push("/letter/" + letter.id);
-    }
+	handleClick = (letter) => {
+		// console.log(letter);
+		this.props.history.push("/letter/" + letter.id);
+	};
 
 	render() {
 		// if (this.props.error) {
@@ -78,27 +78,39 @@ class Home extends Component {
 						{letters.map((letter, index) => (
 							<div key={index}>
 								<WingBlank size="lg">
-									<Card onClick={() => this.handleClick(letter)}>
+									<WhiteSpace />
+									<Card
+										onClick={() => this.handleClick(letter)}
+									>
 										<Card.Header title={letter.subject} />
 										<Card.Body>
-											<div>{letter.content.substring(0, letter.content.length > 100 ? 99 : letter.content.length - 1) + "..."}</div>
+											<div>
+												{letter.content.substring(
+													0,
+													letter.content.length > 100
+														? 99
+														: letter.content
+																.length - 1
+												) + "..."}
+											</div>
 										</Card.Body>
 										<Card.Footer
 											content={letter.time}
 											extra={<div>{letter.name}</div>}
 										/>
 									</Card>
+									<WhiteSpace />
 								</WingBlank>
 							</div>
 						))}
-						<WingBlank >
+						<WingBlank>
 							<Button
-								icon={<BsPencilSquare/>}
+								icon={<BsPencilSquare />}
 								inline
 								size="large"
 								style={{ marginRight: "2px" }}
-                                // style={{float:"right",marginBottom:10}}
-                                onClick={this.writeLetter}
+								// style={{float:"right",marginBottom:10}}
+								onClick={this.writeLetter}
 							>
 								write letter
 							</Button>
@@ -126,7 +138,6 @@ const mapDispatchToProps = (dispatch) => {
 	};
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
-
 
 //todo:从写信页面返回这个页面的时候会重新调用componentDidMount
 //card还可以加头像等，具体看antd-mobile的card教程

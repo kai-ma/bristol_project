@@ -64,7 +64,7 @@ class Login extends Component {
 					})}
 					labelNumber={6}
                     type="password"
-					placeholder="****"
+					placeholder="********"
 				>
 					Password
 				</InputItem>

@@ -86,7 +86,7 @@ class Register extends Component {
 							rules: [{ required: true }],
 						})}
 						type="password"
-						placeholder="****"
+						placeholder="********"
 						labelNumber={6}
 					>
 						Password

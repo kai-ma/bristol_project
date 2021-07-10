@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { WhiteSpace, Card } from "antd-mobile";
+import { WhiteSpace, Card, WingBlank } from "antd-mobile";
 import { withRouter } from 'react-router-dom';
 
 class ConversationCard extends Component {
@@ -25,6 +25,7 @@ class ConversationCard extends Component {
 							<div>
 								{letter.type === type ? null : (
 									<div>
+                                        <WingBlank size="lg">
 										<WhiteSpace size="lg" />
 										<Card
 											onClick={() =>
@@ -56,6 +57,7 @@ class ConversationCard extends Component {
 												extra={<div>{letter.name}</div>}
 											/>
 										</Card>
+                                        </WingBlank>
 									</div>
 								)}
 							</div>
