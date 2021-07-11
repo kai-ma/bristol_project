@@ -33,7 +33,7 @@ class Login extends Component {
 				);
 				return;
 			} else {
-				// console.log(this.props.history);
+				console.log(value);
 				this.props.login(value, this.props.history);
 			}
 		});

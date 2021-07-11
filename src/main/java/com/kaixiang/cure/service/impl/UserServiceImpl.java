@@ -75,8 +75,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserModel getUserModelByEmail(String email) {
         UserDO userDO = userDOMapper.selectByEmail(email);
+        if(userDO == null){
+            return null;
+        }
         UserPasswordDO userPasswordDO = userPasswordDOMapper.selectByUserId(userDO.getId());
-
+        if(userPasswordDO == null){
+            return null;
+        }
         return convertFromDataObject(userDO, userPasswordDO);
     }
 

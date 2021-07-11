@@ -4,6 +4,7 @@ import com.kaixiang.cure.error.BusinessException;
 import com.kaixiang.cure.error.EnumBusinessError;
 import com.kaixiang.cure.response.CommonReturnType;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -17,6 +18,7 @@ import java.util.Map;
  * @author: Kaixiang Ma
  * @create: 2021-06-26 15:12
  */
+@ControllerAdvice
 public class BaseController {
     //spring指明什么样的exception会进入它的处理环节 这里是Exception.class 根类
     @ExceptionHandler(Exception.class)

@@ -1,5 +1,5 @@
 import * as actionTypes from "../../constants/user";
-import Http from "@src/fetch/http.js";
+import Http from "@src/utils/http.js";
 import { Toast } from "antd-mobile";
 
 export const login = (body, history) => {
@@ -8,7 +8,7 @@ export const login = (body, history) => {
 			type: actionTypes.LOGIN_REQUST,
 		});
 
-		await Http({ url: "/login", body: body }).then(
+		await Http({ url: "/auth/login", body: body, mock:false }).then(
 			(res) => {
 				dispatch(loginSuccess(res));
                 localStorage.setItem('token', res.token);

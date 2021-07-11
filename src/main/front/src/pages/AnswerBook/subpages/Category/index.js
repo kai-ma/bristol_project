@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Grid, WingBlank, WhiteSpace } from "antd-mobile";
 import { withRouter } from "react-router-dom";
-import Http from "@src/fetch/http.js";
+import Http from "@src/utils/http.js";
 class Category extends Component {
 	constructor(props) {
 		super(props);

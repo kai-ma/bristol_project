@@ -1,5 +1,7 @@
 package com.kaixiang.cure.controller;
 
+import com.kaixiang.cure.utils.annotation.UserLoginToken;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -7,13 +9,15 @@ import org.springframework.web.bind.annotation.*;
  * @author: Kaixiang Ma
  * @create: 2021-07-10 18:32
  */
-@RestController
+@Controller("tasks")
 @RequestMapping("/tasks")
 public class TaskController {
 
     @GetMapping
+    @UserLoginToken
+    @ResponseBody
     public String listTasks() {
-        return "任务列表";
+        return "已通过验证：任务列表";
     }
 
     @PostMapping

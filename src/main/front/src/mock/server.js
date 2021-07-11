@@ -8,12 +8,15 @@ router.post("/api/login", async (ctx, next) => {
 	const { password } = ctx.request.body;
 	if (password != "123456") {
 		ctx.response.body = {
-			status: 400,
-			errMsg: "Please input correct password.",
+			status: "fail",
+			data: {
+				errCode: 10002,
+				errMsg: "Please input correct password",
+			},
 		};
 	} else {
 		ctx.response.body = {
-			status: 200,
+			status: "success",
 			data: {
 				id: 123458,
 				subject: "Girl",
@@ -26,7 +29,7 @@ router.post("/api/login", async (ctx, next) => {
 
 router.post("/api/register", async (ctx, next) => {
 	ctx.response.body = {
-		status: 200,
+		status: "success",
 		data: {
 			id: 123458,
 			subject: "Girl",
@@ -35,18 +38,12 @@ router.post("/api/register", async (ctx, next) => {
 	};
 });
 
-// router.post("/api/register", async (ctx, next) => {
-// 	ctx.response.body = {
-// 		status: 300,
-// 		errMsg: "Please input correct email."
-// 	};
-// });
 
 // answerbook列表
 // require("./answerbook.js");
 router.get("/api/books", async (ctx, next) => {
 	ctx.response.body = {
-		status: 200,
+		status: "success",
 		data: [
 			{
 				icon: "https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png",
@@ -60,10 +57,6 @@ router.get("/api/books", async (ctx, next) => {
 			},
 		],
 	};
-	// ctx.response.body = {
-	// 	status: 500,
-	// 	errMsg: "Network error!"
-	// };
 });
 
 // 加载首页的letters
@@ -71,7 +64,7 @@ router.get("/api/books", async (ctx, next) => {
 //数据来源于https://lithub.com/how-many-of-the-100-most-famous-passages-in-literature-can-you-identify/
 router.get("/api/loadletters", async (ctx, next) => {
 	ctx.response.body = {
-		status: 200,
+		status: "success",
 		data: [
 			{
 				id: 123456,
@@ -95,7 +88,7 @@ router.get("/api/loadletters", async (ctx, next) => {
 // require("./answerbook.js");
 router.get("/api/updateletters", async (ctx, next) => {
 	ctx.response.body = {
-		status: 200,
+		status: "success",
 		data: [
 			{
 				id: 123458,
@@ -124,7 +117,7 @@ router.get("/api/updateletters", async (ctx, next) => {
 
 router.get("/api/loadconversations/started", async (ctx, next) => {
 	ctx.response.body = {
-		status: 200,
+		status: "success",
 		data: [
 			{
 				id: 10000,

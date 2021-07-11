@@ -1,8 +1,6 @@
 package com.kaixiang.cure.utils;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -18,7 +16,7 @@ public class JwtTokenUtils {
 
     private static final String SECRET_KEY = "jwtsecretdemo";
     private static final String ISS = "kaixiangMa";
-    private static final String ROLE_CLAIMS = "rol";
+    private static final String ROLE_CLAIMS = "role";
     /**
      * 过期时间是3600秒，即是1个小时
      */
@@ -66,7 +64,7 @@ public class JwtTokenUtils {
         return getTokenBody(token).getExpiration().before(new Date());
     }
 
-    private static Claims getTokenBody(String token) {
+    public static Claims getTokenBody(String token) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException {
         return Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)

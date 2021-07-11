@@ -17,6 +17,9 @@ public enum EnumBusinessError implements CommonError {
     //2000开头为用户信息相关错误
     USER_NOT_EXIST(20001,"用户不存在"),
     DUPLICATE_REGISTER(20002,"Duplicate register"),
+    TOKEN_EXPIRED(20003,"please refresh and log in"),
+    TOKEN_ILLEGAL(20004,"please refresh and log in"),
+    INVALID_PASSWORD(20005,"Incorrect password or email, please retry"),
 
     ;
 

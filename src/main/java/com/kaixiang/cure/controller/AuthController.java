@@ -3,16 +3,14 @@ package com.kaixiang.cure.controller;
 import com.kaixiang.cure.controller.viewobject.UserVO;
 import com.kaixiang.cure.error.BusinessException;
 import com.kaixiang.cure.error.EnumBusinessError;
+import com.kaixiang.cure.response.CommonReturnType;
 import com.kaixiang.cure.service.UserService;
 import com.kaixiang.cure.service.model.UserModel;
 import com.kaixiang.cure.utils.JwtTokenUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -21,19 +19,26 @@ import sun.misc.BASE64Encoder;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.kaixiang.cure.utils.Constants.ROLE_USER;
 
 @Controller("auth")
 @RequestMapping("/auth")
 @CrossOrigin(origins = "http://localhost:3000")
-public class AuthController extends BaseController{
+public class AuthController extends BaseController {
 
     @Autowired
     private UserService userService;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     /**
      * 1.在前端获取UserVO，仅用于检测
@@ -49,70 +54,55 @@ public class AuthController extends BaseController{
         }
     }
 
-    /**
-     * 2.通过注入的Authentication，获取UserVO，仅用于检测
-     */
-    @RequestMapping("/getuser")
-    @ResponseBody
-    public UserVO getUserInfoFromToken(Authentication authentication) throws Exception {
-        String username = authentication.getName();
-        System.out.println(username);
-//        UserModel userModel = userService.getUserById(id);
-//        if (userModel != null) {
-//            return convertFromModel(userModel);
-//        } else {
-//            return new UserVO();
-//        }
-        UserModel userModel = userService.getUserModelByEmail(username);
-        if (userModel != null) {
-            return convertFromModel(userModel);
-        } else {
-            return new UserVO();
-        }
-    }
-
 
     /**
      * 注册
      */
     @RequestMapping(value = "/register", method = {RequestMethod.POST})
     @ResponseBody
-    public UserVO register(@RequestParam(name = "username") String username,
-                           @RequestParam(name = "email") String email,
-                           @RequestParam(name = "password") String password) throws Exception {
+    public CommonReturnType register(@RequestParam(name = "username") String username,
+                                     @RequestParam(name = "email") String email,
+                                     @RequestParam(name = "password") String password) throws Exception {
 
 
         //2.用户的注册流程
         UserModel userModel = new UserModel();
         userModel.setUsername(username);
         userModel.setEmail(email);
-        userModel.setEncryptPassword(new BCryptPasswordEncoder().encode(password));
+        userModel.setEncryptPassword(bCryptPasswordEncoder.encode(password));
         userModel.setRole(ROLE_USER);
         userService.register(userModel);
-        return convertFromModel(userModel);
+        return CommonReturnType.create(convertFromModel(userModel));
     }
 
-//    /**
-//     * 3.用户登录接口
-//     */
-//    @RequestMapping(value = "/login", method = {RequestMethod.POST})
-//    @ResponseBody
-//    public String login(@RequestParam(name = "email") String email,
-//                        @RequestParam(name = "password") String password) throws Exception {
-//        //1.入参校验
-//        if (StringUtils.isEmpty(email) || StringUtils.isEmpty(password)) {
-//            throw new Exception("empty email or empty password");
-//        }
-//
-//        //2.用户登录服务--校验账号密码是否匹配
-//        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-//
-//        final UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(email);
-//        final String token = jwtTokenUtil.generateToken(userDetails);
-//
-//        //添加 end
-//        return token;
-//    }
+    /**
+     * 3.用户登录接口
+     */
+    @RequestMapping(value = "/login", method = {RequestMethod.POST})
+    @ResponseBody
+    public CommonReturnType login(@RequestBody Map<String, String> map) throws Exception {
+//        String email = request.getParameter("email");
+//        String password = request.getParameter("password");
+        //1.入参校验
+        String email = map.get("email");
+        String password = map.get("password");
+        if (StringUtils.isEmpty(email) || StringUtils.isEmpty(password)) {
+            throw new Exception("empty email or empty password");
+        }
+
+        //2.用户登录服务--校验账号密码是否匹配
+        UserModel userModel = userService.getUserModelByEmail(email);
+        if (userModel == null) {
+            throw new BusinessException(EnumBusinessError.USER_NOT_EXIST);
+        }
+        if (!bCryptPasswordEncoder.matches(password, userModel.getEncryptPassword())) {
+            throw new BusinessException(EnumBusinessError.INVALID_PASSWORD);
+        }
+        Map<String, Object> returnMap = new HashMap<>(2);
+        returnMap.put("token", JwtTokenUtils.createToken(email, userModel.getRole(), false));
+        returnMap.put("id", userModel.getId());
+        return CommonReturnType.create(returnMap);
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
 

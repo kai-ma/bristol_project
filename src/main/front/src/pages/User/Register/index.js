@@ -10,7 +10,7 @@ import {
 } from "antd-mobile";
 import { createForm } from "rc-form";
 import { FaSignInAlt, FaUserPlus } from "react-icons/fa";
-import Http from "@src/fetch/http.js";
+import Http from "@src/utils/http.js";
 
 class Register extends Component {
 	constructor(props) {
