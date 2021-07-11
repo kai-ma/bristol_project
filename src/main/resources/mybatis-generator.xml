@@ -5,6 +5,10 @@
 
 <generatorConfiguration>
     <context id="DB2Tables" targetRuntime="MyBatis3">
+        <commentGenerator>
+            <property name="suppressDate" value="true"/>
+            <property name="suppressAllComments" value="true" />
+        </commentGenerator>
         <!--数据库连接地址账号密码  解析哪一个数据库对应的表的映射到mybatis的目录里-->
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
                         connectionURL="jdbc:mysql://localhost:3306/final_project?characterEncoding=utf8&amp;serverTimezone=GMT"
@@ -26,7 +30,6 @@
                              targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
-
 <!--        <table tableName="user_info" domainObjectName="UserDO" enableCountByExample="false"-->
 <!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
 <!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
@@ -35,7 +38,10 @@
 <!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
 <!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
 <!--        </table>-->
-
+        <table tableName="first_letter" domainObjectName="FirstLetterDO" enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
         <!--生成对应表及类名
         <table tableName="user_info" domainObjectName="UserDO" enableCountByExample="false"
                enableUpdateByExample="false" enableDeleteByExample="false"
@@ -61,8 +67,8 @@
         <!--        <table tableName="promo" domainObjectName="PromoDO" enableCountByExample="false"-->
         <!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
         <!--               enableSelectByExample="false" selectByExampleQueryId="false"></table>-->
-        <table tableName="stock_log" domainObjectName="StockLogDO" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false"></table>
+<!--        <table tableName="stock_log" domainObjectName="StockLogDO" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false"></table>-->
     </context>
 </generatorConfiguration>

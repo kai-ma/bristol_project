@@ -30,7 +30,7 @@ public class JwtTokenUtils {
     /**
      * 创建token
      */
-    public static String createToken(String email, String role, boolean isRememberMe) {
+    public static String createToken(Integer userId , String role, boolean isRememberMe) {
         long expiration = isRememberMe ? EXPIRATION_REMEMBER : EXPIRATION;
         HashMap<String, Object> map = new HashMap<>();
         map.put(ROLE_CLAIMS, role);
@@ -39,7 +39,7 @@ public class JwtTokenUtils {
                 // 这里要早set一点，放到后面会覆盖别的字段
                 .setClaims(map)
                 .setIssuer(ISS)
-                .setSubject(email)
+                .setSubject(String.valueOf(userId))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000))
                 .compact();

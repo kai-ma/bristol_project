@@ -50,10 +50,11 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 if (token == null || !token.startsWith(JwtTokenUtils.TOKEN_PREFIX)) {
                     throw new BusinessException(EnumBusinessError.TOKEN_ILLEGAL);
                 }
+                Integer userId;
                 try {
                     Claims claims = JwtTokenUtils.getTokenBody(token.substring(7));
                     // 获取 token 中的 信息
-                    String email = claims.getSubject();
+                    userId = Integer.valueOf(claims.getSubject());
                     String role = (String) claims.get("role");
                 } catch (ExpiredJwtException e) {
                     throw new BusinessException(EnumBusinessError.TOKEN_EXPIRED);
@@ -62,6 +63,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 } catch (Exception e) {
                     throw new BusinessException(EnumBusinessError.UNKNOWN_ERROR.setErrorMessage("Please relogin."));
                 }
+                httpServletRequest.setAttribute("userid", userId);
                 return true;
             }
         }

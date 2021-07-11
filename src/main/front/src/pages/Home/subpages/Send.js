@@ -9,6 +9,7 @@ import {
 	Toast,
 } from "antd-mobile";
 import { createForm } from "rc-form";
+import Http from "@src/utils/http.js";
 
 class Send extends Component {
 	constructor(props) {
@@ -22,17 +23,27 @@ class Send extends Component {
 
 	handleSubmit = () => {
 		const input = this.props.form.getFieldsValue();
-		console.log(input);
 		this.props.form.validateFields((error, value) => {
 			if (error) {
                 Toast.info(this.props.form.getFieldError(Object.keys(error)[0]));
 				return;
 			} else {
                 //发送post请求
-				console.log(value);
+				Http({ url: "/letter/send/first", body: value, mock:false }).then(
+                    (res) => {
+                        Toast.info("login successfully!", 2);
+                        setTimeout(() =>{
+                            this.props.history.push("/");
+                        }, 2000);
+                    },
+                    (err) => {
+                        
+                    }
+                );
 			}
 		});
 	};
+
 
     linkToHome = () => {
         this.props.history.push("/");

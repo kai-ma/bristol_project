@@ -99,7 +99,7 @@ public class AuthController extends BaseController {
             throw new BusinessException(EnumBusinessError.INVALID_PASSWORD);
         }
         Map<String, Object> returnMap = new HashMap<>(2);
-        returnMap.put("token", JwtTokenUtils.createToken(email, userModel.getRole(), false));
+        returnMap.put("token", JwtTokenUtils.createToken(userModel.getId(), userModel.getRole(), false));
         returnMap.put("id", userModel.getId());
         return CommonReturnType.create(returnMap);
     }
