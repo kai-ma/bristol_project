@@ -2,6 +2,8 @@ package com.kaixiang.cure.dao;
 
 import com.kaixiang.cure.dataobject.FirstLetterDO;
 
+import java.util.List;
+
 public interface FirstLetterDOMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -10,6 +12,8 @@ public interface FirstLetterDOMapper {
     int insertSelective(FirstLetterDO record);
 
     FirstLetterDO selectByPrimaryKey(Integer id);
+
+    List<FirstLetterDO> listFirstLetter(String userid);
 
     int updateByPrimaryKeySelective(FirstLetterDO record);
 

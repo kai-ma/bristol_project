@@ -31,7 +31,7 @@ class Send extends Component {
                 //发送post请求
 				Http({ url: "/letter/send/first", body: value, mock:false }).then(
                     (res) => {
-                        Toast.info("login successfully!", 2);
+                        Toast.info("Send successfully!", 2);
                         setTimeout(() =>{
                             this.props.history.push("/");
                         }, 2000);
@@ -71,16 +71,16 @@ class Send extends Component {
                         placeholder="It is suggested that key people and places use pseudonyms."
 					/>
 				</List>
-				<List renderHeader={() => "Topic"}>
+				<List renderHeader={() => "Title"}>
 					<InputItem
-						{...getFieldProps("topic", {
+						{...getFieldProps("title", {
 							rules: [{ required: true }],
 						})}
 						clear
-						placeholder="Topic of your letter"
+						placeholder="Title of your letter"
 					></InputItem>
 				</List>
-				<List renderHeader={() => "Sign a pseudonym"}>
+				{/* <List renderHeader={() => "Sign a pseudonym"}>
 					<InputItem
 						{...getFieldProps("name", {
 							rules: [{ required: true }],
@@ -88,7 +88,7 @@ class Send extends Component {
 						clear
 						placeholder="Please enter a pseudonym"
 					></InputItem>
-				</List>
+				</List> */}
                 <WhiteSpace size="xl" />
 				<Button type="primary" onClick={this.handleSubmit}>
 					Send

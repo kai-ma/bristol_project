@@ -12,7 +12,6 @@ export const login = (body, history) => {
 			(res) => {
 				dispatch(loginSuccess(res));
                 localStorage.setItem('token', res.token);
-                localStorage.setItem('userid', res.id);
                 Toast.info("login successfully!", 2);
                 setTimeout(() =>{
                     history.push("/");

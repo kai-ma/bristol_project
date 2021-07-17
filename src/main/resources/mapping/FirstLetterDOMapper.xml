@@ -3,12 +3,10 @@
 <mapper namespace="com.kaixiang.cure.dao.FirstLetterDOMapper">
   <resultMap id="BaseResultMap" type="com.kaixiang.cure.dataobject.FirstLetterDO">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="
-encrypt_user_id" jdbcType="VARCHAR" property="
-encryptUserId" />
+    <result column="userid" jdbcType="VARCHAR" property="userid" />
     <result column="title" jdbcType="VARCHAR" property="title" />
     <result column="filepath" jdbcType="VARCHAR" property="filepath" />
-    <result column="topic_id" jdbcType="INTEGER" property="topicId" />
+    <result column="topicid" jdbcType="INTEGER" property="topicid" />
     <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
     <result column="last_replied_at" jdbcType="TIMESTAMP" property="lastRepliedAt" />
     <result column="status" jdbcType="INTEGER" property="status" />
@@ -16,9 +14,8 @@ encryptUserId" />
     <result column="quality" jdbcType="INTEGER" property="quality" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, 
-encrypt_user_id, title, filepath, topic_id, created_at, last_replied_at, status, 
-    reply_number, quality
+    id, userid, title, filepath, topicid, created_at, last_replied_at, status, reply_number, 
+    quality
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -26,19 +23,24 @@ encrypt_user_id, title, filepath, topic_id, created_at, last_replied_at, status,
     from first_letter
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="listFirstLetter" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from first_letter
+    where userid = #{userid,jdbcType=VARCHAR}
+    order by reply_number DESC;
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from first_letter
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.kaixiang.cure.dataobject.FirstLetterDO">
-    insert into first_letter (id, 
-encrypt_user_id, title, 
-      filepath, topic_id, created_at, 
+    insert into first_letter (id, userid, title, 
+      filepath, topicid, created_at, 
       last_replied_at, status, reply_number, 
       quality)
-    values (#{id,jdbcType=INTEGER}, #{
-encryptUserId,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
-      #{filepath,jdbcType=VARCHAR}, #{topicId,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, 
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
+      #{filepath,jdbcType=VARCHAR}, #{topicid,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, 
       #{lastRepliedAt,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{replyNumber,jdbcType=INTEGER}, 
       #{quality,jdbcType=INTEGER})
   </insert>
@@ -48,10 +50,8 @@ encryptUserId,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR},
       <if test="id != null">
         id,
       </if>
-      <if test="
-encryptUserId != null">
-        
-encrypt_user_id,
+      <if test="userid != null">
+        userid,
       </if>
       <if test="title != null">
         title,
@@ -59,8 +59,8 @@ encrypt_user_id,
       <if test="filepath != null">
         filepath,
       </if>
-      <if test="topicId != null">
-        topic_id,
+      <if test="topicid != null">
+        topicid,
       </if>
       <if test="createdAt != null">
         created_at,
@@ -82,10 +82,8 @@ encrypt_user_id,
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="
-encryptUserId != null">
-        #{
-encryptUserId,jdbcType=VARCHAR},
+      <if test="userid != null">
+        #{userid,jdbcType=VARCHAR},
       </if>
       <if test="title != null">
         #{title,jdbcType=VARCHAR},
@@ -93,8 +91,8 @@ encryptUserId,jdbcType=VARCHAR},
       <if test="filepath != null">
         #{filepath,jdbcType=VARCHAR},
       </if>
-      <if test="topicId != null">
-        #{topicId,jdbcType=INTEGER},
+      <if test="topicid != null">
+        #{topicid,jdbcType=INTEGER},
       </if>
       <if test="createdAt != null">
         #{createdAt,jdbcType=TIMESTAMP},
@@ -116,11 +114,8 @@ encryptUserId,jdbcType=VARCHAR},
   <update id="updateByPrimaryKeySelective" parameterType="com.kaixiang.cure.dataobject.FirstLetterDO">
     update first_letter
     <set>
-      <if test="
-encryptUserId != null">
-        
-encrypt_user_id = #{
-encryptUserId,jdbcType=VARCHAR},
+      <if test="userid != null">
+        userid = #{userid,jdbcType=VARCHAR},
       </if>
       <if test="title != null">
         title = #{title,jdbcType=VARCHAR},
@@ -128,8 +123,8 @@ encryptUserId,jdbcType=VARCHAR},
       <if test="filepath != null">
         filepath = #{filepath,jdbcType=VARCHAR},
       </if>
-      <if test="topicId != null">
-        topic_id = #{topicId,jdbcType=INTEGER},
+      <if test="topicid != null">
+        topicid = #{topicid,jdbcType=INTEGER},
       </if>
       <if test="createdAt != null">
         created_at = #{createdAt,jdbcType=TIMESTAMP},
@@ -151,12 +146,10 @@ encryptUserId,jdbcType=VARCHAR},
   </update>
   <update id="updateByPrimaryKey" parameterType="com.kaixiang.cure.dataobject.FirstLetterDO">
     update first_letter
-    set 
-encrypt_user_id = #{
-encryptUserId,jdbcType=VARCHAR},
+    set userid = #{userid,jdbcType=VARCHAR},
       title = #{title,jdbcType=VARCHAR},
       filepath = #{filepath,jdbcType=VARCHAR},
-      topic_id = #{topicId,jdbcType=INTEGER},
+      topicid = #{topicid,jdbcType=INTEGER},
       created_at = #{createdAt,jdbcType=TIMESTAMP},
       last_replied_at = #{lastRepliedAt,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=INTEGER},

@@ -19,7 +19,6 @@ export default class User extends Component {
 
 	handleLogOut = () => {
 		localStorage.removeItem("token");
-		localStorage.removeItem("userid");
 		Toast.success("Log out successfully", 1);
 		setTimeout(() => {
 			this.props.history.push("/");

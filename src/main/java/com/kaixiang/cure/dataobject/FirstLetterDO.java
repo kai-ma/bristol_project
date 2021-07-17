@@ -5,14 +5,13 @@ import java.util.Date;
 public class FirstLetterDO {
     private Integer id;
 
-    private String
-            encryptUserId;
+    private String userid;
 
     private String title;
 
     private String filepath;
 
-    private Integer topicId;
+    private Integer topicid;
 
     private Date createdAt;
 
@@ -32,12 +31,12 @@ public class FirstLetterDO {
         this.id = id;
     }
 
-    public String getEncryptUserId() {
-        return encryptUserId;
+    public String getUserid() {
+        return userid;
     }
 
-    public void setEncryptUserId(String encryptUserId) {
-        this.encryptUserId = encryptUserId == null ? null : encryptUserId.trim();
+    public void setUserid(String userid) {
+        this.userid = userid == null ? null : userid.trim();
     }
 
     public String getTitle() {
@@ -56,12 +55,12 @@ public class FirstLetterDO {
         this.filepath = filepath == null ? null : filepath.trim();
     }
 
-    public Integer getTopicId() {
-        return topicId;
+    public Integer getTopicid() {
+        return topicid;
     }
 
-    public void setTopicId(Integer topicId) {
-        this.topicId = topicId;
+    public void setTopicid(Integer topicid) {
+        this.topicid = topicid;
     }
 
     public Date getCreatedAt() {

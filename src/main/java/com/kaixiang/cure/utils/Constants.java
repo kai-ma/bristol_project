@@ -7,4 +7,6 @@ package com.kaixiang.cure.utils;
  */
 public class Constants {
     public final static String ROLE_USER = "ROLE_USER";
+
+    public final static String ATTRIBUTE_KEY_USERID = "userid";
 }

@@ -87,7 +87,7 @@ public class AuthController extends BaseController {
         String email = map.get("email");
         String password = map.get("password");
         if (StringUtils.isEmpty(email) || StringUtils.isEmpty(password)) {
-            throw new Exception("empty email or empty password");
+            throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR.setErrorMessage("empty email or empty password"));
         }
 
         //2.用户登录服务--校验账号密码是否匹配
@@ -98,9 +98,8 @@ public class AuthController extends BaseController {
         if (!bCryptPasswordEncoder.matches(password, userModel.getEncryptPassword())) {
             throw new BusinessException(EnumBusinessError.INVALID_PASSWORD);
         }
-        Map<String, Object> returnMap = new HashMap<>(2);
+        Map<String, Object> returnMap = new HashMap<>(1);
         returnMap.put("token", JwtTokenUtils.createToken(userModel.getId(), userModel.getRole(), false));
-        returnMap.put("id", userModel.getId());
         return CommonReturnType.create(returnMap);
     }
 

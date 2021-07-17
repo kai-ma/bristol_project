@@ -1,6 +1,7 @@
 package com.kaixiang.cure.service.model;
 
 import org.hibernate.validator.constraints.Length;
+import org.joda.time.DateTime;
 
 import javax.validation.constraints.NotBlank;
 
@@ -12,13 +13,19 @@ import javax.validation.constraints.NotBlank;
 public class FirstLetterModel {
     private Integer userId;
 
-    @NotBlank(message="title can't be empty")
+    @NotBlank(message = "Title can't be empty")
     private String title;
 
-    @NotBlank(message="content can't be empty")
-    @Length(max=1000, message = "too much input content")
-    @Length(min=10, message = "too less input content")
+    @NotBlank(message = "Content can't be empty")
+    @Length(max = 1000, message = "Too much characters for content input")
+    @Length(min = 10, message = "Too few characters for content input")
     private String content;
+
+    private DateTime createdAt;
+
+    private DateTime lastRepliedAt;
+
+    private Integer replyNumber;
 
     public Integer getUserId() {
         return userId;
@@ -45,4 +52,27 @@ public class FirstLetterModel {
     }
 
 
+    public DateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(DateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public DateTime getLastRepliedAt() {
+        return lastRepliedAt;
+    }
+
+    public void setLastRepliedAt(DateTime lastRepliedAt) {
+        this.lastRepliedAt = lastRepliedAt;
+    }
+
+    public Integer getReplyNumber() {
+        return replyNumber;
+    }
+
+    public void setReplyNumber(Integer replyNumber) {
+        this.replyNumber = replyNumber;
+    }
 }
