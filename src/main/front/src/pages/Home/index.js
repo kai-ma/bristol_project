@@ -82,7 +82,7 @@ class Home extends Component {
 									<Card
 										onClick={() => this.handleClick(letter)}
 									>
-										<Card.Header title={letter.subject} />
+										<Card.Header title={letter.title} />
 										<Card.Body>
 											<div>
 												{letter.content.substring(
@@ -95,8 +95,8 @@ class Home extends Component {
 											</div>
 										</Card.Body>
 										<Card.Footer
-											content={letter.time}
-											extra={<div>{letter.name}</div>}
+											content={letter.createdAt}
+											extra={<div>{letter.pseudonym}</div>}
 										/>
 									</Card>
 									<WhiteSpace />

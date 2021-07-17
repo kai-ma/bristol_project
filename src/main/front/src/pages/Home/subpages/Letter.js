@@ -52,7 +52,7 @@ class Letter extends Component {
 						<WingBlank size="lg">
 							<WhiteSpace size="lg" />
 							<Card>
-								<Card.Header title={letter.subject} />
+								<Card.Header title={letter.title} />
 								<Card.Body>
 									<WhiteSpace size="lg" />
 									<div>
@@ -62,7 +62,7 @@ class Letter extends Component {
 								</Card.Body>
 								<Card.Footer
 									// content="left footer"
-									extra={<div>{letter.name}</div>}
+									extra={<div>{letter.pseudonym}</div>}
 								/>
 							</Card>
 							<WhiteSpace size="lg" />

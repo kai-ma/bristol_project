@@ -6,6 +6,7 @@ package com.kaixiang.cure.controller.viewobject;
  * @create: 2021-07-17 16:47
  */
 public class FirstLetterVO {
+    private Integer id;
 
     private String title;
 
@@ -18,6 +19,14 @@ public class FirstLetterVO {
     private Integer replyNumber;
 
     private String pseudonym;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;

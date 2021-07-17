@@ -17,7 +17,7 @@ function App() {
 		<div>
 			{/* 前后可以加载一些公用的内容 */}
 			<Switch>
-				<Route path="/" exact component={Home} />
+				<PrivateRoute path="/" exact component={Home} />
 				<PrivateRoute path="/letterbox" exact component={LetterBox} />
 				<PrivateRoute path="/conversation/:id" exact component={Conversation} />
 				<PrivateRoute path="/answerbook" exact component={AnswerBook} />

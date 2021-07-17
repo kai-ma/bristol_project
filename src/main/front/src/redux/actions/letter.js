@@ -9,7 +9,7 @@ export const loadLetters = () => {
 			type: actionTypes.LOAD_LETTERS,
 		});
 
-		Http({ url: "/loadletters", method: "get" }).then(
+		Http({ url: "/letter/home/first", method: "get", mock:false}).then(
 			(res) => {
 				dispatch(letterSuccess(res));
 			},

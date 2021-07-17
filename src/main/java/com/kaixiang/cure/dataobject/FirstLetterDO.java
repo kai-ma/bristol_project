@@ -23,6 +23,8 @@ public class FirstLetterDO {
 
     private Integer quality;
 
+    private String pseudonym;
+
     public Integer getId() {
         return id;
     }
@@ -101,5 +103,13 @@ public class FirstLetterDO {
 
     public void setQuality(Integer quality) {
         this.quality = quality;
+    }
+
+    public String getPseudonym() {
+        return pseudonym;
+    }
+
+    public void setPseudonym(String pseudonym) {
+        this.pseudonym = pseudonym == null ? null : pseudonym.trim();
     }
 }

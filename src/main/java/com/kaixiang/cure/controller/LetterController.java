@@ -2,6 +2,7 @@ package com.kaixiang.cure.controller;
 
 import com.kaixiang.cure.controller.viewobject.FirstLetterVO;
 import com.kaixiang.cure.error.BusinessException;
+import com.kaixiang.cure.error.EnumBusinessError;
 import com.kaixiang.cure.response.CommonReturnType;
 import com.kaixiang.cure.service.LetterService;
 import com.kaixiang.cure.service.model.FirstLetterModel;
@@ -42,7 +43,6 @@ public class LetterController {
     public CommonReturnType sendFirstLetter(@RequestBody FirstLetterModel firstLetterModel, HttpServletRequest request) throws BusinessException {
         //1.构建完整的FirstLetterModel，从token中获取userId
         firstLetterModel.setUserId((Integer) request.getAttribute(ATTRIBUTE_KEY_USERID));
-
         letterService.sendFirstLetter(firstLetterModel);
         return CommonReturnType.create("Send successfully!");
     }
@@ -58,15 +58,17 @@ public class LetterController {
         //从token中获取userId
         Integer userid = (Integer) request.getAttribute(ATTRIBUTE_KEY_USERID);
 
-        //1. 用redis限制刷新时间
-        String refresh = (String) redisTemplate.opsForValue().get(userid + "_valid");
-        if (StringUtils.isBlank(refresh)) {
-            redisTemplate.opsForValue().set(userid + "_valid", "y");
-            redisTemplate.expire(userid + "_valid", 60, TimeUnit.MINUTES);
-            return CommonReturnType.create("refresh data");
-        } else {
-            return CommonReturnType.create("can't refresh");
-        }
+//        //1. 用redis限制刷新时间
+//        String refresh = (String) redisTemplate.opsForValue().get(userid + "_refresh_bar");
+//        if (StringUtils.isNotBlank(refresh)) {
+//            throw new BusinessException(EnumBusinessError.REFRESH_LIMIT);
+//        }
+//        //重新打上刷新的限制
+//        redisTemplate.opsForValue().set(userid + "_refresh_bar", "y");
+//        redisTemplate.expire(userid + "_refresh_bar", 60, TimeUnit.MINUTES);
+        List<FirstLetterModel> firstLetterModelList = letterService.getLettersInHomePage(userid);
+        List<FirstLetterVO> firstLetterVOList = firstLetterModelList.stream().map(this::convertFirstLetterVOFromModel).collect(Collectors.toList());
+        return CommonReturnType.create(firstLetterVOList);
     }
 
 

@@ -24,6 +24,8 @@ public enum EnumBusinessError implements CommonError {
     DATABASE_EXCEPTION(30001, "数据库错误"),
 
 
+    REFRESH_LIMIT(40001, "Refresh time is not yet reached."),
+
     ;
 
     /**

@@ -12,10 +12,11 @@
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="reply_number" jdbcType="INTEGER" property="replyNumber" />
     <result column="quality" jdbcType="INTEGER" property="quality" />
+    <result column="pseudonym" jdbcType="VARCHAR" property="pseudonym" />
   </resultMap>
   <sql id="Base_Column_List">
     id, userid, title, filepath, topicid, created_at, last_replied_at, status, reply_number, 
-    quality
+    quality, pseudonym
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -23,12 +24,19 @@
     from first_letter
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <select id="listFirstLetter" resultMap="BaseResultMap">
+  <select id="listMyFirstLetters" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
+    <include refid="Base_Column_List"/>
     from first_letter
     where userid = #{userid,jdbcType=VARCHAR}
     order by reply_number DESC;
+  </select>
+  <select id="listFirstLettersNotMine" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from first_letter
+    where userid != #{userid,jdbcType=VARCHAR}
+    order by reply_number ASC, created_at ASC;
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from first_letter
@@ -38,11 +46,11 @@
     insert into first_letter (id, userid, title, 
       filepath, topicid, created_at, 
       last_replied_at, status, reply_number, 
-      quality)
+      quality, pseudonym)
     values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
       #{filepath,jdbcType=VARCHAR}, #{topicid,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, 
       #{lastRepliedAt,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{replyNumber,jdbcType=INTEGER}, 
-      #{quality,jdbcType=INTEGER})
+      #{quality,jdbcType=INTEGER}, #{pseudonym,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.FirstLetterDO">
     insert into first_letter
@@ -77,6 +85,9 @@
       <if test="quality != null">
         quality,
       </if>
+      <if test="pseudonym != null">
+        pseudonym,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -108,6 +119,9 @@
       </if>
       <if test="quality != null">
         #{quality,jdbcType=INTEGER},
+      </if>
+      <if test="pseudonym != null">
+        #{pseudonym,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -141,6 +155,9 @@
       <if test="quality != null">
         quality = #{quality,jdbcType=INTEGER},
       </if>
+      <if test="pseudonym != null">
+        pseudonym = #{pseudonym,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -154,7 +171,8 @@
       last_replied_at = #{lastRepliedAt,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=INTEGER},
       reply_number = #{replyNumber,jdbcType=INTEGER},
-      quality = #{quality,jdbcType=INTEGER}
+      quality = #{quality,jdbcType=INTEGER},
+      pseudonym = #{pseudonym,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

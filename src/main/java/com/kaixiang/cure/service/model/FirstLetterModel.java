@@ -11,6 +11,8 @@ import javax.validation.constraints.NotBlank;
  * @create: 2021-07-11 23:04
  */
 public class FirstLetterModel {
+    private Integer id;
+
     private Integer userId;
 
     @NotBlank(message = "Title can't be empty")
@@ -26,6 +28,16 @@ public class FirstLetterModel {
     private DateTime lastRepliedAt;
 
     private Integer replyNumber;
+
+    private String pseudonym;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public Integer getUserId() {
         return userId;
@@ -74,5 +86,13 @@ public class FirstLetterModel {
 
     public void setReplyNumber(Integer replyNumber) {
         this.replyNumber = replyNumber;
+    }
+
+    public String getPseudonym() {
+        return pseudonym;
+    }
+
+    public void setPseudonym(String pseudonym) {
+        this.pseudonym = pseudonym;
     }
 }

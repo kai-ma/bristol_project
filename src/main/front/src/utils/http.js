@@ -19,7 +19,12 @@ export default function Http({
 
 	let params;
 	if (method.toUpperCase() === "GET") {
-		params = undefined;
+		params = {
+			headers: {
+				...defaultHeader,
+				...headers,
+			},
+		};
 	} else {
 		params = {
 			headers: {
@@ -43,7 +48,7 @@ export default function Http({
 					resolve(res.data);
 				} else {
 					Toast.fail(res.data.errMsg, 2);
-					reject(res.errMsg);
+					reject(res.data.errMsg);
 				}
 			})
 			.catch((err) => {

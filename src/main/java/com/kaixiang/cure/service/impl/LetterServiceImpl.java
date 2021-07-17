@@ -13,8 +13,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @description: LetterServiceImpl.java: LetterService实现类
@@ -52,19 +52,26 @@ public class LetterServiceImpl implements LetterService {
             return null;
         }
         try {
-            List<FirstLetterDO> firstLetterDOList = firstLetterDOMapper.listFirstLetter(getEncryptUserid(userid));
-            List<FirstLetterModel> firstLetterModelList = new ArrayList<>();
-            for (FirstLetterDO firstLetterDO : firstLetterDOList) {
-                FirstLetterModel firstLetterModel = convertModelFromDataObject(firstLetterDO);
-                if (firstLetterModel != null) {
-                    firstLetterModelList.add(firstLetterModel);
-                }
-            }
-            return firstLetterModelList;
+            List<FirstLetterDO> firstLetterDOList = firstLetterDOMapper.listMyFirstLetters(getEncryptUserid(userid));
+            return firstLetterDOList.stream().map(this::convertModelFromDataObject).collect(Collectors.toList());
         } catch (Exception e) {
             throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
         }
     }
+
+    @Override
+    public List<FirstLetterModel> getLettersInHomePage(Integer userid) throws BusinessException {
+        if (userid == null) {
+            return null;
+        }
+        try {
+            List<FirstLetterDO> firstLetterDOList = firstLetterDOMapper.listFirstLettersNotMine(getEncryptUserid(userid));
+            return firstLetterDOList.stream().map(this::convertModelFromDataObject).collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
+        }
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
