@@ -6,14 +6,17 @@ import com.kaixiang.cure.response.CommonReturnType;
 import com.kaixiang.cure.service.LetterService;
 import com.kaixiang.cure.service.model.FirstLetterModel;
 import com.kaixiang.cure.utils.annotation.UserLoginToken;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.kaixiang.cure.utils.Constants.ATTRIBUTE_KEY_USERID;
@@ -26,6 +29,9 @@ public class LetterController {
 
     @Autowired
     private LetterService letterService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 写第一封信
@@ -43,18 +49,43 @@ public class LetterController {
 
 
     /**
+     * 首页获取第一封信
+     */
+    @RequestMapping(value = "/home/first", method = {RequestMethod.GET})
+    @ResponseBody
+    @UserLoginToken
+    public CommonReturnType getLettersInHomePage(HttpServletRequest request) throws BusinessException {
+        //从token中获取userId
+        Integer userid = (Integer) request.getAttribute(ATTRIBUTE_KEY_USERID);
+
+        //1. 用redis限制刷新时间
+        String refresh = (String) redisTemplate.opsForValue().get(userid + "_valid");
+        if (StringUtils.isBlank(refresh)) {
+            redisTemplate.opsForValue().set(userid + "_valid", "y");
+            redisTemplate.expire(userid + "_valid", 60, TimeUnit.MINUTES);
+            return CommonReturnType.create("refresh data");
+        } else {
+            return CommonReturnType.create("can't refresh");
+        }
+    }
+
+
+    /**
      * 获取我发出的所有第一封信
      */
     @RequestMapping(value = "/letterbox/first", method = {RequestMethod.GET})
     @ResponseBody
     @UserLoginToken
-    public CommonReturnType getFirstLetters(HttpServletRequest request) throws BusinessException {
+    public CommonReturnType getMyFirstLetters(HttpServletRequest request) throws BusinessException {
         //1.构建完整的FirstLetterModel，从token中获取userId
         Integer userid = (Integer) request.getAttribute(ATTRIBUTE_KEY_USERID);
-        List<FirstLetterModel> firstLetterModelList = letterService.getFirstLetters(userid);
+        List<FirstLetterModel> firstLetterModelList = letterService.getMyFirstLetters(userid);
         List<FirstLetterVO> firstLetterVOList = firstLetterModelList.stream().map(this::convertFirstLetterVOFromModel).collect(Collectors.toList());
         return CommonReturnType.create(firstLetterVOList);
     }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private FirstLetterVO convertFirstLetterVOFromModel(FirstLetterModel firstLetterModel) {
         if (firstLetterModel == null) {

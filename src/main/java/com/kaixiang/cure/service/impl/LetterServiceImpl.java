@@ -47,7 +47,7 @@ public class LetterServiceImpl implements LetterService {
      * 获取所有我发出的第一封信
      */
     @Override
-    public List<FirstLetterModel> getFirstLetters(Integer userid) throws BusinessException {
+    public List<FirstLetterModel> getMyFirstLetters(Integer userid) throws BusinessException {
         if (userid == null) {
             return null;
         }

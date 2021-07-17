@@ -14,5 +14,5 @@ public interface LetterService {
     /**
      * 获取所有我发出的第一封信
      */
-    List<FirstLetterModel> getFirstLetters(Integer userid) throws BusinessException;
+    List<FirstLetterModel> getMyFirstLetters(Integer userid) throws BusinessException;
 }
