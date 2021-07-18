@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import {
-	List,
 	NavBar,
 	Button,
 	Toast,
@@ -19,13 +18,14 @@ class ReplyDetail extends Component {
 	}
 
 	componentDidMount() {
-		if (this.props.reloadDetailOfFirstLetterReplied) {
-			console.log("loadMyRepliedFirstLetters");
+        console.log("loadMyRepliedFirstLetters");
 			const conversationId = this.props.firstLettersIReplied.find(
 				(x) => x.id == this.props.match.params.id
 			).conversationId;
 			this.props.loadDetailOfFirstLetterReplied(conversationId);
-		}
+		// if (this.props.reloadDetailOfFirstLetterReplied) {
+			
+		// }
 	}
 
 	initialState = {

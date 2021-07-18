@@ -1,12 +1,14 @@
 package com.kaixiang.cure.utils;
 
+import com.kaixiang.cure.controller.viewobject.TopicVO;
 import com.kaixiang.cure.dataobject.ConversationDO;
 import com.kaixiang.cure.dataobject.LetterDO;
+import com.kaixiang.cure.dataobject.TopicDO;
 import com.kaixiang.cure.service.model.LetterModel;
+import com.kaixiang.cure.service.model.TopicModel;
 import com.kaixiang.cure.utils.encrypt.EncryptUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 /**
@@ -58,6 +60,26 @@ public class Convertor {
         BeanUtils.copyProperties(letterDO, letterModel);
         letterModel.setContent(letterDO.getFilepath());
         return letterModel;
+    }
+
+    public TopicModel topicModelFromTopicDO(TopicDO topicDO) {
+        if (topicDO == null) {
+            return null;
+        }
+        TopicModel topicModel = new TopicModel();
+        BeanUtils.copyProperties(topicDO, topicModel);
+        return topicModel;
+    }
+
+    public TopicVO topicVOFromTopicModel(TopicModel topicModel) {
+        if (topicModel == null) {
+            return null;
+        }
+        TopicVO topicVO = new TopicVO();
+        BeanUtils.copyProperties(topicModel, topicVO);
+        topicVO.setText(topicModel.getName());
+        topicVO.setIcon(topicModel.getImgURL());
+        return topicVO;
     }
 
 }

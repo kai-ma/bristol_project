@@ -1,14 +1,15 @@
 import React, { Component } from "react";
-import { Grid, WingBlank, WhiteSpace } from "antd-mobile";
+import { Grid, WingBlank, WhiteSpace, Toast } from "antd-mobile";
 import { withRouter } from "react-router-dom";
 import Http from "@src/utils/http.js";
+import Loading from "../../../../components/Loading";
 class Category extends Component {
 	constructor(props) {
 		super(props);
 		this.state = this.initialState;
 	}
 
-	initialState = { books: [] };
+	initialState = { topics: [], loadTopics: true };
 
 	handleClick = (data) => {
 		const index = data.index;
@@ -18,13 +19,24 @@ class Category extends Component {
 	componentWillMount() {}
 
 	componentDidMount() {
-        Http({url : "/books", method: "get"}).then(res => {
-            this.setState({
-                books: res,
-            });
-        },err =>{
-            console.log(err)
-        });
+        //todo:切换页面会重复获取，要不放在localStorage里？
+		if (this.state.loadTopics) {
+			Http({
+				url: "/answerbook/get/topic",
+				method: "get",
+				mock: false,
+			}).then(
+				(res) => {
+					this.setState({
+						topics: res,
+						loadTopics: false,
+					});
+				},
+				(err) => {
+                    Toast.info("Network error, please try again", 2);
+				}
+			);
+		}
 	}
 
 	render() {
@@ -36,16 +48,17 @@ class Category extends Component {
                     <div className="sub-title">Grid item adjust accroiding to img size </div>
     <Grid data={data} square={false} className="not-square-grid" /> */}
 
-					<div className="sub-title">ColumnNum=3 </div>
+					{/* <div className="sub-title">ColumnNum=3 </div> */}
 
-					{this.state.books ? (
+					{this.state.topics ? (
 						<Grid
-							// data={data}
-							data={this.state.books}
+							data={this.state.topics}
 							onClick={(data) => this.handleClick(data)}
 						/>
 					) : (
-						<div>{/* 加载中... */}</div>
+						<div>
+							<Loading></Loading>
+						</div>
 					)}
 
 					<WhiteSpace size="lg" />
@@ -59,3 +72,4 @@ class Category extends Component {
 }
 
 export default withRouter(Category);
+//todo:宫格的大小，屏幕如果比较窄的话，显示不出来所有字。
