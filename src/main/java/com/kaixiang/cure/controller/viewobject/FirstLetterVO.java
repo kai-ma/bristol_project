@@ -20,6 +20,8 @@ public class FirstLetterVO {
 
     private String pseudonym;
 
+    private Integer conversationId;
+
     public Integer getId() {
         return id;
     }
@@ -74,5 +76,13 @@ public class FirstLetterVO {
 
     public void setPseudonym(String pseudonym) {
         this.pseudonym = pseudonym;
+    }
+
+    public Integer getConversationId() {
+        return conversationId;
+    }
+
+    public void setConversationId(Integer conversationId) {
+        this.conversationId = conversationId;
     }
 }

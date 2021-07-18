@@ -120,6 +120,59 @@ const loadFirstLettersRepliedFailure = (error) => {
 	};
 };
 
+
+//根据letterBox中我发出的某个信，获取detail
+export const loadDetailOfMyFirstLetter = () => {
+	return (dispatch) => {
+		dispatch({
+			type: actionTypes.LOAD_DETAIL_OF_MY_FIRST_LETTER,
+		});
+
+		Http({ url: "/letter/letterbox/detail/my", method: "get", mock:false}).then(
+			(res) => {
+				dispatch(loadDetailOfMyFirstLetterSuccess(res));
+			},
+			(err) => {
+				Toast.fail(err, 1);  
+				dispatch(loadMyFirstLettersFailure(err));
+			}
+		);
+	};
+};
+
+const loadDetailOfMyFirstLetterSuccess = (res) => {
+	return {
+		type: actionTypes.LOAD_DETAIL_OF_MY_FIRST_LETTER_SUCCESS,
+		payload: res,
+	};
+};
+
+//根据letterBox中我回复的首封信，获取detail
+export const loadDetailOfFirstLetterReplied = (conversationId) => {
+	return (dispatch) => {
+		dispatch({
+			type: actionTypes.LOAD_DETAIL_OF_FIRST_LETTER_REPLIED,
+		});
+
+		Http({ url: "/letter/letterbox/detail/replied", method: "post", body : {conversationId: conversationId}, mock:false}).then(
+			(res) => {
+				dispatch(loadDetailOfFirstLetterRepliedSuccess(res));
+			},
+			(err) => {
+				Toast.fail(err, 1);  
+				dispatch(loadMyFirstLettersFailure(err));
+			}
+		);
+	};
+};
+
+const loadDetailOfFirstLetterRepliedSuccess = (res) => {
+	return {
+		type: actionTypes.LOAD_DETAIL_OF_FIRST_LETTER_REPLIED_SUCCESS,
+		payload: res,
+	};
+};
+
 export const updateLetters = () => {
 	return (dispatch) => {
 		dispatch({

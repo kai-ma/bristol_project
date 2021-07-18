@@ -25,5 +25,10 @@ public interface LetterService {
      */
     List<FirstLetterModel> getFirstLetterListIReplied(Integer userid) throws BusinessException;
 
+    /**
+     * letterBox：根据letterBox中我回复的首封信，获取detail-首期不支持继续回复，因此返回就是我的回复
+     */
+    List<LetterModel> getRestLettersOfConversation(Integer conversationId) throws BusinessException;
+
     void replyFirstLetter(LetterModel letterModel) throws BusinessException;
 }

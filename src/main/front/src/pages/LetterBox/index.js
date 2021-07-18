@@ -34,11 +34,11 @@ class LetterBox extends Component {
     }
 
     loadDetailIStarted = (letter) => {
-        this.props.history.push("/letterbox/start/" + letter.id);
+        this.props.history.push("/letterbox/detail/" + letter.id);
     }
 
     loadDetailIReplied = (letter) => {
-        
+        this.props.history.push("/letterbox/reply/detail/" + letter.id);
     }
 
 	render() {

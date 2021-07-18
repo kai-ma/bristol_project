@@ -52,7 +52,7 @@
       #{lastRepliedAt,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{replyNumber,jdbcType=INTEGER}, 
       #{quality,jdbcType=INTEGER}, #{pseudonym,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.FirstLetterDO">
+  <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.FirstLetterDO" keyProperty="id" useGeneratedKeys="true">
     insert into first_letter
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

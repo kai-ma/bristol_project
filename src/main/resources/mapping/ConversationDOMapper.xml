@@ -40,7 +40,7 @@
       #{firstLetterId,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}, 
       #{status,jdbcType=INTEGER}, #{letterNumber,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.ConversationDO">
+  <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.ConversationDO" keyProperty="id" useGeneratedKeys="true">
     insert into conversation
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

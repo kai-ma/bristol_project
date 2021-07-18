@@ -19,6 +19,13 @@
     from letter
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="listLettersByConversationId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from letter
+    where conversation_id = #{conversationId,jdbcType=INTEGER}
+    order by created_at DESC;
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from letter
     where id = #{id,jdbcType=INTEGER}

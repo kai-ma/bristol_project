@@ -4,7 +4,9 @@ import com.kaixiang.cure.dataobject.ConversationDO;
 import com.kaixiang.cure.dataobject.LetterDO;
 import com.kaixiang.cure.service.model.LetterModel;
 import com.kaixiang.cure.utils.encrypt.EncryptUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 /**
@@ -46,6 +48,16 @@ public class Convertor {
         letterDO.setFilepath(letterModel.getContent());
         letterDO.setType(letterModel.getType());
         return letterDO;
+    }
+
+    public LetterModel letterModelFromLetterDO(LetterDO letterDO) {
+        if (letterDO == null) {
+            return null;
+        }
+        LetterModel letterModel = new LetterModel();
+        BeanUtils.copyProperties(letterDO, letterModel);
+        letterModel.setContent(letterDO.getFilepath());
+        return letterModel;
     }
 
 }

@@ -72,7 +72,8 @@ public class LetterServiceImpl implements LetterService {
         }
         try {
             List<FirstLetterDO> firstLetterDOList = firstLetterDOMapper.listMyFirstLetters(encryptUtils.encrypt(String.valueOf(userid)));
-            return firstLetterDOList.stream().map(this::convertModelFromDataObject).collect(Collectors.toList());
+            return firstLetterDOList.stream().map(firstLetterDO -> this.convertFirstLetterModelFromFirstLetterDO(firstLetterDO, null)
+            ).collect(Collectors.toList());
         } catch (Exception e) {
             throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
         }
@@ -85,7 +86,8 @@ public class LetterServiceImpl implements LetterService {
         }
         try {
             List<FirstLetterDO> firstLetterDOList = firstLetterDOMapper.listFirstLettersNotMine(encryptUtils.encrypt(String.valueOf(userid)));
-            return firstLetterDOList.stream().map(this::convertModelFromDataObject).collect(Collectors.toList());
+            return firstLetterDOList.stream().map(firstLetterDO -> this.convertFirstLetterModelFromFirstLetterDO(firstLetterDO, null)
+            ).collect(Collectors.toList());
         } catch (Exception e) {
             throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
         }
@@ -116,7 +118,7 @@ public class LetterServiceImpl implements LetterService {
     }
 
     /**
-     * 获取我回复的所有对话
+     * 获取我回复的所有首封信
      *
      * @param userid
      */
@@ -129,19 +131,38 @@ public class LetterServiceImpl implements LetterService {
             //1. 根据addresseeUserid，查询conversation表 获取firstLetterId
             List<ConversationDO> conversationDOList = conversationDOMapper.listConversationsIReplied(encryptUtils.encrypt(String.valueOf(userid)));
             //2. 根据firstLetterId，查询first_letter表，获取first_letter
-            List<FirstLetterDO> firstLetterDOList = new ArrayList<>();
+            List<FirstLetterModel> firstLetterModelList = new ArrayList<>();
             for (ConversationDO conversationDO : conversationDOList) {
                 FirstLetterDO firstLetterDO = firstLetterDOMapper.selectByPrimaryKey(conversationDO.getFirstLetterId());
                 if (firstLetterDO != null) {
-                    firstLetterDOList.add(firstLetterDO);
+                    firstLetterModelList.add(convertFirstLetterModelFromFirstLetterDO(firstLetterDO, conversationDO.getId()));
                 }
             }
-            return firstLetterDOList.stream().map(this::convertModelFromDataObject).collect(Collectors.toList());
+            return firstLetterModelList;
         } catch (Exception e) {
             throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
         }
     }
 
+    /**
+     * 根据conversationId，获取除了firstLetter以外的所有letter
+     *
+     * @param conversationId
+     */
+    @Override
+    public List<LetterModel> getRestLettersOfConversation(Integer conversationId) throws BusinessException {
+        if (conversationId == null) {
+            throw new BusinessException(EnumBusinessError.TOKEN_ILLEGAL);
+        }
+        try {
+            //1. 根据addresseeUserid和firstLetterId，查询conversation表 获取conversationId
+            List<LetterDO> letterDOList = letterDOMapper.listLettersByConversationId(conversationId);
+            return letterDOList.stream().map(letterDO -> convertor.letterModelFromLetterDO(letterDO)
+            ).collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
+        }
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -160,7 +181,7 @@ public class LetterServiceImpl implements LetterService {
     }
 
 
-    private FirstLetterModel convertModelFromDataObject(FirstLetterDO firstLetterDO) {
+    private FirstLetterModel convertFirstLetterModelFromFirstLetterDO(FirstLetterDO firstLetterDO, Integer conversationId) {
         if (firstLetterDO == null) {
             return null;
         }
@@ -172,6 +193,9 @@ public class LetterServiceImpl implements LetterService {
         }
         firstLetterModel.setContent(getContent(firstLetterDO.getFilepath()));
         firstLetterModel.setUserId(Integer.valueOf(encryptUtils.decrypt(firstLetterDO.getUserid())));
+        if (conversationId != null) {
+            firstLetterModel.setConversationId(conversationId);
+        }
         return firstLetterModel;
     }
 

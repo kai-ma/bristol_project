@@ -15,6 +15,8 @@ public interface ConversationDOMapper {
 
     List<ConversationDO> listConversationsIReplied(String encryptAddresseeUserid);
 
+    ConversationDO selectBy(Integer id);
+
     int updateByPrimaryKeySelective(ConversationDO record);
 
     int updateByPrimaryKey(ConversationDO record);

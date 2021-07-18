@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -64,7 +65,8 @@ public class LetterController {
 //        verifyRefreshBar(userid);
 
         List<FirstLetterModel> firstLetterModelList = letterService.getLettersInHomePage(userid);
-        List<FirstLetterVO> firstLetterVOList = firstLetterModelList.stream().map(this::convertFirstLetterVOFromModel).collect(Collectors.toList());
+        List<FirstLetterVO> firstLetterVOList = firstLetterModelList.stream().map(firstLetterModel -> this.convertFirstLetterVOFromModel(firstLetterModel, false)
+        ).collect(Collectors.toList());
         return CommonReturnType.create(firstLetterVOList);
     }
 
@@ -79,7 +81,8 @@ public class LetterController {
         //1.构建完整的FirstLetterModel，从token中获取userId
         Integer userid = (Integer) request.getAttribute(ATTRIBUTE_KEY_USERID);
         List<FirstLetterModel> firstLetterModelList = letterService.getMyFirstLetters(userid);
-        List<FirstLetterVO> firstLetterVOList = firstLetterModelList.stream().map(this::convertFirstLetterVOFromModel).collect(Collectors.toList());
+        List<FirstLetterVO> firstLetterVOList = firstLetterModelList.stream().map(firstLetterModel -> this.convertFirstLetterVOFromModel(firstLetterModel, true)
+        ).collect(Collectors.toList());
         return CommonReturnType.create(firstLetterVOList);
     }
 
@@ -93,7 +96,8 @@ public class LetterController {
         //1.构建完整的FirstLetterModel，从token中获取userId
         Integer userid = (Integer) request.getAttribute(ATTRIBUTE_KEY_USERID);
         List<FirstLetterModel> firstLetterModelList = letterService.getFirstLetterListIReplied(userid);
-        List<FirstLetterVO> firstLetterVOList = firstLetterModelList.stream().map(this::convertFirstLetterVOFromModel).collect(Collectors.toList());
+        List<FirstLetterVO> firstLetterVOList = firstLetterModelList.stream().map(firstLetterModel -> this.convertFirstLetterVOFromModel(firstLetterModel, false)
+        ).collect(Collectors.toList());
         return CommonReturnType.create(firstLetterVOList);
     }
 
@@ -111,6 +115,17 @@ public class LetterController {
         return CommonReturnType.create("Reply successfully");
     }
 
+    /**
+     * letterBox：根据letterBox中我回复的首封信，获取detail-首期不支持继续回复，因此返回就是我的回复
+     */
+    @RequestMapping(value = "/letterbox/detail/replied", method = {RequestMethod.POST})
+    @ResponseBody
+    @UserLoginToken
+    public CommonReturnType getLetterBoxDetailReplied(@RequestBody Map<String, String> map) throws BusinessException {
+        Integer conversationId = Integer.valueOf(map.get("conversationId"));
+        return CommonReturnType.create(letterService.getRestLettersOfConversation(conversationId));
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -124,7 +139,10 @@ public class LetterController {
         redisTemplate.expire(userid + "_refresh_bar", 60, TimeUnit.MINUTES);
     }
 
-    private FirstLetterVO convertFirstLetterVOFromModel(FirstLetterModel firstLetterModel) {
+    /**
+     * 对于letterbox的replied，不展示回复个数
+     */
+    private FirstLetterVO convertFirstLetterVOFromModel(FirstLetterModel firstLetterModel, boolean showReplyNumber) {
         if (firstLetterModel == null) {
             return null;
         }
@@ -135,6 +153,9 @@ public class LetterController {
         if (firstLetterModel.getLastRepliedAt() != null) {
             firstLetterVO.setLastRepliedAt(firstLetterModel.getLastRepliedAt().
                     toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+        }
+        if (!showReplyNumber) {
+            firstLetterVO.setReplyNumber(null);
         }
         return firstLetterVO;
     }
