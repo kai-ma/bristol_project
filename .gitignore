@@ -14,4 +14,5 @@ target/
 
 ./src/main/webapp
 
-./docs/
+/docs/*
+/src/main/resources/mybatis-generator.xml

@@ -6,6 +6,7 @@ import com.kaixiang.cure.error.EnumBusinessError;
 import com.kaixiang.cure.response.CommonReturnType;
 import com.kaixiang.cure.service.LetterService;
 import com.kaixiang.cure.service.model.FirstLetterModel;
+import com.kaixiang.cure.service.model.LetterModel;
 import com.kaixiang.cure.utils.annotation.UserLoginToken;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.format.DateTimeFormat;
@@ -58,14 +59,9 @@ public class LetterController {
         //从token中获取userId
         Integer userid = (Integer) request.getAttribute(ATTRIBUTE_KEY_USERID);
 
-//        //1. 用redis限制刷新时间
-//        String refresh = (String) redisTemplate.opsForValue().get(userid + "_refresh_bar");
-//        if (StringUtils.isNotBlank(refresh)) {
-//            throw new BusinessException(EnumBusinessError.REFRESH_LIMIT);
-//        }
-//        //重新打上刷新的限制
-//        redisTemplate.opsForValue().set(userid + "_refresh_bar", "y");
-//        redisTemplate.expire(userid + "_refresh_bar", 60, TimeUnit.MINUTES);
+        //1. 用redis限制刷新时间 todo 解决更新问题，结合前端修改
+//        verifyRefreshBar(userid);
+
         List<FirstLetterModel> firstLetterModelList = letterService.getLettersInHomePage(userid);
         List<FirstLetterVO> firstLetterVOList = firstLetterModelList.stream().map(this::convertFirstLetterVOFromModel).collect(Collectors.toList());
         return CommonReturnType.create(firstLetterVOList);
@@ -87,7 +83,31 @@ public class LetterController {
     }
 
 
+    /**
+     * 首页：回复信
+     */
+    @RequestMapping(value = "/reply", method = {RequestMethod.POST})
+    @ResponseBody
+    @UserLoginToken
+    public CommonReturnType replyLetter(@RequestBody LetterModel letterModel, HttpServletRequest request) throws BusinessException {
+        Integer userid = (Integer) request.getAttribute(ATTRIBUTE_KEY_USERID);
+        letterModel.setSenderUserId(userid);
+        letterService.replyFirstLetter(letterModel);
+        return CommonReturnType.create("Reply successfully");
+    }
+
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void verifyRefreshBar(Integer userid) throws BusinessException {
+        String refresh = (String) redisTemplate.opsForValue().get(userid + "_refresh_bar");
+        if (StringUtils.isNotBlank(refresh)) {
+            throw new BusinessException(EnumBusinessError.REFRESH_LIMIT);
+        }
+        //重新打上刷新的限制
+        redisTemplate.opsForValue().set(userid + "_refresh_bar", "y");
+        redisTemplate.expire(userid + "_refresh_bar", 60, TimeUnit.MINUTES);
+    }
 
     private FirstLetterVO convertFirstLetterVOFromModel(FirstLetterModel firstLetterModel) {
         if (firstLetterModel == null) {

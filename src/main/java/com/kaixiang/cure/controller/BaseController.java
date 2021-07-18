@@ -33,6 +33,7 @@ public class BaseController {
             responseData.put("errCode", businessException.getErrorCode());
             responseData.put("errMsg", businessException.getErrorMessage());
         } else { //未知错误 返回EnumBusinessError中的UNKNOWN_ERROT
+            System.out.println(exception.getMessage());
             responseData.put("errCode", EnumBusinessError.UNKNOWN_ERROR.getErrorCode());
             responseData.put("errMsg", EnumBusinessError.UNKNOWN_ERROR.getErrorMessage());
         }

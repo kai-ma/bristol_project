@@ -7,10 +7,11 @@ import {
 	Button,
 	Switch,
 	Toast,
-    WhiteSpace,
+	WhiteSpace,
 } from "antd-mobile";
 import { createForm } from "rc-form";
 import { connect } from "react-redux";
+import Http from "@src/utils/http.js";
 
 class Reply extends Component {
 	constructor(props) {
@@ -22,16 +23,33 @@ class Reply extends Component {
 
 	initialState = {};
 
-	handleSubmit = () => {
+	handleSubmit = (letter) => {
 		const input = this.props.form.getFieldsValue();
+
 		// console.log(input);
 		this.props.form.validateFields((error, value) => {
 			if (error) {
-				Toast.info(this.props.form.getFieldError(Object.keys(error)[0]));
+				Toast.info(
+					this.props.form.getFieldError(Object.keys(error)[0])
+				);
 				return;
 			} else {
-				//发送post请求
-				// console.log(value);
+                //回信 type是0
+				Http({ url: "/letter/reply", body: { ...value, firstLetterId: letter.id, type:0}, mock: false }).then(
+					(res) => {
+						Toast.info("Reply successfully!", 2);
+						setTimeout(() => {
+							this.props.history.push("/");
+						}, 2000);
+					},
+					(err) => {
+                        if(err.errCode === 30002){
+                            Toast.fail(err.errMsg, 2);
+                        }else{
+                            Toast.info("Network error, please try again", 2);
+                        }
+                    }
+				);
 			}
 		});
 	};
@@ -88,35 +106,8 @@ class Reply extends Component {
 						placeholder="Give advice or warmth to strangers"
 					/>
 				</List>
-				<List renderHeader={() => "Sign a pseudonym"}>
-					<InputItem
-						{...getFieldProps("name", {
-							rules: [{ required: true }],
-						})}
-						clear
-						placeholder="Please enter a pseudonym"
-					></InputItem>
-				</List>
-				<List
-					renderHeader={() => "Allow to be collected to answerbook"}
-				>
-					<List.Item
-						extra={
-							<Switch
-								{...getFieldProps("allowBeCollected", {
-									initialValue: true,
-									valuePropName: "checked",
-									rules: [{ required: true }],
-								})}
-								platform="ios"
-							/>
-						}
-					>
-						Get bonus if be collected
-					</List.Item>
-				</List>
 				<List renderHeader={() => ""}></List>
-				<Button type="primary" onClick={this.handleSubmit}>
+				<Button type="primary" onClick={() => this.handleSubmit(letter)}>
 					Reply
 				</Button>
 			</div>

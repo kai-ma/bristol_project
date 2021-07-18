@@ -12,7 +12,7 @@ public enum EnumBusinessError implements CommonError {
     PARAMETER_VALIDATION_ERROR(100001, "参数不合法"),
 
     //
-    UNKNOWN_ERROR(10002, "未知错误"),
+    UNKNOWN_ERROR(10002, "Unknown error"),
 
     //2000开头为用户信息相关错误
     USER_NOT_EXIST(20001,"User not exist, please retry"),
@@ -22,6 +22,7 @@ public enum EnumBusinessError implements CommonError {
     INVALID_PASSWORD(20005,"Incorrect password or email, please retry"),
 
     DATABASE_EXCEPTION(30001, "数据库错误"),
+    DUPLICATE_REPLY_TO_FIRST_LETTER(30002, "Duplicate reply"),
 
 
     REFRESH_LIMIT(40001, "Refresh time is not yet reached."),

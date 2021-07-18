@@ -5,6 +5,7 @@ import AnswerBook from "./pages/AnswerBook";
 import User from "./pages/User";
 import Register from "./pages/User/Register";
 import Login from "./pages/User/Login";
+import Settings from "./pages/User/subpages/Settings"
 import AnswerContent from "./pages/AnswerBook/subpages/Content";
 import Send from "./pages/Home/subpages/Send"
 import Reply from "./pages/Home/subpages/Reply"
@@ -25,6 +26,7 @@ function App() {
                 <PrivateRoute path="/send" exact component={Send} />
                 <PrivateRoute path="/reply/:id" exact component={Reply} />
                 <PrivateRoute path="/letter/:id" exact component={Letter} />
+                <PrivateRoute path="/settings" exact component={Settings} />
 				<Route path="/register" exact component={Register} />
 				<Route path="/login/:router?" exact component={Login} />
                 <PrivateRoute path="/answerbook/content*" exact component={AnswerContent} />

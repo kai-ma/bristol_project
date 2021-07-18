@@ -1,4 +1,4 @@
-import { Toast } from "antd-mobile";
+// import { Toast } from "antd-mobile";
 export default function Http({
 	url,
 	method = "post",
@@ -47,12 +47,12 @@ export default function Http({
 				if (res.status === "success") {
 					resolve(res.data);
 				} else {
-					Toast.fail(res.data.errMsg, 2);
-					reject(res.data.errMsg);
+					// Toast.fail(res.data.errMsg, 2);
+					reject(res.data);
 				}
 			})
 			.catch((err) => {
-				Toast.fail(err, 1);
+				// Toast.fail(err, 1);
 				reject(err);
 			})
 			.finally(() => {
