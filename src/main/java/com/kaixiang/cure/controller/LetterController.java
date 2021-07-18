@@ -5,6 +5,7 @@ import com.kaixiang.cure.error.BusinessException;
 import com.kaixiang.cure.error.EnumBusinessError;
 import com.kaixiang.cure.response.CommonReturnType;
 import com.kaixiang.cure.service.LetterService;
+import com.kaixiang.cure.service.model.ConversationModel;
 import com.kaixiang.cure.service.model.FirstLetterModel;
 import com.kaixiang.cure.service.model.LetterModel;
 import com.kaixiang.cure.utils.annotation.UserLoginToken;
@@ -82,9 +83,23 @@ public class LetterController {
         return CommonReturnType.create(firstLetterVOList);
     }
 
+    /**
+     * 获取我回复的首封信-用于letterBox replied页面展示
+     */
+    @RequestMapping(value = "/letterbox/replied/first", method = {RequestMethod.GET})
+    @ResponseBody
+    @UserLoginToken
+    public CommonReturnType getFirstLetterIReplied(HttpServletRequest request) throws BusinessException {
+        //1.构建完整的FirstLetterModel，从token中获取userId
+        Integer userid = (Integer) request.getAttribute(ATTRIBUTE_KEY_USERID);
+        List<FirstLetterModel> firstLetterModelList = letterService.getFirstLetterListIReplied(userid);
+        List<FirstLetterVO> firstLetterVOList = firstLetterModelList.stream().map(this::convertFirstLetterVOFromModel).collect(Collectors.toList());
+        return CommonReturnType.create(firstLetterVOList);
+    }
+
 
     /**
-     * 首页：回复信
+     * 首页：回复首页的信
      */
     @RequestMapping(value = "/reply", method = {RequestMethod.POST})
     @ResponseBody
@@ -121,6 +136,21 @@ public class LetterController {
             firstLetterVO.setLastRepliedAt(firstLetterModel.getLastRepliedAt().
                     toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
         }
+        return firstLetterVO;
+    }
+
+    private FirstLetterVO convertFirstLetterModelFromConversationModel(ConversationModel conversationModel) {
+        if (conversationModel == null) {
+            return null;
+        }
+        FirstLetterVO firstLetterVO = new FirstLetterVO();
+
+//        firstLetterVO.setCreatedAt(firstLetterModel.getCreatedAt().
+//                toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+//        if (firstLetterModel.getLastRepliedAt() != null) {
+//            firstLetterVO.setLastRepliedAt(firstLetterModel.getLastRepliedAt().
+//                    toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+//        }
         return firstLetterVO;
     }
 }

@@ -6,12 +6,14 @@
     <result column="encrypt_sender_userid" jdbcType="VARCHAR" property="encryptSenderUserid" />
     <result column="encrypt_addressee_userid" jdbcType="VARCHAR" property="encryptAddresseeUserid" />
     <result column="first_letter_id" jdbcType="INTEGER" property="firstLetterId" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
     <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
     <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="letter_number" jdbcType="INTEGER" property="letterNumber" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, encrypt_sender_userid, encrypt_addressee_userid, first_letter_id, updated_at, 
-    status
+    id, encrypt_sender_userid, encrypt_addressee_userid, first_letter_id, created_at, 
+    updated_at, status, letter_number
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -19,19 +21,26 @@
     from conversation
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="listConversationsIReplied" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from conversation
+    where encrypt_addressee_userid = #{encryptAddresseeUserid,jdbcType=VARCHAR}
+    order by created_at ASC;
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from conversation
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.kaixiang.cure.dataobject.ConversationDO">
     insert into conversation (id, encrypt_sender_userid, encrypt_addressee_userid, 
-      first_letter_id, updated_at, status
-      )
+      first_letter_id, created_at, updated_at, 
+      status, letter_number)
     values (#{id,jdbcType=INTEGER}, #{encryptSenderUserid,jdbcType=VARCHAR}, #{encryptAddresseeUserid,jdbcType=VARCHAR}, 
-      #{firstLetterId,jdbcType=INTEGER}, #{updatedAt,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}
-      )
+      #{firstLetterId,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=INTEGER}, #{letterNumber,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.ConversationDO" keyProperty="id" useGeneratedKeys="true">
+  <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.ConversationDO">
     insert into conversation
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -46,11 +55,17 @@
       <if test="firstLetterId != null">
         first_letter_id,
       </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
       <if test="updatedAt != null">
         updated_at,
       </if>
       <if test="status != null">
         status,
+      </if>
+      <if test="letterNumber != null">
+        letter_number,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -66,11 +81,17 @@
       <if test="firstLetterId != null">
         #{firstLetterId,jdbcType=INTEGER},
       </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
       <if test="updatedAt != null">
         #{updatedAt,jdbcType=TIMESTAMP},
       </if>
       <if test="status != null">
         #{status,jdbcType=INTEGER},
+      </if>
+      <if test="letterNumber != null">
+        #{letterNumber,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -86,11 +107,17 @@
       <if test="firstLetterId != null">
         first_letter_id = #{firstLetterId,jdbcType=INTEGER},
       </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
       <if test="updatedAt != null">
         updated_at = #{updatedAt,jdbcType=TIMESTAMP},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="letterNumber != null">
+        letter_number = #{letterNumber,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -100,8 +127,10 @@
     set encrypt_sender_userid = #{encryptSenderUserid,jdbcType=VARCHAR},
       encrypt_addressee_userid = #{encryptAddresseeUserid,jdbcType=VARCHAR},
       first_letter_id = #{firstLetterId,jdbcType=INTEGER},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
       updated_at = #{updatedAt,jdbcType=TIMESTAMP},
-      status = #{status,jdbcType=INTEGER}
+      status = #{status,jdbcType=INTEGER},
+      letter_number = #{letterNumber,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

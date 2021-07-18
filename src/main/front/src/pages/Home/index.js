@@ -12,6 +12,7 @@ import {
 	Button,
 } from "antd-mobile";
 
+import Loading from "../../components/Loading";
 class Home extends Component {
 	constructor(props) {
 		super(props);
@@ -19,13 +20,14 @@ class Home extends Component {
 	}
 
 	componentDidMount() {
-		console.log("componentDidMount");
-		this.props.loadLetters();
+        if(this.props.reLoadLetters){
+            this.props.loadLetters();
+        }
 	}
 
 	updateLetters = () => {
 		console.log("updateLetters");
-		this.props.updateLetters();
+        this.props.updateLetters();
 		console.log(this.props);
 		const letters = this.props.letters;
 		if (letters != null) {
@@ -63,11 +65,7 @@ class Home extends Component {
 				{/* 根据loading判读是否显示loading图标 */}
 				{this.props.loading ? (
 					<div>
-						<ActivityIndicator
-							toast
-							text="Loading..."
-							size="small"
-						/>
+						<Loading></Loading>
 					</div>
 				) : (
 					<div>
@@ -128,6 +126,7 @@ const mapStateToProps = (state) => {
 	return {
 		letters: state.letter.letters,
 		loading: state.letter.loading,
+        reLoadLetters: state.letter.reLoadLetters,
 	};
 };
 

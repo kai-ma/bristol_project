@@ -22,6 +22,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -109,7 +110,34 @@ public class LetterServiceImpl implements LetterService {
             letterDOMapper.insertSelective(letterDO);
         } catch (DuplicateKeyException e) {
             throw new BusinessException(EnumBusinessError.DUPLICATE_REPLY_TO_FIRST_LETTER);
-        }catch (Exception e){
+        } catch (Exception e) {
+            throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
+        }
+    }
+
+    /**
+     * 获取我回复的所有对话
+     *
+     * @param userid
+     */
+    @Override
+    public List<FirstLetterModel> getFirstLetterListIReplied(Integer userid) throws BusinessException {
+        if (userid == null) {
+            throw new BusinessException(EnumBusinessError.TOKEN_ILLEGAL);
+        }
+        try {
+            //1. 根据addresseeUserid，查询conversation表 获取firstLetterId
+            List<ConversationDO> conversationDOList = conversationDOMapper.listConversationsIReplied(encryptUtils.encrypt(String.valueOf(userid)));
+            //2. 根据firstLetterId，查询first_letter表，获取first_letter
+            List<FirstLetterDO> firstLetterDOList = new ArrayList<>();
+            for (ConversationDO conversationDO : conversationDOList) {
+                FirstLetterDO firstLetterDO = firstLetterDOMapper.selectByPrimaryKey(conversationDO.getFirstLetterId());
+                if (firstLetterDO != null) {
+                    firstLetterDOList.add(firstLetterDO);
+                }
+            }
+            return firstLetterDOList.stream().map(this::convertModelFromDataObject).collect(Collectors.toList());
+        } catch (Exception e) {
             throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
         }
     }

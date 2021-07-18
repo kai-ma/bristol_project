@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-import { NavBar, Icon, Tabs, WhiteSpace, Badge, Card } from "antd-mobile";
+import { NavBar, Icon, Tabs, WhiteSpace, Badge, Card, WingBlank } from "antd-mobile";
 import { connect } from "react-redux";
-import { loadConversationsStarted } from "../../redux/actions/letter";
-import LetterCard from "../../components/LetterCard";
-import ConversationCard from "../../components/ConversationCard";
-
+import { loadMyFirstLetters, loadFirstLettersIReplied } from "../../redux/actions/letter";
+import Loading from "../../components/Loading";
 
 const tabs = [
 	//todo： bage 可以设置为dot <Badge dot> 或者文本 <Badge text={"3"}> 显示角标
@@ -19,15 +17,33 @@ class LetterBox extends Component {
 	}
 
 	componentDidMount() {
-		console.log("componentDidMount");
-		this.props.loadConversationsStarted();
-		setTimeout(() => {
-			console.log(this.props.conversationsStarted);
-		}, 2000);
+        if(this.props.reloadMyFirstLetters){
+            this.props.loadMyFirstLetters();
+        }
 	}
 
+    initialState = {
+		myFirstLetters: [],
+	};
+
+    handleClickTab1 = () => {
+        if(this.props.reloadFirstLettersIReplied){
+            console.log("loadMyRepliedFirstLetters");
+            this.props.loadFirstLettersIReplied();
+        }
+    }
+
+    loadDetailIStarted = (letter) => {
+        this.props.history.push("/letterbox/start/" + letter.id);
+    }
+
+    loadDetailIReplied = (letter) => {
+        
+    }
+
 	render() {
-		const conversationsStarted = this.props.conversationsStarted;
+		const myFirstLetters = this.props.myFirstLetters;
+        const firstLettersIReplied = this.props.firstLettersIReplied;
 		return (
 			<div>
 				<NavBar mode="light">Letter Box</NavBar>
@@ -37,37 +53,85 @@ class LetterBox extends Component {
 						tabs={tabs}
 						initialPage={0}
 						onChange={(tab, index) => {
-							console.log("onChange", index, tab);
+							// console.log("onChange", index, tab);
 						}}
 						onTabClick={(tab, index) => {
-							console.log("onTabClick", index, tab);
+							// console.log("onTabClick", index, tab);
+                            if(index == 1){
+                                this.handleClickTab1();
+                            }
 						}}
 					>
 						<div>
 							{this.props.loading ? (
-								<div>loading...</div>
+								<div>
+									<Loading></Loading>
+								</div>
 							) : (
 								<div>
-									{conversationsStarted.map(
-										(conversation, index) => (
-											<div key={index}>
-												<ConversationCard conversation={conversation} type={1}></ConversationCard>
-											</div>
-										)
-									)}
+									{myFirstLetters.map((letter, index) => (
+										<div key={index}>
+											<WingBlank size="lg">
+												<WhiteSpace />
+												<Card onClick={() =>this.loadDetailIStarted(letter)}>
+													<Card.Header 
+                                                        title={letter.title}
+                                                        extra={letter.replyNumber > 0 ?  letter.replyNumber + " replied" : null}
+                                                    />
+													<Card.Body>
+														<div>
+															{letter.content.substring(0,
+																letter.content.length >100? 99: letter.content.length -1
+															) + "..."}
+														</div>
+													</Card.Body>
+													<Card.Footer
+														content={letter.createdAt}
+														extra={<div>{letter.pseudonym}</div>}
+													/>
+												</Card>
+												<WhiteSpace />
+											</WingBlank>
+										</div>
+									))}
 								</div>
 							)}
 						</div>
-						<div
-							style={{
-								display: "flex",
-								alignItems: "center",
-								justifyContent: "center",
-								height: "150px",
-								backgroundColor: "#fff",
-							}}
-						>
-							You haven't replied any letters.
+                        {/* tab1 我回复的 */}
+						<div>
+							{this.props.loading ? (
+								<div>
+									<Loading></Loading>
+								</div>
+							) : (
+								<div>
+									{firstLettersIReplied.map((letter, index) => (
+										<div key={index}>
+											<WingBlank size="lg">
+												<WhiteSpace />
+												<Card onClick={() =>this.loadDetailIReplied(letter)}>
+													<Card.Header 
+                                                        title={letter.title}
+                                                        extra={letter.replyNumber > 0 ?  letter.replyNumber + " replied" : null}
+                                                    />
+													<Card.Body>
+														<div>
+															{letter.content.substring(0,
+																letter.content.length >100? 99: letter.content.length -1
+															) + "..."}
+														</div>
+													</Card.Body>
+													<Card.Footer
+														content={letter.createdAt}
+														extra={<div>{letter.pseudonym}</div>}
+													/>
+												</Card>
+												<WhiteSpace />
+											</WingBlank>
+										</div>
+									))}
+								</div>
+							)}
 						</div>
 					</Tabs>
 					<WhiteSpace />
@@ -79,14 +143,18 @@ class LetterBox extends Component {
 
 const mapStateToProps = (state) => {
 	return {
-		conversationsStarted: state.letter.conversationsStarted,
+		myFirstLetters: state.letter.myFirstLetters,
+        firstLettersIReplied : state.letter.firstLettersIReplied,
 		loading: state.letter.loading,
+        reloadMyFirstLetters: state.letter.reloadMyFirstLetters,
+		reloadFirstLettersIReplied: state.letter.reloadFirstLettersIReplied,
 	};
 };
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		loadConversationsStarted: () => dispatch(loadConversationsStarted()),
+		loadMyFirstLetters: () => dispatch(loadMyFirstLetters()),
+        loadFirstLettersIReplied: () => dispatch(loadFirstLettersIReplied()),
 	};
 };
 export default connect(mapStateToProps, mapDispatchToProps)(LetterBox);

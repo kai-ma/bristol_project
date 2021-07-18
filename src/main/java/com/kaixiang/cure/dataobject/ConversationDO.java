@@ -11,9 +11,13 @@ public class ConversationDO {
 
     private Integer firstLetterId;
 
+    private Date createdAt;
+
     private Date updatedAt;
 
     private Integer status;
+
+    private Integer letterNumber;
 
     public Integer getId() {
         return id;
@@ -47,6 +51,14 @@ public class ConversationDO {
         this.firstLetterId = firstLetterId;
     }
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public Date getUpdatedAt() {
         return updatedAt;
     }
@@ -61,5 +73,27 @@ public class ConversationDO {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Integer getLetterNumber() {
+        return letterNumber;
+    }
+
+    public void setLetterNumber(Integer letterNumber) {
+        this.letterNumber = letterNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "ConversationDO{" +
+                "id=" + id +
+                ", encryptSenderUserid='" + encryptSenderUserid + '\'' +
+                ", encryptAddresseeUserid='" + encryptAddresseeUserid + '\'' +
+                ", firstLetterId=" + firstLetterId +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", status=" + status +
+                ", letterNumber=" + letterNumber +
+                '}';
     }
 }
