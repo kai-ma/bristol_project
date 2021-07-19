@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { loadConversationByTopicId } from "@src/redux/actions/answerbook";
 
 class Content extends Component {
 	constructor(props) {
@@ -9,14 +10,8 @@ class Content extends Component {
 
 	initialState = {};
 
-	handleClick = (data) => {
-		console.log(data);
-        const index = data.index;
-		return this.props.history.push("/answerbook/content" + index);
-	};
-
 	componentDidMount() {
-		//获取数据
+		this.props.loadConversationByTopicId(this.props.match.params.id);
 	}
 
 	render() {
@@ -28,4 +23,16 @@ class Content extends Component {
 	}
 }
 
-export default withRouter(Content);
+
+const mapStateToProps = (state) => {
+	return {
+        contents: state.answerbook.contents,
+	};
+};
+
+const mapDispatchToProps = (dispatch) => {
+	return {
+		loadConversationByTopicId: (topicId) =>dispatch(loadConversationByTopicId(topicId)),
+	};
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Content);

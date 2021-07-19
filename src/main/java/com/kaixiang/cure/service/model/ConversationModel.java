@@ -13,7 +13,7 @@ public class ConversationModel {
 
     private Integer senderUserid;
 
-    private String addresseeUserid;
+    private Integer addresseeUserid;
 
     private Date updatedAt;
 
@@ -42,11 +42,11 @@ public class ConversationModel {
         this.senderUserid = senderUserid;
     }
 
-    public String getAddresseeUserid() {
+    public Integer getAddresseeUserid() {
         return addresseeUserid;
     }
 
-    public void setAddresseeUserid(String addresseeUserid) {
+    public void setAddresseeUserid(Integer addresseeUserid) {
         this.addresseeUserid = addresseeUserid;
     }
 

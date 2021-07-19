@@ -12,8 +12,8 @@ class Category extends Component {
 	initialState = { topics: [], loadTopics: true };
 
 	handleClick = (data) => {
-		const index = data.index;
-		return this.props.history.push("/answerbook/content" + index);
+		const id = data.id;
+		return this.props.history.push("/answerbook/content/" + id);
 	};
 
 	componentWillMount() {}

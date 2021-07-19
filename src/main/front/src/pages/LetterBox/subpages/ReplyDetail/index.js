@@ -1,11 +1,7 @@
 import React, { Component } from "react";
 import {
 	NavBar,
-	Button,
 	Toast,
-	WingBlank,
-	Card,
-	WhiteSpace,
 } from "antd-mobile";
 import { connect } from "react-redux";
 import LetterContent from "@src/components/LetterContent";
@@ -18,7 +14,6 @@ class ReplyDetail extends Component {
 	}
 
 	componentDidMount() {
-        console.log("loadMyRepliedFirstLetters");
 			const conversationId = this.props.firstLettersIReplied.find(
 				(x) => x.id == this.props.match.params.id
 			).conversationId;

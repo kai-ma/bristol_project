@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaixiang.cure.dao.AnswerBookDOMapper">
+  <resultMap id="BaseResultMap" type="com.kaixiang.cure.dataobject.AnswerBookDO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="conversation_id" jdbcType="INTEGER" property="conversationId" />
+    <result column="topic_id" jdbcType="INTEGER" property="topicId" />
+    <result column="votes" jdbcType="INTEGER" property="votes" />
+    <result column="collect_nums" jdbcType="INTEGER" property="collectNums" />
+    <result column="collected_at" jdbcType="DATE" property="collectedAt" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, conversation_id, topic_id, votes, collect_nums, collected_at
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from answer_book
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByTopicId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from answer_book
+    where topic_id = #{topicId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from answer_book
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.kaixiang.cure.dataobject.AnswerBookDO">
+    insert into answer_book (id, conversation_id, topic_id, 
+      votes, collect_nums, collected_at
+      )
+    values (#{id,jdbcType=INTEGER}, #{conversationId,jdbcType=INTEGER}, #{topicId,jdbcType=INTEGER}, 
+      #{votes,jdbcType=INTEGER}, #{collectNums,jdbcType=INTEGER}, #{collectedAt,jdbcType=DATE}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.AnswerBookDO">
+    insert into answer_book
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="conversationId != null">
+        conversation_id,
+      </if>
+      <if test="topicId != null">
+        topic_id,
+      </if>
+      <if test="votes != null">
+        votes,
+      </if>
+      <if test="collectNums != null">
+        collect_nums,
+      </if>
+      <if test="collectedAt != null">
+        collected_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="conversationId != null">
+        #{conversationId,jdbcType=INTEGER},
+      </if>
+      <if test="topicId != null">
+        #{topicId,jdbcType=INTEGER},
+      </if>
+      <if test="votes != null">
+        #{votes,jdbcType=INTEGER},
+      </if>
+      <if test="collectNums != null">
+        #{collectNums,jdbcType=INTEGER},
+      </if>
+      <if test="collectedAt != null">
+        #{collectedAt,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kaixiang.cure.dataobject.AnswerBookDO">
+    update answer_book
+    <set>
+      <if test="conversationId != null">
+        conversation_id = #{conversationId,jdbcType=INTEGER},
+      </if>
+      <if test="topicId != null">
+        topic_id = #{topicId,jdbcType=INTEGER},
+      </if>
+      <if test="votes != null">
+        votes = #{votes,jdbcType=INTEGER},
+      </if>
+      <if test="collectNums != null">
+        collect_nums = #{collectNums,jdbcType=INTEGER},
+      </if>
+      <if test="collectedAt != null">
+        collected_at = #{collectedAt,jdbcType=DATE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kaixiang.cure.dataobject.AnswerBookDO">
+    update answer_book
+    set conversation_id = #{conversationId,jdbcType=INTEGER},
+      topic_id = #{topicId,jdbcType=INTEGER},
+      votes = #{votes,jdbcType=INTEGER},
+      collect_nums = #{collectNums,jdbcType=INTEGER},
+      collected_at = #{collectedAt,jdbcType=DATE}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

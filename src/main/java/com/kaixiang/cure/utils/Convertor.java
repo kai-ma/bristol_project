@@ -1,12 +1,17 @@
 package com.kaixiang.cure.utils;
 
+import com.kaixiang.cure.controller.viewobject.ConversationVO;
 import com.kaixiang.cure.controller.viewobject.TopicVO;
 import com.kaixiang.cure.dataobject.ConversationDO;
+import com.kaixiang.cure.dataobject.FirstLetterDO;
 import com.kaixiang.cure.dataobject.LetterDO;
 import com.kaixiang.cure.dataobject.TopicDO;
+import com.kaixiang.cure.service.model.ConversationModel;
+import com.kaixiang.cure.service.model.FirstLetterModel;
 import com.kaixiang.cure.service.model.LetterModel;
 import com.kaixiang.cure.service.model.TopicModel;
 import com.kaixiang.cure.utils.encrypt.EncryptUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -82,4 +87,21 @@ public class Convertor {
         return topicVO;
     }
 
+    public FirstLetterModel firstLetterModelFromFirstLetterDO(FirstLetterDO firstLetterDO, Integer conversationId) {
+        if (firstLetterDO == null) {
+            return null;
+        }
+        FirstLetterModel firstLetterModel = new FirstLetterModel();
+        BeanUtils.copyProperties(firstLetterDO, firstLetterModel);
+        firstLetterModel.setCreatedAt(new DateTime(firstLetterDO.getCreatedAt()));
+        if (firstLetterDO.getReplyNumber() != null && firstLetterDO.getReplyNumber() != 0) {
+            firstLetterModel.setLastRepliedAt(new DateTime(firstLetterDO.getLastRepliedAt()));
+        }
+        firstLetterModel.setContent(firstLetterDO.getFilepath());
+        firstLetterModel.setUserId(Integer.valueOf(encryptUtils.decrypt(firstLetterDO.getUserid())));
+        if (conversationId != null) {
+            firstLetterModel.setConversationId(conversationId);
+        }
+        return firstLetterModel;
+    }
 }

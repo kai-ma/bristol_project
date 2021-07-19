@@ -103,7 +103,7 @@ public class LetterController {
 
 
     /**
-     * 首页：回复首页的信
+     * 首页：回复首页的信 todo: 换成get
      */
     @RequestMapping(value = "/reply", method = {RequestMethod.POST})
     @ResponseBody

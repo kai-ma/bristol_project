@@ -4,11 +4,11 @@ import LetterBox from "./pages/LetterBox";
 import StartDetail from "./pages/LetterBox/subpages/StartDetail";
 import ReplyDetail from "./pages/LetterBox/subpages/ReplyDetail";
 import AnswerBook from "./pages/AnswerBook";
+import AnswerBookContent from "./pages/AnswerBook/subpages/Content";
 import User from "./pages/User";
 import Register from "./pages/User/Register";
 import Login from "./pages/User/Login";
 import Settings from "./pages/User/subpages/Settings"
-import AnswerContent from "./pages/AnswerBook/subpages/Content";
 import Send from "./pages/Home/subpages/Send"
 import Reply from "./pages/Home/subpages/Reply"
 import Letter from "./pages/Home/subpages/Letter"
@@ -26,6 +26,7 @@ function App() {
                 <PrivateRoute path="/letterbox/reply/detail/:id" exact component={ReplyDetail} />
 				<PrivateRoute path="/conversation/:id" exact component={Conversation} />
 				<PrivateRoute path="/answerbook" exact component={AnswerBook} />
+                <PrivateRoute path="/answerbook/content/:id" exact component={AnswerBookContent} />
 				<PrivateRoute path="/user" exact component={User} />
                 <PrivateRoute path="/send" exact component={Send} />
                 <PrivateRoute path="/reply/:id" exact component={Reply} />
@@ -33,7 +34,6 @@ function App() {
                 <PrivateRoute path="/settings" exact component={Settings} />
 				<Route path="/register" exact component={Register} />
 				<Route path="/login/:router?" exact component={Login} />
-                <PrivateRoute path="/answerbook/content*" exact component={AnswerContent} />
 				{/* 其他所有的url都到home页面 */}
 				<Route path="/*" exact component={Home} />
 			</Switch>

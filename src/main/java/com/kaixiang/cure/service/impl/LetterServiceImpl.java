@@ -72,7 +72,7 @@ public class LetterServiceImpl implements LetterService {
         }
         try {
             List<FirstLetterDO> firstLetterDOList = firstLetterDOMapper.listMyFirstLetters(encryptUtils.encrypt(String.valueOf(userid)));
-            return firstLetterDOList.stream().map(firstLetterDO -> this.convertFirstLetterModelFromFirstLetterDO(firstLetterDO, null)
+            return firstLetterDOList.stream().map(firstLetterDO -> convertor.firstLetterModelFromFirstLetterDO(firstLetterDO, null)
             ).collect(Collectors.toList());
         } catch (Exception e) {
             throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
@@ -86,7 +86,7 @@ public class LetterServiceImpl implements LetterService {
         }
         try {
             List<FirstLetterDO> firstLetterDOList = firstLetterDOMapper.listFirstLettersNotMine(encryptUtils.encrypt(String.valueOf(userid)));
-            return firstLetterDOList.stream().map(firstLetterDO -> this.convertFirstLetterModelFromFirstLetterDO(firstLetterDO, null)
+            return firstLetterDOList.stream().map(firstLetterDO -> convertor.firstLetterModelFromFirstLetterDO(firstLetterDO, null)
             ).collect(Collectors.toList());
         } catch (Exception e) {
             throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
@@ -135,7 +135,7 @@ public class LetterServiceImpl implements LetterService {
             for (ConversationDO conversationDO : conversationDOList) {
                 FirstLetterDO firstLetterDO = firstLetterDOMapper.selectByPrimaryKey(conversationDO.getFirstLetterId());
                 if (firstLetterDO != null) {
-                    firstLetterModelList.add(convertFirstLetterModelFromFirstLetterDO(firstLetterDO, conversationDO.getId()));
+                    firstLetterModelList.add(convertor.firstLetterModelFromFirstLetterDO(firstLetterDO, conversationDO.getId()));
                 }
             }
             return firstLetterModelList;
@@ -178,25 +178,6 @@ public class LetterServiceImpl implements LetterService {
         firstLetterDO.setUserid(encryptUtils.encrypt(String.valueOf(firstLetterModel.getUserId())));
         firstLetterDO.setFilepath(firstLetterModel.getContent());
         return firstLetterDO;
-    }
-
-
-    private FirstLetterModel convertFirstLetterModelFromFirstLetterDO(FirstLetterDO firstLetterDO, Integer conversationId) {
-        if (firstLetterDO == null) {
-            return null;
-        }
-        FirstLetterModel firstLetterModel = new FirstLetterModel();
-        BeanUtils.copyProperties(firstLetterDO, firstLetterModel);
-        firstLetterModel.setCreatedAt(new DateTime(firstLetterDO.getCreatedAt()));
-        if (firstLetterDO.getReplyNumber() != null && firstLetterDO.getReplyNumber() != 0) {
-            firstLetterModel.setLastRepliedAt(new DateTime(firstLetterDO.getLastRepliedAt()));
-        }
-        firstLetterModel.setContent(getContent(firstLetterDO.getFilepath()));
-        firstLetterModel.setUserId(Integer.valueOf(encryptUtils.decrypt(firstLetterDO.getUserid())));
-        if (conversationId != null) {
-            firstLetterModel.setConversationId(conversationId);
-        }
-        return firstLetterModel;
     }
 
 
