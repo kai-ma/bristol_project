@@ -8,11 +8,6 @@ class LetterContent extends Component {
 
 	initialState = {};
 
-	handleClick = () => {
-		console.log("click");
-		return this.props.history.push("/user");
-	};
-
 	render() {
 		const { letter } = this.props;
 		return (
@@ -20,7 +15,10 @@ class LetterContent extends Component {
 				<WingBlank size="lg">
 					<WhiteSpace size="lg" />
 					<Card>
-						<Card.Header title={letter.title ? letter.title : null} />
+						{letter.type === 2 ? (
+							<Card.Header title={letter.title} />
+						) : (null
+						)}
 						<Card.Body>
 							<WhiteSpace size="lg" />
 							<div>{letter.content}</div>

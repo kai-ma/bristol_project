@@ -73,6 +73,7 @@ class Home extends Component {
 							{this.props.letters.length}
 							letters
 						</p>
+                        {/* 参考：https://www.robinwieruch.de/react-state-array-add-update-remove */}
 						{letters.map((letter, index) => (
 							<div key={index}>
 								<WingBlank size="lg">

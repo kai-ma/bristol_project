@@ -1,6 +1,7 @@
 package com.kaixiang.cure.utils;
 
 import com.kaixiang.cure.controller.viewobject.ConversationVOInAnswerBook;
+import com.kaixiang.cure.controller.viewobject.FirstLetterVO;
 import com.kaixiang.cure.controller.viewobject.LetterVO;
 import com.kaixiang.cure.controller.viewobject.TopicVO;
 import com.kaixiang.cure.dataobject.ConversationDO;
@@ -129,16 +130,35 @@ public class Convertor {
         return conversationVOInAnswerBook;
     }
 
+    /**
+     * 将lettterModel转换成lettervo，如果是firstLetterModel，type=2，转型以后转换成firstLetterVO
+     */
     public LetterVO letterVOFromLetterModel(LetterModel letterModel) {
         if (letterModel == null) {
             return null;
         }
-        LetterVO letterVO = new LetterVO();
-        BeanUtils.copyProperties(letterModel, letterVO);
-        if (letterModel.getCreatedAt() != null) {
-            letterVO.setCreatedAt(letterModel.getCreatedAt().
-                    toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+        //如果是第一封信，需要写入title
+        if (letterModel.getType().equals(FIRST_LETTER_TYPE)) {
+            FirstLetterVO firstLetterVO = new FirstLetterVO();
+            firstLetterVO.setTitle(((FirstLetterModel) letterModel).getTitle());
+            BeanUtils.copyProperties(letterModel, firstLetterVO);
+            if (letterModel.getCreatedAt() != null) {
+                firstLetterVO.setCreatedAt(letterModel.getCreatedAt().
+                        toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+            }
+            if (((FirstLetterModel) letterModel).getLastRepliedAt() != null) {
+                firstLetterVO.setCreatedAt(((FirstLetterModel) letterModel).getLastRepliedAt().
+                        toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+            }
+            return firstLetterVO;
+        } else {
+            LetterVO letterVO = new LetterVO();
+            BeanUtils.copyProperties(letterModel, letterVO);
+            if (letterModel.getCreatedAt() != null) {
+                letterVO.setCreatedAt(letterModel.getCreatedAt().
+                        toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+            }
+            return letterVO;
         }
-        return letterVO;
     }
 }
