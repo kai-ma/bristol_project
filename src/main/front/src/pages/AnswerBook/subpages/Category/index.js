@@ -16,11 +16,10 @@ class Category extends Component {
 		return this.props.history.push("/answerbook/content/" + id);
 	};
 
-	componentWillMount() {}
-
 	componentDidMount() {
-        //todo:切换页面会重复获取，要不放在localStorage里？
-		if (this.state.loadTopics) {
+		let key = "topic";
+		let topicString = localStorage.getItem(key);
+		if (topicString == null) {
 			Http({
 				url: "/answerbook/get/topic",
 				method: "get",
@@ -31,11 +30,19 @@ class Category extends Component {
 						topics: res,
 						loadTopics: false,
 					});
+                    console.log(res);
+                    let topicString = JSON.stringify(res);
+					localStorage.setItem(key, topicString);
 				},
 				(err) => {
-                    Toast.info("Network error, please try again", 2);
+					Toast.info("Network error, please try again", 2);
 				}
 			);
+		} else {
+			let topics = JSON.parse(topicString);
+			this.setState({
+				topics: topics,
+			});
 		}
 	}
 

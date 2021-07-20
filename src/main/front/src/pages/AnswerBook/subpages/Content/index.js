@@ -56,10 +56,7 @@ class Content extends Component {
 				conversations: conversations,
                 totalPage : Math.ceil(conversations.length / pageSize),
 			});
-            console.log(Math.ceil(5/2));
 		}
-
-		//todo：从localStorage中获取topic的name，显示到navbar上。
 	}
 
 	loadPage = (currentPage) => {
