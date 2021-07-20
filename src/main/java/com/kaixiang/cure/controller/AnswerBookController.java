@@ -1,10 +1,9 @@
 package com.kaixiang.cure.controller;
 
-import com.kaixiang.cure.controller.viewobject.AnswerBookContentVO;
 import com.kaixiang.cure.error.BusinessException;
 import com.kaixiang.cure.response.CommonReturnType;
 import com.kaixiang.cure.service.AnswerBookService;
-import com.kaixiang.cure.service.model.ConversationModel;
+import com.kaixiang.cure.service.model.ConversationModelInAnswerBook;
 import com.kaixiang.cure.service.model.TopicModel;
 import com.kaixiang.cure.utils.Convertor;
 import com.kaixiang.cure.utils.annotation.UserLoginToken;
@@ -54,10 +53,8 @@ public class AnswerBookController {
     @UserLoginToken
     public CommonReturnType listConversationByTopicId(HttpServletRequest request) throws BusinessException {
         Integer topicId = Integer.valueOf(request.getParameter("topicId"));
-        List<ConversationModel> conversationModelList = answerBookService.listConversationByTopicId(topicId);
-        AnswerBookContentVO answerBookContentVO = new AnswerBookContentVO();
-        answerBookContentVO.setTopicId(topicId);
-        answerBookContentVO.setConversationModelList(conversationModelList);
-        return CommonReturnType.create(answerBookContentVO);
+        List<ConversationModelInAnswerBook> conversationModelInAnswerBookList = answerBookService.listConversationByTopicId(topicId);
+        return CommonReturnType.create(conversationModelInAnswerBookList.stream().map(conversationModelInAnswerBook -> convertor.conversationVOInAnswerBookFromConversationModelInAnswerBook(conversationModelInAnswerBook)
+        ).collect(Collectors.toList()));
     }
 }

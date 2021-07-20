@@ -19,7 +19,7 @@ export const loadLetters = () => {
 			(err) => {
                 //todo: 应该把这里的toast换成根据errorcode判断，如果是刷新时间未到，不显示；
                 //如果是空，转换到答案之书
-				Toast.fail(err, 1);  
+				Toast.fail(err.errMsg, 1);  
 				dispatch(letterFailure(err));
 			}
 		);

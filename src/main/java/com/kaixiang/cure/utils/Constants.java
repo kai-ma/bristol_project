@@ -9,4 +9,6 @@ public class Constants {
     public final static String ROLE_USER = "ROLE_USER";
 
     public final static String ATTRIBUTE_KEY_USERID = "userid";
+
+    public final static Integer FIRST_LETTER_TYPE = 2;
 }

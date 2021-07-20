@@ -1,6 +1,7 @@
 package com.kaixiang.cure.service.model;
 
-import java.util.Date;
+import org.joda.time.DateTime;
+
 import java.util.List;
 
 /**
@@ -15,16 +16,12 @@ public class ConversationModel {
 
     private Integer addresseeUserid;
 
-    private Date updatedAt;
-
-    private Integer letterNumber;
+    private DateTime updatedAt;
 
     private Integer status;
 
-    private FirstLetterModel firstLetterModel;
-
-    /**初期list大小是1，不支持继续回复*/
-    private List<LetterModel> restLetterList;
+    /**初期list大小是2，只有第一封信和回信，不支持继续回复*/
+    private List<LetterModel> letterModelList;
 
     public Integer getId() {
         return id;
@@ -50,20 +47,12 @@ public class ConversationModel {
         this.addresseeUserid = addresseeUserid;
     }
 
-    public Date getUpdatedAt() {
+    public DateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(DateTime updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public Integer getLetterNumber() {
-        return letterNumber;
-    }
-
-    public void setLetterNumber(Integer letterNumber) {
-        this.letterNumber = letterNumber;
     }
 
     public Integer getStatus() {
@@ -74,19 +63,11 @@ public class ConversationModel {
         this.status = status;
     }
 
-    public FirstLetterModel getFirstLetterModel() {
-        return firstLetterModel;
+    public List<LetterModel> getLetterModelList() {
+        return letterModelList;
     }
 
-    public void setFirstLetterModel(FirstLetterModel firstLetterModel) {
-        this.firstLetterModel = firstLetterModel;
-    }
-
-    public List<LetterModel> getRestLetterList() {
-        return restLetterList;
-    }
-
-    public void setRestLetterList(List<LetterModel> restLetterList) {
-        this.restLetterList = restLetterList;
+    public void setLetterModelList(List<LetterModel> letterModelList) {
+        this.letterModelList = letterModelList;
     }
 }

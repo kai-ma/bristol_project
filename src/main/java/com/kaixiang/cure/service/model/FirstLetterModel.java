@@ -1,6 +1,5 @@
 package com.kaixiang.cure.service.model;
 
-import org.hibernate.validator.constraints.Length;
 import org.joda.time.DateTime;
 
 import javax.validation.constraints.NotBlank;

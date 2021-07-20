@@ -30,6 +30,9 @@ public class LetterModel {
 
     private String pseudonym;
 
+    /**
+     * 默认0，回复的首页信；1是回信，2是首封信
+     */
     private Integer type;
 
     public Integer getId() {

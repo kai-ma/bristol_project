@@ -1,20 +1,27 @@
 package com.kaixiang.cure.utils;
 
-import com.kaixiang.cure.controller.viewobject.ConversationVO;
+import com.kaixiang.cure.controller.viewobject.ConversationVOInAnswerBook;
+import com.kaixiang.cure.controller.viewobject.LetterVO;
 import com.kaixiang.cure.controller.viewobject.TopicVO;
 import com.kaixiang.cure.dataobject.ConversationDO;
 import com.kaixiang.cure.dataobject.FirstLetterDO;
 import com.kaixiang.cure.dataobject.LetterDO;
 import com.kaixiang.cure.dataobject.TopicDO;
-import com.kaixiang.cure.service.model.ConversationModel;
+import com.kaixiang.cure.service.model.ConversationModelInAnswerBook;
 import com.kaixiang.cure.service.model.FirstLetterModel;
 import com.kaixiang.cure.service.model.LetterModel;
 import com.kaixiang.cure.service.model.TopicModel;
 import com.kaixiang.cure.utils.encrypt.EncryptUtils;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.kaixiang.cure.utils.Constants.FIRST_LETTER_TYPE;
 
 /**
  * @description: Convertor.java: 各种model之间的转换
@@ -64,6 +71,7 @@ public class Convertor {
         LetterModel letterModel = new LetterModel();
         BeanUtils.copyProperties(letterDO, letterModel);
         letterModel.setContent(letterDO.getFilepath());
+        letterModel.setCreatedAt(new DateTime(letterDO.getCreatedAt()));
         return letterModel;
     }
 
@@ -102,6 +110,35 @@ public class Convertor {
         if (conversationId != null) {
             firstLetterModel.setConversationId(conversationId);
         }
+        firstLetterModel.setType(FIRST_LETTER_TYPE);
         return firstLetterModel;
+    }
+
+    public ConversationVOInAnswerBook conversationVOInAnswerBookFromConversationModelInAnswerBook(ConversationModelInAnswerBook conversationModelInAnswerBook) {
+        if (conversationModelInAnswerBook == null) {
+            return null;
+        }
+        ConversationVOInAnswerBook conversationVOInAnswerBook = new ConversationVOInAnswerBook();
+        BeanUtils.copyProperties(conversationModelInAnswerBook, conversationVOInAnswerBook);
+        if (conversationModelInAnswerBook.getCollectedAt() != null) {
+            conversationVOInAnswerBook.setCollectedAt(conversationModelInAnswerBook.getCollectedAt().
+                    toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+        }
+        List<LetterModel> letterModelList = conversationModelInAnswerBook.getLetterModelList();
+        conversationVOInAnswerBook.setLetterVOList(letterModelList.stream().map(this::letterVOFromLetterModel).collect(Collectors.toList()));
+        return conversationVOInAnswerBook;
+    }
+
+    public LetterVO letterVOFromLetterModel(LetterModel letterModel) {
+        if (letterModel == null) {
+            return null;
+        }
+        LetterVO letterVO = new LetterVO();
+        BeanUtils.copyProperties(letterModel, letterVO);
+        if (letterModel.getCreatedAt() != null) {
+            letterVO.setCreatedAt(letterModel.getCreatedAt().
+                    toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+        }
+        return letterVO;
     }
 }

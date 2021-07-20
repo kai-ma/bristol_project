@@ -57,7 +57,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     userId = Integer.valueOf(claims.getSubject());
                     String role = (String) claims.get("role");
                 } catch (ExpiredJwtException e) {
-                    //todo：对于返回token过期的，应该调用logout并且跳转到登录页面。
+                    //todo：对于返回token过期的，应该调用logout并且跳转到登录页面。20003错误码
                     throw new BusinessException(EnumBusinessError.TOKEN_EXPIRED);
                 } catch (UnsupportedJwtException e) {
                     throw new BusinessException(EnumBusinessError.TOKEN_ILLEGAL);

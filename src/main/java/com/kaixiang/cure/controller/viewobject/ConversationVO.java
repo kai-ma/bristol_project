@@ -1,8 +1,5 @@
 package com.kaixiang.cure.controller.viewobject;
 
-import com.kaixiang.cure.service.model.FirstLetterModel;
-import com.kaixiang.cure.service.model.LetterModel;
-
 import java.util.Date;
 import java.util.List;
 
@@ -14,18 +11,24 @@ import java.util.List;
 public class ConversationVO {
     private Integer id;
 
-    private Integer senderUserid;
+    /**
+     * 初期list大小是2，一个firstLetter，一个回复 不支持继续回复
+     */
+    private List<LetterVO> letterVOList;
 
-    private String addresseeUserid;
+    public Integer getId() {
+        return id;
+    }
 
-    private Date updatedAt;
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-    private Integer letterNumber;
+    public List<LetterVO> getLetterVOList() {
+        return letterVOList;
+    }
 
-    private Integer status;
-
-    private FirstLetterModel firstLetterModel;
-
-    /**初期list大小是1，不支持继续回复*/
-    private List<LetterModel> restLetterList;
+    public void setLetterVOList(List<LetterVO> letterVOList) {
+        this.letterVOList = letterVOList;
+    }
 }

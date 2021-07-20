@@ -12,11 +12,12 @@ import com.kaixiang.cure.error.BusinessException;
 import com.kaixiang.cure.error.EnumBusinessError;
 import com.kaixiang.cure.service.AnswerBookService;
 import com.kaixiang.cure.service.LetterService;
-import com.kaixiang.cure.service.model.ConversationModel;
+import com.kaixiang.cure.service.model.ConversationModelInAnswerBook;
 import com.kaixiang.cure.service.model.FirstLetterModel;
 import com.kaixiang.cure.service.model.TopicModel;
 import com.kaixiang.cure.utils.Convertor;
 import com.kaixiang.cure.utils.encrypt.EncryptUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,37 +59,41 @@ public class AnswerBookServiceImpl implements AnswerBookService {
     }
 
     @Override
-    public List<ConversationModel> listConversationByTopicId(Integer topicId) throws BusinessException {
+    public List<ConversationModelInAnswerBook> listConversationByTopicId(Integer topicId) throws BusinessException {
         //todo:存到redis当中
         try {
             List<AnswerBookDO> answerBookDOList = answerBookDOMapper.selectByTopicId(topicId);
             if (answerBookDOList == null) {
                 throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
             }
-            List<ConversationModel> conversationModelList = new ArrayList<>();
+            List<ConversationModelInAnswerBook> conversationModelInAnswerBookList = new ArrayList<>();
             for(AnswerBookDO answerBookDO: answerBookDOList){
-                conversationModelList.add(getConversationModelByAnswerBookDO(answerBookDO));
+                conversationModelInAnswerBookList.add(getConversationModelByAnswerBookDO(answerBookDO));
             }
-            return conversationModelList;
+            return conversationModelInAnswerBookList;
         } catch (Exception e) {
             throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
         }
     }
 
 
-    private ConversationModel getConversationModelByAnswerBookDO(AnswerBookDO answerBookDO) throws BusinessException {
+    private ConversationModelInAnswerBook getConversationModelByAnswerBookDO(AnswerBookDO answerBookDO) throws BusinessException {
         ConversationDO conversationDO = conversationDOMapper.selectByPrimaryKey(answerBookDO.getConversationId());
         if(conversationDO == null){
             throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
         }
-        ConversationModel conversationModel = new ConversationModel();
-        BeanUtils.copyProperties(conversationDO, conversationModel);
-        conversationModel.setAddresseeUserid(Integer.valueOf(encryptUtils.decrypt(conversationDO.getEncryptAddresseeUserid())));
-        conversationModel.setSenderUserid(Integer.valueOf(encryptUtils.decrypt(conversationDO.getEncryptSenderUserid())));
+        ConversationModelInAnswerBook conversationModelInAnswerBook = new ConversationModelInAnswerBook();
+        BeanUtils.copyProperties(answerBookDO, conversationModelInAnswerBook);
+        BeanUtils.copyProperties(conversationDO, conversationModelInAnswerBook);
+        if(answerBookDO.getCollectedAt() != null){
+            conversationModelInAnswerBook.setCollectedAt(new DateTime(answerBookDO.getCollectedAt()));
+        }
+        conversationModelInAnswerBook.setAddresseeUserid(Integer.valueOf(encryptUtils.decrypt(conversationDO.getEncryptAddresseeUserid())));
+        conversationModelInAnswerBook.setSenderUserid(Integer.valueOf(encryptUtils.decrypt(conversationDO.getEncryptSenderUserid())));
         FirstLetterDO firstLetterDO = firstLetterDOMapper.selectByPrimaryKey(conversationDO.getFirstLetterId());
         FirstLetterModel firstLetterModel = convertor.firstLetterModelFromFirstLetterDO(firstLetterDO, conversationDO.getId());
-        conversationModel.setFirstLetterModel(firstLetterModel);
-        conversationModel.setRestLetterList(letterService.getRestLettersOfConversation(conversationDO.getId()));
-        return conversationModel;
+        conversationModelInAnswerBook.setLetterModelList(letterService.getRestLettersOfConversation(conversationDO.getId()));
+        conversationModelInAnswerBook.getLetterModelList().add(0, firstLetterModel);
+        return conversationModelInAnswerBook;
     }
 }

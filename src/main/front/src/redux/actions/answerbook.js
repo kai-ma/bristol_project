@@ -17,7 +17,7 @@ export const loadConversationByTopicId = (topicId) => {
 				dispatch(loadConversationByTopicIdSuccess(res, topicId));
 			},
 			(err) => {
-				Toast.fail(err, 1);
+				Toast.fail(err.errMsg, 1);
 				dispatch(answerbookFailure(err));
 			}
 		);

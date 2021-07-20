@@ -7,7 +7,7 @@
     <result column="topic_id" jdbcType="INTEGER" property="topicId" />
     <result column="votes" jdbcType="INTEGER" property="votes" />
     <result column="collect_nums" jdbcType="INTEGER" property="collectNums" />
-    <result column="collected_at" jdbcType="DATE" property="collectedAt" />
+    <result column="collected_at" jdbcType="TIMESTAMP" property="collectedAt" />
   </resultMap>
   <sql id="Base_Column_List">
     id, conversation_id, topic_id, votes, collect_nums, collected_at
@@ -20,7 +20,7 @@
   </select>
   <select id="selectByTopicId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
+    <include refid="Base_Column_List"/>
     from answer_book
     where topic_id = #{topicId,jdbcType=INTEGER}
   </select>
@@ -33,7 +33,7 @@
       votes, collect_nums, collected_at
       )
     values (#{id,jdbcType=INTEGER}, #{conversationId,jdbcType=INTEGER}, #{topicId,jdbcType=INTEGER}, 
-      #{votes,jdbcType=INTEGER}, #{collectNums,jdbcType=INTEGER}, #{collectedAt,jdbcType=DATE}
+      #{votes,jdbcType=INTEGER}, #{collectNums,jdbcType=INTEGER}, #{collectedAt,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.AnswerBookDO">
@@ -75,7 +75,7 @@
         #{collectNums,jdbcType=INTEGER},
       </if>
       <if test="collectedAt != null">
-        #{collectedAt,jdbcType=DATE},
+        #{collectedAt,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -95,7 +95,7 @@
         collect_nums = #{collectNums,jdbcType=INTEGER},
       </if>
       <if test="collectedAt != null">
-        collected_at = #{collectedAt,jdbcType=DATE},
+        collected_at = #{collectedAt,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -106,7 +106,7 @@
       topic_id = #{topicId,jdbcType=INTEGER},
       votes = #{votes,jdbcType=INTEGER},
       collect_nums = #{collectNums,jdbcType=INTEGER},
-      collected_at = #{collectedAt,jdbcType=DATE}
+      collected_at = #{collectedAt,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

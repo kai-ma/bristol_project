@@ -5,30 +5,13 @@ package com.kaixiang.cure.controller.viewobject;
  * @author: Kaixiang Ma
  * @create: 2021-07-17 16:47
  */
-public class FirstLetterVO {
-    private Integer id;
+public class FirstLetterVO extends LetterVO {
 
     private String title;
-
-    private String content;
-
-    private String createdAt;
 
     private String lastRepliedAt;
 
     private Integer replyNumber;
-
-    private String pseudonym;
-
-    private Integer conversationId;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;
@@ -36,22 +19,6 @@ public class FirstLetterVO {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
     }
 
     public String getLastRepliedAt() {
@@ -70,19 +37,4 @@ public class FirstLetterVO {
         this.replyNumber = replyNumber;
     }
 
-    public String getPseudonym() {
-        return pseudonym;
-    }
-
-    public void setPseudonym(String pseudonym) {
-        this.pseudonym = pseudonym;
-    }
-
-    public Integer getConversationId() {
-        return conversationId;
-    }
-
-    public void setConversationId(Integer conversationId) {
-        this.conversationId = conversationId;
-    }
 }
