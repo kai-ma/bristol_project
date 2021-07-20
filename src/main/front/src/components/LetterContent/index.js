@@ -13,7 +13,6 @@ class LetterContent extends Component {
 		return (
 			<div>
 				<WingBlank size="lg">
-					<WhiteSpace size="lg" />
 					<Card>
 						{letter.type === 2 ? (
 							<Card.Header title={letter.title} />
@@ -26,7 +25,6 @@ class LetterContent extends Component {
 						</Card.Body>
 						<Card.Footer extra={<div>{letter.pseudonym}</div>} />
 					</Card>
-					<WhiteSpace size="lg" />
 				</WingBlank>
 			</div>
 		);
