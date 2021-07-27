@@ -2,10 +2,8 @@ import React, { Component } from "react";
 import {
 	List,
 	TextareaItem,
-	InputItem,
 	NavBar,
 	Button,
-	Switch,
 	Toast,
 	WhiteSpace,
 } from "antd-mobile";
