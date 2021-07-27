@@ -8,7 +8,6 @@ import {
 	Card,
 	WingBlank,
 	WhiteSpace,
-	ActivityIndicator,
 	Button,
 } from "antd-mobile";
 
@@ -69,10 +68,6 @@ class Home extends Component {
 					</div>
 				) : (
 					<div>
-						<p onClick={this.updateLetters}>
-							{this.props.letters.length}
-							letters
-						</p>
                         {/* 参考：https://www.robinwieruch.de/react-state-array-add-update-remove */}
 						{letters.map((letter, index) => (
 							<div key={index}>

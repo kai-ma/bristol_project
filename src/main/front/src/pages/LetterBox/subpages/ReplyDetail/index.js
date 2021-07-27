@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import {
 	NavBar,
-	Toast,
+	Toast, 
+    WhiteSpace,
 } from "antd-mobile";
 import { connect } from "react-redux";
 import LetterContent from "@src/components/LetterContent";
@@ -59,6 +60,7 @@ class ReplyDetail extends Component {
 					</div>
 				) : (
 					<div>
+                        <WhiteSpace size="lg" />
 						<LetterContent letter={letter}></LetterContent>
 						<div>
 							{repliedLetters.map((detailLetter, index) => (
