@@ -24,9 +24,9 @@ import java.util.Map;
 
 import static com.kaixiang.cure.utils.Constants.ROLE_USER;
 
-@Controller("auth")
-@RequestMapping("/auth")
-@CrossOrigin(origins = "http://localhost:3000")
+@Controller("api/auth")
+@RequestMapping("api/auth")
+@CrossOrigin
 public class AuthController extends BaseController {
 
     @Autowired

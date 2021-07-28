@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
  * @author: Kaixiang Ma
  * @create: 2021-07-19 00:51
  */
-@Controller("answerbook")
-@RequestMapping("/answerbook")
-@CrossOrigin(origins = "http://localhost:3000")
+@Controller("api/answerbook")
+@RequestMapping("api/answerbook")
+@CrossOrigin
 public class AnswerBookController {
     @Autowired
     private AnswerBookService answerBookService;

@@ -26,9 +26,9 @@ import java.util.stream.Collectors;
 import static com.kaixiang.cure.utils.Constants.ATTRIBUTE_KEY_USERID;
 
 
-@Controller("letter")
-@RequestMapping("/letter")
-@CrossOrigin(origins = "http://localhost:3000")
+@Controller("api/letter")
+@RequestMapping("api/letter")
+@CrossOrigin
 public class LetterController {
 
     @Autowired
