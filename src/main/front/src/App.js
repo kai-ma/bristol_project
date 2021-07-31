@@ -1,7 +1,7 @@
 import { Switch, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import LetterBox from "./pages/LetterBox";
-import StartDetail from "./pages/LetterBox/subpages/StartDetail";
+import SendDetail from "./pages/LetterBox/subpages/SendDetail";
 import ReplyDetail from "./pages/LetterBox/subpages/ReplyDetail";
 import AnswerBook from "./pages/AnswerBook";
 import AnswerBookContent from "./pages/AnswerBook/subpages/Content";
@@ -22,7 +22,7 @@ function App() {
 			<Switch>
 				<PrivateRoute path="/" exact component={Home} />
 				<PrivateRoute path="/letterbox" exact component={LetterBox} />
-                <PrivateRoute path="/letterbox/detail/:id" exact component={StartDetail} />
+                <PrivateRoute path="/letterbox/detail/:id" exact component={SendDetail} />
                 <PrivateRoute path="/letterbox/reply/detail/:id" exact component={ReplyDetail} />
 				<PrivateRoute path="/conversation/:id" exact component={Conversation} />
 				<PrivateRoute path="/answerbook" exact component={AnswerBook} />

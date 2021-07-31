@@ -6,7 +6,7 @@ import Loading from "../../components/Loading";
 
 const tabs = [
 	//todo： bage 可以设置为dot <Badge dot> 或者文本 <Badge text={"3"}> 显示角标
-	{ title: <Badge text={""}>I started</Badge> },
+	{ title: <Badge text={""}>I sent</Badge> },
 	{ title: <Badge text={""}>I replied</Badge> },
 ];
 
@@ -33,7 +33,7 @@ class LetterBox extends Component {
         }
     }
 
-    loadDetailIStarted = (letter) => {
+    loadDetailISent = (letter) => {
         this.props.history.push("/letterbox/detail/" + letter.id);
     }
 
@@ -73,7 +73,7 @@ class LetterBox extends Component {
 										<div key={index}>
 											<WingBlank size="lg">
 												<WhiteSpace />
-												<Card onClick={() =>this.loadDetailIStarted(letter)}>
+												<Card onClick={() =>this.loadDetailISent(letter)}>
 													<Card.Header 
                                                         title={letter.title}
                                                         extra={letter.replyNumber > 0 ?  letter.replyNumber + " replied" : null}

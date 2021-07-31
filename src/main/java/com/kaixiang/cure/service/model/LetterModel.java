@@ -31,7 +31,7 @@ public class LetterModel {
     private String pseudonym;
 
     /**
-     * 默认0，回复的首页信；1是回信，2是首封信
+     * 默认0，接信人的回复；1是发信人再次回复接信人; 2是首封信 0和1是从数据库直接查询可得，2是自己添加的
      */
     private Integer type;
 

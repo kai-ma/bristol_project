@@ -5,6 +5,8 @@ import java.util.Date;
 public class LetterDO {
     private Integer id;
 
+    private Integer firstLetterId;
+
     private Integer conversationId;
 
     private Integer type;
@@ -23,6 +25,14 @@ public class LetterDO {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getFirstLetterId() {
+        return firstLetterId;
+    }
+
+    public void setFirstLetterId(Integer firstLetterId) {
+        this.firstLetterId = firstLetterId;
     }
 
     public Integer getConversationId() {

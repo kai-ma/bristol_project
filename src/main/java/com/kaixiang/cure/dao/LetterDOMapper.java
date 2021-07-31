@@ -15,6 +15,8 @@ public interface LetterDOMapper {
 
     List<LetterDO> listLettersByConversationId(Integer conversationId);
 
+    List<LetterDO> listLettersByFirstLetterId(Integer firstLetterId);
+
     int updateByPrimaryKeySelective(LetterDO record);
 
     int updateByPrimaryKey(LetterDO record);

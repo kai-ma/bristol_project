@@ -31,4 +31,10 @@ public interface LetterService {
     List<LetterModel> getRestLettersOfConversation(Integer conversationId) throws BusinessException;
 
     void replyFirstLetter(LetterModel letterModel) throws BusinessException;
+
+    /**
+     * letterBox：根据letterBox中我发出的首封信，获取所有回复的信
+     */
+    List<LetterModel> listRepliesByFirstLetterId(Integer firstLetterId) throws BusinessException;
+
 }

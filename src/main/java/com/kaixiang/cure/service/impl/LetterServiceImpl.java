@@ -15,7 +15,6 @@ import com.kaixiang.cure.utils.Convertor;
 import com.kaixiang.cure.utils.encrypt.EncryptUtils;
 import com.kaixiang.cure.utils.validator.ValidationResult;
 import com.kaixiang.cure.utils.validator.ValidatorImpl;
-import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -152,7 +151,7 @@ public class LetterServiceImpl implements LetterService {
     @Override
     public List<LetterModel> getRestLettersOfConversation(Integer conversationId) throws BusinessException {
         if (conversationId == null) {
-            throw new BusinessException(EnumBusinessError.TOKEN_ILLEGAL);
+            throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR);
         }
         try {
             //1. 根据addresseeUserid和firstLetterId，查询conversation表 获取conversationId
@@ -163,6 +162,25 @@ public class LetterServiceImpl implements LetterService {
             throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
         }
     }
+
+    /**
+     * 根据首封信获取回信  目前不支持继续回信，因此直接返回一个回信letterModel的列表
+     */
+    @Override
+    public List<LetterModel> listRepliesByFirstLetterId(Integer firstLetterId) throws BusinessException{
+        if (firstLetterId == null) {
+            throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR);
+        }
+        try {
+            //1. firstLetterId，查询conversation表，获取所有conversationId
+            List<LetterDO> letterDOList = letterDOMapper.listLettersByFirstLetterId(firstLetterId);
+            return letterDOList.stream().map(letterDO -> convertor.letterModelFromLetterDO(letterDO)
+            ).collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
+        }
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 

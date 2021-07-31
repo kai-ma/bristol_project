@@ -8,6 +8,7 @@ import com.kaixiang.cure.service.LetterService;
 import com.kaixiang.cure.service.model.ConversationModel;
 import com.kaixiang.cure.service.model.FirstLetterModel;
 import com.kaixiang.cure.service.model.LetterModel;
+import com.kaixiang.cure.utils.Convertor;
 import com.kaixiang.cure.utils.annotation.UserLoginToken;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.format.DateTimeFormat;
@@ -36,6 +37,9 @@ public class LetterController {
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private Convertor convertor;
 
     /**
      * 写第一封信
@@ -126,6 +130,18 @@ public class LetterController {
         return CommonReturnType.create(letterService.getRestLettersOfConversation(conversationId));
     }
 
+    /**
+     * letterBox：根据letterBox中我的首封信，获取全部回信-首期不支持继续回复，因此返回就是letterVO的list
+     */
+    @RequestMapping(value = "/letterbox/replies/firstLetterId", params = {"firstLetterId"}, method = {RequestMethod.GET})
+    @ResponseBody
+    @UserLoginToken
+    public CommonReturnType listRepliesByFirstLetterId(HttpServletRequest request) throws BusinessException {
+        Integer firstLetterId = Integer.valueOf(request.getParameter("firstLetterId"));
+        List<LetterModel> letterModels = letterService.listRepliesByFirstLetterId(firstLetterId);
+        return CommonReturnType.create(letterModels.stream().map(letterModel -> convertor.letterVOFromLetterModel(letterModel)
+        ).collect(Collectors.toList()));
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 

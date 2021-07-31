@@ -3,6 +3,7 @@
 <mapper namespace="com.kaixiang.cure.dao.LetterDOMapper">
   <resultMap id="BaseResultMap" type="com.kaixiang.cure.dataobject.LetterDO">
     <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="first_letter_id" jdbcType="INTEGER" property="firstLetterId" />
     <result column="conversation_id" jdbcType="INTEGER" property="conversationId" />
     <result column="type" jdbcType="INTEGER" property="type" />
     <result column="filepath" jdbcType="VARCHAR" property="filepath" />
@@ -11,7 +12,8 @@
     <result column="addressee_status" jdbcType="INTEGER" property="addresseeStatus" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, conversation_id, type, filepath, created_at, sender_status, addressee_status
+    id, first_letter_id, conversation_id, type, filepath, created_at, sender_status, 
+    addressee_status
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -26,23 +28,33 @@
     where conversation_id = #{conversationId,jdbcType=INTEGER}
     order by created_at DESC;
   </select>
+  <select id="listLettersByFirstLetterId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from letter
+    where first_letter_id = #{firstLetterId,jdbcType=INTEGER}
+    order by created_at DESC;
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from letter
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.kaixiang.cure.dataobject.LetterDO">
-    insert into letter (id, conversation_id, type, 
-      filepath, created_at, sender_status, 
-      addressee_status)
-    values (#{id,jdbcType=INTEGER}, #{conversationId,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, 
-      #{filepath,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, #{senderStatus,jdbcType=INTEGER}, 
-      #{addresseeStatus,jdbcType=INTEGER})
+    insert into letter (id, first_letter_id, conversation_id, 
+      type, filepath, created_at, 
+      sender_status, addressee_status)
+    values (#{id,jdbcType=INTEGER}, #{firstLetterId,jdbcType=INTEGER}, #{conversationId,jdbcType=INTEGER}, 
+      #{type,jdbcType=INTEGER}, #{filepath,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, 
+      #{senderStatus,jdbcType=INTEGER}, #{addresseeStatus,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.LetterDO" keyProperty="id" useGeneratedKeys="true">
+  <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.LetterDO">
     insert into letter
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
+      </if>
+      <if test="firstLetterId != null">
+        first_letter_id,
       </if>
       <if test="conversationId != null">
         conversation_id,
@@ -67,6 +79,9 @@
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
+      <if test="firstLetterId != null">
+        #{firstLetterId,jdbcType=INTEGER},
+      </if>
       <if test="conversationId != null">
         #{conversationId,jdbcType=INTEGER},
       </if>
@@ -90,6 +105,9 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.kaixiang.cure.dataobject.LetterDO">
     update letter
     <set>
+      <if test="firstLetterId != null">
+        first_letter_id = #{firstLetterId,jdbcType=INTEGER},
+      </if>
       <if test="conversationId != null">
         conversation_id = #{conversationId,jdbcType=INTEGER},
       </if>
@@ -113,7 +131,8 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.kaixiang.cure.dataobject.LetterDO">
     update letter
-    set conversation_id = #{conversationId,jdbcType=INTEGER},
+    set first_letter_id = #{firstLetterId,jdbcType=INTEGER},
+      conversation_id = #{conversationId,jdbcType=INTEGER},
       type = #{type,jdbcType=INTEGER},
       filepath = #{filepath,jdbcType=VARCHAR},
       created_at = #{createdAt,jdbcType=TIMESTAMP},

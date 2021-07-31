@@ -53,7 +53,7 @@ const letterFailure = (error) => {
 	};
 };
 
-//获取letterBox中我发出的信
+//获取letterBox中我发出的首封信 letterbox的tab0
 export const loadMyFirstLetters = () => {
 	return (dispatch) => {
 		dispatch({
