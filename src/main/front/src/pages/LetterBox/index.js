@@ -17,6 +17,7 @@ class LetterBox extends Component {
 	}
 
 	componentDidMount() {
+        //加载第一封信
         if(this.props.reloadMyFirstLetters){
             this.props.loadMyFirstLetters();
         }
@@ -28,7 +29,6 @@ class LetterBox extends Component {
 
     handleClickTab1 = () => {
         if(this.props.reloadFirstLettersIReplied){
-            console.log("loadMyRepliedFirstLetters");
             this.props.loadFirstLettersIReplied();
         }
     }

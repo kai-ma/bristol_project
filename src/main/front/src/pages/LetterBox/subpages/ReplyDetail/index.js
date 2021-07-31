@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import {
 	NavBar,
-	Toast, 
+	Toast,
     WhiteSpace,
 } from "antd-mobile";
 import { connect } from "react-redux";
@@ -15,13 +15,17 @@ class ReplyDetail extends Component {
 	}
 
 	componentDidMount() {
-			const conversationId = this.props.firstLettersIReplied.find(
-				(x) => x.id == this.props.match.params.id
-			).conversationId;
-			this.props.loadDetailOfFirstLetterReplied(conversationId);
-		// if (this.props.reloadDetailOfFirstLetterReplied) {
-			
-		// }
+        const matchedLetter = this.props.firstLettersIReplied.find(
+            (x) => x.id == this.props.match.params.id
+        );
+        if(matchedLetter != null) {
+            const conversationId = matchedLetter.conversationId;
+            this.props.loadDetailOfFirstLetterReplied(conversationId);
+        }else{
+            this.showMessage(
+                "Error url, please input correct url"
+            )
+        }        
 	}
 
 	initialState = {
@@ -84,7 +88,6 @@ const mapStateToProps = (state) => {
 		firstLettersIReplied: state.letter.firstLettersIReplied,
 		detailOfFirstLetterReplied: state.letter.detailOfFirstLetterReplied,
 		reloadDetailOfFirstLetterReplied: state.letter.reloadDetailOfFirstLetterReplied,
-		detailOfFirstLetterReplied: state.letter.detailOfFirstLetterReplied,
 	};
 };
 
