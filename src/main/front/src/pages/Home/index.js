@@ -3,13 +3,9 @@ import { connect } from "react-redux";
 import { updateLetters, loadLetters } from "../../redux/actions/letter";
 //redux可以参考：https://www.freecodecamp.org/news/loading-data-in-react-redux-thunk-redux-saga-suspense-hooks-666b21da1569/
 import { BsPencilSquare } from "react-icons/bs";
+import "./index.css";
 
-import {
-	Card,
-	WingBlank,
-	WhiteSpace,
-	Button,
-} from "antd-mobile";
+import { Card, WingBlank, WhiteSpace, Button, NavBar } from "antd-mobile";
 
 import Loading from "../../components/Loading";
 class Home extends Component {
@@ -19,14 +15,14 @@ class Home extends Component {
 	}
 
 	componentDidMount() {
-        if(this.props.reLoadLetters){
-            this.props.loadLetters();
-        }
+		if (this.props.reLoadLetters) {
+			this.props.loadLetters();
+		}
 	}
 
 	updateLetters = () => {
 		console.log("updateLetters");
-        this.props.updateLetters();
+		this.props.updateLetters();
 		console.log(this.props);
 		const letters = this.props.letters;
 		if (letters != null) {
@@ -60,7 +56,9 @@ class Home extends Component {
 
 		return (
 			<div>
-				<h1> Welcome to cure!</h1>
+				<div>
+					<h2 className="pull-left">Welcome to Cure</h2>
+				</div>
 				{/* 根据loading判读是否显示loading图标 */}
 				{this.props.loading ? (
 					<div>
@@ -68,7 +66,7 @@ class Home extends Component {
 					</div>
 				) : (
 					<div>
-                        {/* 参考：https://www.robinwieruch.de/react-state-array-add-update-remove */}
+						{/* 参考：https://www.robinwieruch.de/react-state-array-add-update-remove */}
 						{letters.map((letter, index) => (
 							<div key={index}>
 								<WingBlank size="lg">
@@ -90,17 +88,19 @@ class Home extends Component {
 										</Card.Body>
 										<Card.Footer
 											content={letter.createdAt}
-											extra={<div>{letter.pseudonym}</div>}
+											extra={
+												<div>{letter.pseudonym}</div>
+											}
 										/>
 									</Card>
 									<WhiteSpace />
 								</WingBlank>
 							</div>
 						))}
-						<WingBlank>
+						<p className="p">{2} hours to refresh</p>
+                        <WingBlank>
 							<Button
 								icon={<BsPencilSquare />}
-								inline
 								size="large"
 								style={{ marginRight: "2px" }}
 								// style={{float:"right",marginBottom:10}}
@@ -109,7 +109,6 @@ class Home extends Component {
 								write letter
 							</Button>
 						</WingBlank>
-
 						<WhiteSpace />
 					</div>
 				)}
@@ -122,7 +121,7 @@ const mapStateToProps = (state) => {
 	return {
 		letters: state.letter.letters,
 		loading: state.letter.loading,
-        reLoadLetters: state.letter.reLoadLetters,
+		reLoadLetters: state.letter.reLoadLetters,
 	};
 };
 
