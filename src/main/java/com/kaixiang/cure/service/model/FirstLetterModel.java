@@ -19,6 +19,8 @@ public class FirstLetterModel extends LetterModel{
 
     private Integer replyNumber;
 
+    private Integer topicId;
+
     public Integer getUserId() {
         return userId;
     }
@@ -50,5 +52,13 @@ public class FirstLetterModel extends LetterModel{
 
     public void setReplyNumber(Integer replyNumber) {
         this.replyNumber = replyNumber;
+    }
+
+    public Integer getTopicId() {
+        return topicId;
+    }
+
+    public void setTopicId(Integer topicId) {
+        this.topicId = topicId;
     }
 }

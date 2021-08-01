@@ -11,7 +11,7 @@ public class FirstLetterDO {
 
     private String filepath;
 
-    private Integer topicid;
+    private Integer topicId;
 
     private Date createdAt;
 
@@ -57,12 +57,12 @@ public class FirstLetterDO {
         this.filepath = filepath == null ? null : filepath.trim();
     }
 
-    public Integer getTopicid() {
-        return topicid;
+    public Integer getTopicId() {
+        return topicId;
     }
 
-    public void setTopicid(Integer topicid) {
-        this.topicid = topicid;
+    public void setTopicId(Integer topicId) {
+        this.topicId = topicId;
     }
 
     public Date getCreatedAt() {

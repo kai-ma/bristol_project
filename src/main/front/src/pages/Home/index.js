@@ -4,8 +4,7 @@ import { updateLetters, loadLetters } from "../../redux/actions/letter";
 //redux可以参考：https://www.freecodecamp.org/news/loading-data-in-react-redux-thunk-redux-saga-suspense-hooks-666b21da1569/
 import { BsPencilSquare } from "react-icons/bs";
 import "./index.css";
-
-import { Card, WingBlank, WhiteSpace, Button, NavBar } from "antd-mobile";
+import { Card, WingBlank, WhiteSpace, Button } from "antd-mobile";
 
 import Loading from "../../components/Loading";
 class Home extends Component {
@@ -93,12 +92,18 @@ class Home extends Component {
 											}
 										/>
 									</Card>
-									<WhiteSpace />
+									{index < letters.length - 1 ? (
+										<div>
+											<WhiteSpace />
+										</div>
+									) : (
+										<div></div>
+									)}
 								</WingBlank>
 							</div>
 						))}
 						<p className="p">{2} hours to refresh</p>
-                        <WingBlank>
+						<WingBlank>
 							<Button
 								icon={<BsPencilSquare />}
 								size="large"

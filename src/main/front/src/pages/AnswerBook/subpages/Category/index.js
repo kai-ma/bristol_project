@@ -3,6 +3,7 @@ import { Grid, WingBlank, WhiteSpace, Toast } from "antd-mobile";
 import { withRouter } from "react-router-dom";
 import Http from "@src/utils/http.js";
 import Loading from "../../../../components/Loading";
+import { getTopics } from "../../../../utils/functions";
 class Category extends Component {
 	constructor(props) {
 		super(props);
@@ -17,31 +18,11 @@ class Category extends Component {
 	};
 
 	componentDidMount() {
-		let key = "topic";
-		let topicString = localStorage.getItem(key);
-		if (topicString == null) {
-			Http({
-				url: "/answerbook/get/topic",
-				method: "get",
-				mock: false,
-			}).then(
-				(res) => {
-					this.setState({
-						topics: res,
-						loadTopics: false,
-					});
-                    console.log(res);
-                    let topicString = JSON.stringify(res);
-					localStorage.setItem(key, topicString);
-				},
-				(err) => {
-					Toast.info("Network error, please try again", 2);
-				}
-			);
-		} else {
-			let topics = JSON.parse(topicString);
+		let topics = getTopics();
+		if (topics != null && topics.length > 0) {
 			this.setState({
 				topics: topics,
+				loadTopics: false,
 			});
 		}
 	}

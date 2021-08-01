@@ -52,7 +52,7 @@ public class LetterServiceImpl implements LetterService {
         if (result.isHasErrors()) {
             throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR, result.getErrMsg());
         }
-        FirstLetterDO firstLetterDO = convertDataObjectFromModel(firstLetterModel);
+        FirstLetterDO firstLetterDO = convertor.firstLetterDOFromModel(firstLetterModel);
         try {
             firstLetterDOMapper.insertSelective(firstLetterDO);
         } catch (Exception e) {
@@ -78,6 +78,10 @@ public class LetterServiceImpl implements LetterService {
         }
     }
 
+    /**
+     * 获取首页的信 todo：存到redis做分发
+     * 暂时读所有的，返回3条
+     */
     @Override
     public List<FirstLetterModel> getLettersInHomePage(Integer userid) throws BusinessException {
         if (userid == null) {
@@ -167,7 +171,7 @@ public class LetterServiceImpl implements LetterService {
      * 根据首封信获取回信  目前不支持继续回信，因此直接返回一个回信letterModel的列表
      */
     @Override
-    public List<LetterModel> listRepliesByFirstLetterId(Integer firstLetterId) throws BusinessException{
+    public List<LetterModel> listRepliesByFirstLetterId(Integer firstLetterId) throws BusinessException {
         if (firstLetterId == null) {
             throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR);
         }
@@ -183,26 +187,4 @@ public class LetterServiceImpl implements LetterService {
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * 在这里完成转换  todo：存到文件
-     */
-    private FirstLetterDO convertDataObjectFromModel(FirstLetterModel firstLetterModel) {
-        if (firstLetterModel == null) {
-            return null;
-        }
-        FirstLetterDO firstLetterDO = new FirstLetterDO();
-        BeanUtils.copyProperties(firstLetterModel, firstLetterDO);
-        firstLetterDO.setUserid(encryptUtils.encrypt(String.valueOf(firstLetterModel.getUserId())));
-        firstLetterDO.setFilepath(firstLetterModel.getContent());
-        return firstLetterDO;
-    }
-
-
-    /**
-     * todo: 从文件中获取内容
-     */
-    private String getContent(String filePath) {
-        return filePath;
-    }
 }

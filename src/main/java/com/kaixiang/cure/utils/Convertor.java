@@ -161,4 +161,16 @@ public class Convertor {
             return letterVO;
         }
     }
+
+
+    public FirstLetterDO firstLetterDOFromModel(FirstLetterModel firstLetterModel) {
+        if (firstLetterModel == null) {
+            return null;
+        }
+        FirstLetterDO firstLetterDO = new FirstLetterDO();
+        BeanUtils.copyProperties(firstLetterModel, firstLetterDO);
+        firstLetterDO.setUserid(encryptUtils.encrypt(String.valueOf(firstLetterModel.getUserId())));
+        firstLetterDO.setFilepath(firstLetterModel.getContent());
+        return firstLetterDO;
+    }
 }

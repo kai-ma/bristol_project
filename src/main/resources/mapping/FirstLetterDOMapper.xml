@@ -6,7 +6,7 @@
     <result column="userid" jdbcType="VARCHAR" property="userid" />
     <result column="title" jdbcType="VARCHAR" property="title" />
     <result column="filepath" jdbcType="VARCHAR" property="filepath" />
-    <result column="topicid" jdbcType="INTEGER" property="topicid" />
+    <result column="topic_id" jdbcType="INTEGER" property="topicId" />
     <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
     <result column="last_replied_at" jdbcType="TIMESTAMP" property="lastRepliedAt" />
     <result column="status" jdbcType="INTEGER" property="status" />
@@ -15,7 +15,7 @@
     <result column="pseudonym" jdbcType="VARCHAR" property="pseudonym" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, userid, title, filepath, topicid, created_at, last_replied_at, status, reply_number, 
+    id, userid, title, filepath, topic_id, created_at, last_replied_at, status, reply_number, 
     quality, pseudonym
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -44,15 +44,15 @@
   </delete>
   <insert id="insert" parameterType="com.kaixiang.cure.dataobject.FirstLetterDO">
     insert into first_letter (id, userid, title, 
-      filepath, topicid, created_at, 
+      filepath, topic_id, created_at, 
       last_replied_at, status, reply_number, 
       quality, pseudonym)
     values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
-      #{filepath,jdbcType=VARCHAR}, #{topicid,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, 
+      #{filepath,jdbcType=VARCHAR}, #{topicId,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, 
       #{lastRepliedAt,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{replyNumber,jdbcType=INTEGER}, 
       #{quality,jdbcType=INTEGER}, #{pseudonym,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.FirstLetterDO" keyProperty="id" useGeneratedKeys="true">
+  <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.FirstLetterDO">
     insert into first_letter
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -67,8 +67,8 @@
       <if test="filepath != null">
         filepath,
       </if>
-      <if test="topicid != null">
-        topicid,
+      <if test="topicId != null">
+        topic_id,
       </if>
       <if test="createdAt != null">
         created_at,
@@ -102,8 +102,8 @@
       <if test="filepath != null">
         #{filepath,jdbcType=VARCHAR},
       </if>
-      <if test="topicid != null">
-        #{topicid,jdbcType=INTEGER},
+      <if test="topicId != null">
+        #{topicId,jdbcType=INTEGER},
       </if>
       <if test="createdAt != null">
         #{createdAt,jdbcType=TIMESTAMP},
@@ -137,8 +137,8 @@
       <if test="filepath != null">
         filepath = #{filepath,jdbcType=VARCHAR},
       </if>
-      <if test="topicid != null">
-        topicid = #{topicid,jdbcType=INTEGER},
+      <if test="topicId != null">
+        topic_id = #{topicId,jdbcType=INTEGER},
       </if>
       <if test="createdAt != null">
         created_at = #{createdAt,jdbcType=TIMESTAMP},
@@ -166,7 +166,7 @@
     set userid = #{userid,jdbcType=VARCHAR},
       title = #{title,jdbcType=VARCHAR},
       filepath = #{filepath,jdbcType=VARCHAR},
-      topicid = #{topicid,jdbcType=INTEGER},
+      topic_id = #{topicId,jdbcType=INTEGER},
       created_at = #{createdAt,jdbcType=TIMESTAMP},
       last_replied_at = #{lastRepliedAt,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=INTEGER},
