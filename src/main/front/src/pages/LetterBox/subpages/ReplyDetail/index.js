@@ -46,6 +46,7 @@ class ReplyDetail extends Component {
 			(x) => x.id == this.props.match.params.id
 		);
 		const repliedLetters = this.props.detailOfFirstLetterReplied;
+        console.log(repliedLetters);
 		return (
 			<div>
 				<NavBar

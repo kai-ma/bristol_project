@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { WingBlank, WhiteSpace, Card } from "antd-mobile";
+//letterbox 首封信、回信部分详情都用的这个  answerbook conversation详情全部用的这个
 class LetterContent extends Component {
 	constructor(props) {
 		super(props);
@@ -13,18 +14,20 @@ class LetterContent extends Component {
 		return (
 			<div>
 				<WingBlank size="lg">
+					<WhiteSpace size="lg" />
 					<Card>
-						{letter.type === 2 ? (
+						{letter.title != null ? (
 							<Card.Header title={letter.title} />
-						) : (null
-						)}
+						) : null}
 						<Card.Body>
-							<WhiteSpace size="lg" />
 							<div>{letter.content}</div>
-							<WhiteSpace size="lg" />
 						</Card.Body>
-						<Card.Footer extra={<div>{letter.pseudonym}</div>} />
+                        <Card.Footer
+							content={<div>{letter.createdAt}</div>}
+							// extra={<div>{letter.pseudonym}</div>} todo：回信没有pseudonym，暂时先注释掉。
+						/>
 					</Card>
+					<WhiteSpace size="lg" />
 				</WingBlank>
 			</div>
 		);

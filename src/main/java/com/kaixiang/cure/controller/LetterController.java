@@ -127,11 +127,12 @@ public class LetterController {
     @UserLoginToken
     public CommonReturnType getLetterBoxDetailReplied(@RequestBody Map<String, String> map) throws BusinessException {
         Integer conversationId = Integer.valueOf(map.get("conversationId"));
-        return CommonReturnType.create(letterService.getRestLettersOfConversation(conversationId));
+        List<LetterModel> letterModels = letterService.getRestLettersOfConversation(conversationId);
+        return CommonReturnType.create(letterModels.stream().map(letterModel -> convertor.letterVOFromLetterModel(letterModel)).collect(Collectors.toList()));
     }
 
     /**
-     * letterBox：根据letterBox中我的首封信，获取全部回信-首期不支持继续回复，因此返回就是letterVO的list
+     * letterBox：根据letterBox中我的某个首封信，获取全部回信-首期不支持继续回复，因此返回就是letterVO的list
      */
     @RequestMapping(value = "/letterbox/replies/firstLetterId", params = {"firstLetterId"}, method = {RequestMethod.GET})
     @ResponseBody

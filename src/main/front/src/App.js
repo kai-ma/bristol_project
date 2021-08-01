@@ -5,6 +5,7 @@ import SendDetail from "./pages/LetterBox/subpages/SendDetail";
 import ReplyDetail from "./pages/LetterBox/subpages/ReplyDetail";
 import AnswerBook from "./pages/AnswerBook";
 import AnswerBookContent from "./pages/AnswerBook/subpages/Content";
+import AnswerBookConversation from "./pages/AnswerBook/subpages/Conversation"
 import User from "./pages/User";
 import Register from "./pages/User/Register";
 import Login from "./pages/User/Login";
@@ -27,6 +28,7 @@ function App() {
 				<PrivateRoute path="/conversation/:id" exact component={Conversation} />
 				<PrivateRoute path="/answerbook" exact component={AnswerBook} />
                 <PrivateRoute path="/answerbook/content/:id" exact component={AnswerBookContent} />
+                <PrivateRoute path="/answerbook/conversation" exact component={AnswerBookConversation} />
 				<PrivateRoute path="/user" exact component={User} />
                 <PrivateRoute path="/send" exact component={Send} />
                 <PrivateRoute path="/reply/:id" exact component={Reply} />
