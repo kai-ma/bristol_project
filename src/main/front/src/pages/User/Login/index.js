@@ -6,11 +6,13 @@ import {
 	Button,
 	WhiteSpace,
 	Toast,
+	Modal,
 } from "antd-mobile";
 import { createForm } from "rc-form";
 import { FaSignInAlt, FaUserPlus } from "react-icons/fa";
-import { connect } from "react-redux";
-import { login } from "@src/redux/actions/user";
+import Http from "@src/utils/http.js";
+
+const alert = Modal.alert;
 
 class Login extends Component {
 	constructor(props) {
@@ -25,7 +27,6 @@ class Login extends Component {
 	initialState = {};
 
 	handleLogin = () => {
-		const input = this.props.form.getFieldsValue();
 		this.props.form.validateFields((error, value) => {
 			if (error) {
 				Toast.fail(
@@ -33,9 +34,31 @@ class Login extends Component {
 				);
 				return;
 			} else {
-				this.props.login(value, this.props.history);
+				this.login(value);
 			}
 		});
+	};
+
+	login = (value) => {
+		Http({
+			url: "/auth/login",
+			body: value,
+			mock: false,
+		}).then(
+			(res) => {
+				alert("Login successfully", "Stamp bonus:1", [
+					{ text: "Ok", onPress: this.navToHome },
+				]);
+				localStorage.setItem("token", res.token);
+			},
+			(err) => {
+				Toast.fail(err.errMsg, 2);
+			}
+		);
+	};
+
+	navToHome = () => {
+		this.props.history.push("/");
 	};
 
 	navToRegister = () => {
@@ -62,7 +85,7 @@ class Login extends Component {
 						rules: [{ required: true }],
 					})}
 					labelNumber={6}
-                    type="password"
+					type="password"
 					placeholder="********"
 				>
 					Password
@@ -89,22 +112,23 @@ class Login extends Component {
 	}
 }
 
-const mapStateToProps = (state) => {
-	return {
-		user: state.user.user,
-		loading: state.user.loading,
-	};
-};
+// const mapStateToProps = (state) => {
+// 	return {
+// 		user: state.user.user,
+// 		loading: state.user.loading,
+// 	};
+// };
 
-const mapDispatchToProps = (dispatch) => {
-	return {
-		login: (value, history) => dispatch(login(value, history)),
-	};
-};
+// const mapDispatchToProps = (dispatch) => {
+// 	return {
+// 		login: (value, history) => dispatch(login(value, history)),
+// 	};
+// };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(createForm()(Login));
+// export default connect(
+// 	mapStateToProps,
+// 	mapDispatchToProps
+// )(createForm()(Login));
+export default createForm()(Login);
 
 //可以把title换成icon

@@ -1,6 +1,6 @@
 import * as actionTypes from "../../constants/user";
 import Http from "@src/utils/http.js";
-import { Toast } from "antd-mobile";
+import {Toast } from "antd-mobile";
 
 export const login = (body, history) => {
 	return async (dispatch) => {
