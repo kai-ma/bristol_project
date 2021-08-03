@@ -55,9 +55,10 @@ class Content extends Component {
 					//需要JSON.stringify，不然会存入[Object,Object]
 					let contentString = JSON.stringify(res);
 					localStorage.setItem(key, contentString);
+                    let conversations = res.conversations;
 					this.setState({
-						conversations: res,
-						totalPage: Math.ceil(res.length / pageSize),
+						conversations: conversations,
+						totalPage: Math.ceil(conversations.length / pageSize),
 					});
 				},
 				(err) => {
@@ -65,7 +66,8 @@ class Content extends Component {
 				}
 			);
 		} else {
-			let conversations = JSON.parse(contentString);
+			let content = JSON.parse(contentString);
+            let conversations = content.conversations;
 			this.setState({
 				conversations: conversations,
 				totalPage: Math.ceil(conversations.length / pageSize),

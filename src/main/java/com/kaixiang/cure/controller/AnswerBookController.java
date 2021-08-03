@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -54,7 +56,11 @@ public class AnswerBookController {
     public CommonReturnType listConversationByTopicId(HttpServletRequest request) throws BusinessException {
         Integer topicId = Integer.valueOf(request.getParameter("topicId"));
         List<ConversationModelInAnswerBook> conversationModelInAnswerBookList = answerBookService.listConversationByTopicId(topicId);
-        return CommonReturnType.create(conversationModelInAnswerBookList.stream().map(conversationModelInAnswerBook -> convertor.conversationVOInAnswerBookFromConversationModelInAnswerBook(conversationModelInAnswerBook)
+        Map<String, Object> returnMap = new HashMap<>(2);
+        Map<String, List<Integer>> tagToConversationIds = answerBookService.getTagToConversationIds(conversationModelInAnswerBookList);
+        returnMap.put("tagToConversationIds", tagToConversationIds);
+        returnMap.put("conversations", conversationModelInAnswerBookList.stream().map(conversationModelInAnswerBook -> convertor.conversationVOInAnswerBookFromConversationModelInAnswerBook(conversationModelInAnswerBook)
         ).collect(Collectors.toList()));
+        return CommonReturnType.create(returnMap);
     }
 }

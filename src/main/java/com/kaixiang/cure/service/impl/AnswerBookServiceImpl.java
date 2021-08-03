@@ -1,17 +1,12 @@
 package com.kaixiang.cure.service.impl;
 
-import com.kaixiang.cure.dao.AnswerBookDOMapper;
-import com.kaixiang.cure.dao.ConversationDOMapper;
-import com.kaixiang.cure.dao.FirstLetterDOMapper;
-import com.kaixiang.cure.dao.TopicDOMapper;
-import com.kaixiang.cure.dataobject.AnswerBookDO;
-import com.kaixiang.cure.dataobject.ConversationDO;
-import com.kaixiang.cure.dataobject.FirstLetterDO;
-import com.kaixiang.cure.dataobject.TopicDO;
+import com.kaixiang.cure.dao.*;
+import com.kaixiang.cure.dataobject.*;
 import com.kaixiang.cure.error.BusinessException;
 import com.kaixiang.cure.error.EnumBusinessError;
 import com.kaixiang.cure.service.AnswerBookService;
 import com.kaixiang.cure.service.LetterService;
+import com.kaixiang.cure.service.TagService;
 import com.kaixiang.cure.service.model.ConversationModelInAnswerBook;
 import com.kaixiang.cure.service.model.FirstLetterModel;
 import com.kaixiang.cure.service.model.TopicModel;
@@ -23,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -47,6 +44,11 @@ public class AnswerBookServiceImpl implements AnswerBookService {
     private LetterService letterService;
     @Autowired
     private EncryptUtils encryptUtils;
+    @Autowired
+    private ConversationTagDOMapper conversationTagDOMapper;
+    @Autowired
+    private TagService tagService;
+
     @Override
     public List<TopicModel> listAllTopics() throws BusinessException {
         try {
@@ -76,6 +78,31 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         }
     }
 
+    /**
+     * 在某个topic下，获取对话列表的tag和conversationId的对应关系
+     *
+     * @param conversationModelInAnswerBooks conversation的列表
+     */
+    @Override
+    public Map<String, List<Integer>> getTagToConversationIds(List<ConversationModelInAnswerBook> conversationModelInAnswerBooks) throws BusinessException {
+        Map<String, List<Integer>> map = new HashMap<>();
+        for (ConversationModelInAnswerBook conversationModelInAnswerBook : conversationModelInAnswerBooks) {
+            Integer conversationId = conversationModelInAnswerBook.getId();
+            List<ConversationTagDO> conversationTagDOS = conversationTagDOMapper.listByConversationId(conversationId);
+            for (ConversationTagDO conversationTagDO : conversationTagDOS) {
+                Integer tagId = conversationTagDO.getTagId();
+                String tagName = tagService.getTagNameById(tagId);
+                if (map.containsKey(tagName)) {
+                    map.get(tagName).add(conversationTagDO.getConversationId());
+                } else {
+                    List<Integer> list = new ArrayList<>();
+                    list.add(conversationTagDO.getConversationId());
+                    map.put(tagName, list);
+                }
+            }
+        }
+        return map;
+    }
 
     private ConversationModelInAnswerBook getConversationModelByAnswerBookDO(AnswerBookDO answerBookDO) throws BusinessException {
         ConversationDO conversationDO = conversationDOMapper.selectByPrimaryKey(answerBookDO.getConversationId());

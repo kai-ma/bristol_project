@@ -17,7 +17,8 @@ class Conversation extends Component {
 		let key = "content_" + topicId;
 		let contentString = localStorage.getItem(key);
 		if (contentString != null) {
-			let conversations = JSON.parse(contentString);
+			let content = JSON.parse(contentString);
+            let conversations = content.conversations;
 			const conversation = conversations.find(
 				(x) => x.id == conversationId
 			);
