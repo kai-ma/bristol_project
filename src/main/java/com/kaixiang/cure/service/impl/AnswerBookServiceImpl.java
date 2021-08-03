@@ -61,18 +61,23 @@ public class AnswerBookServiceImpl implements AnswerBookService {
     }
 
     @Override
-    public List<ConversationModelInAnswerBook> listConversationByTopicId(Integer topicId) throws BusinessException {
+    public List<ConversationModelInAnswerBook> listConversationByTopicId(Integer topicId, Integer userId) throws BusinessException {
         //todo:存到redis当中
         try {
             List<AnswerBookDO> answerBookDOList = answerBookDOMapper.selectByTopicId(topicId);
             if (answerBookDOList == null) {
                 throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
             }
-            List<ConversationModelInAnswerBook> conversationModelInAnswerBookList = new ArrayList<>();
+            List<ConversationModelInAnswerBook> conversationModelInAnswerBooks = new ArrayList<>();
             for(AnswerBookDO answerBookDO: answerBookDOList){
-                conversationModelInAnswerBookList.add(getConversationModelByAnswerBookDO(answerBookDO));
+                conversationModelInAnswerBooks.add(getConversationModelByAnswerBookDO(answerBookDO));
             }
-            return conversationModelInAnswerBookList;
+
+            //添加是否点赞
+            for(ConversationModelInAnswerBook conversationModelInAnswerBook : conversationModelInAnswerBooks){
+                conversationModelInAnswerBook.setLike(checkIfLikedByUser(userId, conversationModelInAnswerBook.getId()));
+            }
+            return conversationModelInAnswerBooks;
         } catch (Exception e) {
             throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
         }
@@ -103,6 +108,50 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         }
         return map;
     }
+
+
+    /**
+     * 查询用户是否点赞过answerbook中这个对话 todo:从redis中查询是否点赞
+     */
+    @Override
+    public boolean checkIfLikedByUser(Integer userId, Integer conversationId){
+        return false;
+    }
+
+    /**
+     * 点赞answerbook中的对话 todo:把点赞放到redis中 需要维护conversationId-点赞数 conversationId-用户是否点赞
+     */
+    @Override
+    public void likeOperation(Integer userId, Integer conversationId){
+        //1.todo 先从redis中获取之前的点赞数并修改  这里是从数据库查的，应该先查redis
+        AnswerBookDO answerBookDO1 = answerBookDOMapper.selectByConversationId(conversationId);
+
+        //2.mysql点赞数+1
+        AnswerBookDO answerBookDO = new AnswerBookDO();
+        answerBookDO.setConversationId(conversationId);
+        answerBookDO.setVotes(answerBookDO1.getVotes() + 1);
+
+        answerBookDOMapper.updateByConversationIdSelective(answerBookDO);
+    }
+
+    /**
+     * 取消点赞answerbook中的对话 todo:把点赞放到redis中 需要维护conversationId-点赞数 conversationId-用户是否点赞
+     */
+    @Override
+    public void cancelLikeOperation(Integer userId, Integer conversationId){
+        //1.todo 先从redis中获取之前的点赞数并修改  这里是从数据库查的，应该先查redis
+        AnswerBookDO answerBookDO1 = answerBookDOMapper.selectByConversationId(conversationId);
+
+        //2.mysql点赞数-1
+        AnswerBookDO answerBookDO = new AnswerBookDO();
+        answerBookDO.setConversationId(conversationId);
+        answerBookDO.setVotes(answerBookDO1.getVotes() - 1);
+
+        answerBookDOMapper.updateByConversationIdSelective(answerBookDO);
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private ConversationModelInAnswerBook getConversationModelByAnswerBookDO(AnswerBookDO answerBookDO) throws BusinessException {
         ConversationDO conversationDO = conversationDOMapper.selectByPrimaryKey(answerBookDO.getConversationId());

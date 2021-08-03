@@ -14,6 +14,11 @@ public class ConversationModelInAnswerBook extends ConversationModel {
 
     private DateTime collectedAt;
 
+    /**
+     * 该用户是否点赞
+     */
+    private boolean like;
+
     public Integer getTopicId() {
         return topicId;
     }
@@ -36,5 +41,13 @@ public class ConversationModelInAnswerBook extends ConversationModel {
 
     public void setCollectedAt(DateTime collectedAt) {
         this.collectedAt = collectedAt;
+    }
+
+    public boolean isLike() {
+        return like;
+    }
+
+    public void setLike(boolean like) {
+        this.like = like;
     }
 }

@@ -18,4 +18,8 @@ public interface AnswerBookDOMapper {
     int updateByPrimaryKey(AnswerBookDO record);
 
     List<AnswerBookDO> selectByTopicId(Integer topicId);
+
+    AnswerBookDO selectByConversationId(Integer conversationId);
+
+    int updateByConversationIdSelective(AnswerBookDO answerBookDO);
 }

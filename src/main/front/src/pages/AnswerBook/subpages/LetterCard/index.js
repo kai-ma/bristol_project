@@ -41,7 +41,7 @@ class LetterCard extends Component {
 							<WhiteSpace size="lg" />
 						</Card.Body>
 						<Card.Footer
-							content={<div>{letter.createdAt}</div>}
+							content={<div>{conversation.collectedAt}</div>}
 							extra={<div>{letter.pseudonym}</div>}
 						/>
 					</Card>

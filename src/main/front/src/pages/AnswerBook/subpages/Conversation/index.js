@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { NavBar, WingBlank, Button } from "antd-mobile";
+import { NavBar, WingBlank, Button, Toast } from "antd-mobile";
 import { withRouter } from "react-router-dom";
 import Loading from "@src/components/Loading";
 import LetterContent from "@src/components/LetterContent";
 import { AiOutlineLike, AiFillLike } from "react-icons/ai";
-//todo: 点赞放到conversation中，由后端返回  不然多个conversation之间的点赞会混乱
+import Http from "@src/utils/http.js";
 class Conversation extends Component {
 	constructor(props) {
 		super(props);
@@ -12,38 +12,72 @@ class Conversation extends Component {
 	}
 
 	componentDidMount() {
-		const topicId = this.props.location.state.topicId;
-		const conversationId = this.props.location.state.conversationId;
-		let key = "content_" + topicId;
-		let contentString = localStorage.getItem(key);
-		if (contentString != null) {
-			let content = JSON.parse(contentString);
-            let conversations = content.conversations;
-			const conversation = conversations.find(
+		let conversationId = this.props.location.state.conversationId;
+		let content = this.getContentFromLocalStorage();
+		let conversations = content.conversations;
+		if (conversations != null) {
+			let index = conversations.findIndex(
 				(x) => x.id == conversationId
 			);
+			let conversation = conversations[index];
 			this.setState({
-				letters: conversation.letterVOList,
-				loading: false,
+				conversation: conversation,
 			});
 		}
 	}
+
+	getContentFromLocalStorage = () => {
+		let topicId = this.props.location.state.topicId;
+		let key = "content_" + topicId;
+		let contentString = localStorage.getItem(key);
+		if (contentString != null) {
+			return JSON.parse(contentString);
+		}
+	};
 
 	linkToLetterBox = () => {
 		this.props.history.goBack();
 	};
 
-	initialState = { conversation: [], loading: true, like: false };
+	initialState = { conversation: [] };
 
-    handleClick = (conversation) => {
-		this.setState({
-			like: !this.state.like,
-		});
+	likeOperation = (conversation) => {
+		Http({
+			url: conversation.like
+				? "/answerbook/cancel_like"
+				: "/answerbook/like",
+			body: { conversationId: conversation.id },
+			mock: false,
+		}).then(
+			(res) => {
+				console.log("operation successfully");
+				conversation.like = !conversation.like;
+				this.setState({
+					conversation: conversation,
+				});
+				this.updateLocalStorage(conversation);
+			},
+			(err) => {}
+		);
+	};
+
+	//需要修改到localStorage中，或者用redux，不然刷新之后点赞又没了
+	updateLocalStorage = (conversation) => {
+		let conversationId = this.props.location.state.conversationId;
+		let content = this.getContentFromLocalStorage();
+		let conversations = content.conversations;
+
+		let index = conversations.findIndex((x) => x.id == conversationId);
+		conversations[index] = conversation;
+        let topicId = this.props.location.state.topicId;
+        let key = "content_" + topicId;
+		let contentString = JSON.stringify(content);
+		localStorage.setItem(key, contentString);
 	};
 
 	render() {
-		const conversation = this.state.conversation == null ? [] : this.state.conversation;
-        const like = this.state.like;
+		const conversation = this.state.conversation;
+		console.log(conversation);
 		return (
 			<div>
 				<NavBar
@@ -54,13 +88,13 @@ class Conversation extends Component {
 					Conversation
 				</NavBar>
 				<div>
-					{this.state.loading ? (
+					{conversation == null || conversation.length === 0 ? (
 						<div>
 							<Loading></Loading>
 						</div>
 					) : (
 						<div>
-							{this.state.letters.map((letter, index) => (
+							{conversation.letterVOList.map((letter, index) => (
 								<div key={index}>
 									<LetterContent
 										letter={letter}
@@ -71,10 +105,10 @@ class Conversation extends Component {
 								<WingBlank>
 									<Button
 										icon={
-											like === true ? (
-												<AiOutlineLike />
-											) : (
+											conversation.like ? (
 												<AiFillLike />
+											) : (
+												<AiOutlineLike />
 											)
 										}
 										inline
@@ -83,7 +117,7 @@ class Conversation extends Component {
 											marginRight: "2px",
 										}}
 										onClick={() =>
-											this.handleClick(conversation)
+											this.likeOperation(conversation)
 										}
 									>
 										Like

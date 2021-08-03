@@ -12,6 +12,11 @@ public class ConversationVOInAnswerBook extends ConversationVO{
 
     private String collectedAt;
 
+    /**
+     * 该用户是否点赞
+     */
+    private boolean like;
+
     public Integer getTopicId() {
         return topicId;
     }
@@ -34,5 +39,13 @@ public class ConversationVOInAnswerBook extends ConversationVO{
 
     public void setCollectedAt(String collectedAt) {
         this.collectedAt = collectedAt;
+    }
+
+    public boolean isLike() {
+        return like;
+    }
+
+    public void setLike(boolean like) {
+        this.like = like;
     }
 }

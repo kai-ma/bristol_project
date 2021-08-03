@@ -3,7 +3,16 @@ import Http from "@src/utils/http.js";
 import Loading from "@src/components/Loading";
 import LetterCard from "../LetterCard";
 
-import { Pagination, Icon, WhiteSpace, Popover, Tag, Toast, NavBar, List } from "antd-mobile";
+import {
+	Pagination,
+	Icon,
+	WhiteSpace,
+	Popover,
+	Tag,
+	Toast,
+	NavBar,
+	List,
+} from "antd-mobile";
 import { MdSort } from "react-icons/md";
 import { AiOutlineTags } from "react-icons/ai";
 import "./index.css";
@@ -54,16 +63,21 @@ class Content extends Component {
 			}).then(
 				(res) => {
 					//需要JSON.stringify，不然会存入[Object,Object]
-					let contentString = JSON.stringify(res);
-					localStorage.setItem(key, contentString);
-					this.setState({
-						conversations: res.conversations,
-						totalPage: Math.ceil(
-							res.conversations.length / pageSize
-						),
-						tagToConversationIds: res.tagToConversationIds,
-						tags: Object.keys(res.tagToConversationIds),
-					});
+					if (
+						res.conversaitons != null &&
+						res.conversaitons.length > 0
+					) {
+						let contentString = JSON.stringify(res);
+						localStorage.setItem(key, contentString);
+						this.setState({
+							conversations: res.conversations,
+							totalPage: Math.ceil(
+								res.conversations.length / pageSize
+							),
+							tagToConversationIds: res.tagToConversationIds,
+							tags: Object.keys(res.tagToConversationIds),
+						});
+					}
 				},
 				(err) => {
 					Toast.fail(err.errMsg, 1);
@@ -91,8 +105,31 @@ class Content extends Component {
 		this.props.history.goBack();
 	};
 
-	onSelect = () => {
-		console.log("select sort");
+	changeSort = (obj) => {
+		if (obj.key === "1") {
+			//根据time排序
+			let conversaitons = this.state.conversations;
+			conversaitons = conversaitons.sort(this.sortByTime);
+			this.setState({ conversaitons: conversaitons });
+		} else if (obj.key === "2") {
+			//根据likes排序
+			let conversaitons = this.state.conversations;
+			conversaitons = conversaitons.sort(this.sortByLikes);
+			this.setState({ conversaitons: conversaitons });
+		}
+	};
+
+	//更新的靠前
+	sortByTime = (a, b) => {
+		return (
+			new Date(b.collectedAt).getTime() -
+			new Date(a.collectedAt).getTime()
+		);
+	};
+
+	//likes数量多的靠前
+	sortByLikes = (a, b) => {
+		return b.votes - a.votes;
 	};
 
 	chooseByTags = () => {
@@ -170,23 +207,15 @@ class Content extends Component {
 							overlayStyle={{ color: "currentColor" }}
 							visible={this.state.visible}
 							overlay={[
-								<Item key="4" value="scan" data-seed="logId">
-									Sort by time
-								</Item>,
-								<Item
-									key="5"
-									value="special"
-									style={{ whiteSpace: "nowrap" }}
-								>
-									Sort by Like number
-								</Item>,
+								<Item key="1">Sort by time</Item>,
+								<Item key="2">Sort by Likes</Item>,
 							]}
 							align={{
 								overflow: { adjustY: 0, adjustX: 0 },
 								offset: [-10, 0],
 							}}
 							onVisibleChange={this.handleVisibleChange}
-							onSelect={this.onSelect}
+							onSelect={this.changeSort}
 						>
 							<div
 								style={{
@@ -208,7 +237,7 @@ class Content extends Component {
 				{chooseByTags ? (
 					//按照tag显示
 					<div>
-                        <List renderHeader={() => "Filter by tags"}></List>
+						<List renderHeader={() => "Filter by tags"}></List>
 						{tags.map((tag, index) => (
 							<Tag
 								key={index}
