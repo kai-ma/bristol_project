@@ -1,17 +1,12 @@
 import React, { Component } from "react";
 import Http from "@src/utils/http.js";
-import { Toast, NavBar } from "antd-mobile";
 import Loading from "@src/components/Loading";
 import LetterCard from "../LetterCard";
 
-import {
-	Pagination,
-	Icon,
-	WhiteSpace,
-	Popover,
-} from "antd-mobile";
-import "./index.css";
+import { Pagination, Icon, WhiteSpace, Popover, Tag, Toast, NavBar, List } from "antd-mobile";
 import { MdSort } from "react-icons/md";
+import { AiOutlineTags } from "react-icons/ai";
+import "./index.css";
 
 class Content extends Component {
 	constructor(props) {
@@ -21,6 +16,12 @@ class Content extends Component {
 
 	initialState = {
 		conversations: [],
+		//按照tag过滤过的conversations
+		// filteredConversations: [],
+		tags: [],
+		choosenTags: new Set(),
+		//{tag1:[id1, id2, ...]...}
+		tagToConversationIds: {},
 		//一页放多少个conversation，不会修改，写死为1，便于对这个进行操作
 		pageSize: 5,
 		//根据点击会变
@@ -28,6 +29,7 @@ class Content extends Component {
 		//根据conversation总数会变
 		totalPage: 1,
 		topicName: "",
+		chooseByTags: false,
 	};
 
 	componentDidMount() {
@@ -40,7 +42,6 @@ class Content extends Component {
 			topicName: topic.text,
 		});
 
-		// this.props.loadConversationByTopicId(this.props.match.params.id);
 		//从localStorage中获取content，如果获取不到，发送http请求，获取content。
 		let key = "content_" + topicId;
 		let contentString = localStorage.getItem(key);
@@ -55,10 +56,13 @@ class Content extends Component {
 					//需要JSON.stringify，不然会存入[Object,Object]
 					let contentString = JSON.stringify(res);
 					localStorage.setItem(key, contentString);
-                    let conversations = res.conversations;
 					this.setState({
-						conversations: conversations,
-						totalPage: Math.ceil(conversations.length / pageSize),
+						conversations: res.conversations,
+						totalPage: Math.ceil(
+							res.conversations.length / pageSize
+						),
+						tagToConversationIds: res.tagToConversationIds,
+						tags: Object.keys(res.tagToConversationIds),
 					});
 				},
 				(err) => {
@@ -67,10 +71,12 @@ class Content extends Component {
 			);
 		} else {
 			let content = JSON.parse(contentString);
-            let conversations = content.conversations;
+			let conversations = content.conversations;
 			this.setState({
 				conversations: conversations,
 				totalPage: Math.ceil(conversations.length / pageSize),
+				tagToConversationIds: content.tagToConversationIds,
+				tags: Object.keys(content.tagToConversationIds),
 			});
 		}
 	}
@@ -85,13 +91,66 @@ class Content extends Component {
 		this.props.history.goBack();
 	};
 
-	
+	onSelect = () => {
+		console.log("select sort");
+	};
+
+	chooseByTags = () => {
+		this.setState({
+			chooseByTags: !this.state.chooseByTags,
+		});
+	};
+
+	//选中或者取消选中tag
+	//参考：https://segmentfault.com/q/1010000011208307
+	selectTag = (selected, tag) => {
+		let choosenTags = this.state.choosenTags;
+		if (selected) {
+			choosenTags.add(tag);
+			this.setState({
+				choosenTags: choosenTags,
+			});
+		} else {
+			choosenTags.delete(tag);
+			this.setState({
+				choosenTags: choosenTags,
+			});
+		}
+		this.filterConversations();
+	};
+
+	//按照选中tag过滤 conversations
+	filterConversations = () => {
+		let { choosenTags, conversations, tagToConversationIds } = this.state;
+		if (choosenTags == null || choosenTags.length === 0) {
+			return;
+		}
+		let conversationIds = new Set();
+		for (var i in tagToConversationIds) {
+			if (choosenTags.has(i)) {
+				for (var j in tagToConversationIds[i]) {
+					conversationIds.add(tagToConversationIds[i][j]);
+				}
+			}
+		}
+		return conversations.filter((conversation) =>
+			conversationIds.has(conversation.id)
+		);
+	};
 
 	render() {
-		const { currentPage, pageSize, totalPage, topicName } =
-			this.state;
+		const {
+			currentPage,
+			pageSize,
+			totalPage,
+			topicName,
+			tags,
+			chooseByTags,
+		} = this.state;
 		const Item = Popover.Item;
-
+		let conversations = chooseByTags
+			? this.filterConversations()
+			: this.state.conversations;
 		return (
 			<div>
 				<NavBar
@@ -99,27 +158,14 @@ class Content extends Component {
 					mode="light"
 					onLeftClick={this.linkToBack}
 					rightContent={[
+						//按照tag过滤
+						<AiOutlineTags
+							onClick={this.chooseByTags}
+							style={{ marginRight: "2px" }}
+						/>,
+
 						<Popover
-							align={{
-								overflow: { adjustY: 0, adjustX: 0 },
-								offset: [-10, 0],
-							}}
-							onSelect={this.onSelect}
-						>
-							<div
-								style={{
-									height: "100%",
-									padding: "0 15px",
-									marginRight: "-15px",
-									display: "flex",
-									alignItems: "center",
-								}}
-							>
-								<Icon type="search" />
-							</div>
-						</Popover>,
-						<Popover
-							mask
+							// mask
 							overlayClassName="fortest"
 							overlayStyle={{ color: "currentColor" }}
 							visible={this.state.visible}
@@ -146,7 +192,7 @@ class Content extends Component {
 								style={{
 									height: "100%",
 									padding: "0 15px",
-									marginRight: "-5px",
+									marginRight: "0px",
 									display: "flex",
 									alignItems: "center",
 								}}
@@ -158,7 +204,28 @@ class Content extends Component {
 				>
 					{topicName}
 				</NavBar>
-				{this.state.conversations == null ? (
+
+				{chooseByTags ? (
+					//按照tag显示
+					<div>
+                        <List renderHeader={() => "Filter by tags"}></List>
+						{tags.map((tag, index) => (
+							<Tag
+								key={index}
+								onChange={(selected) => {
+									this.selectTag(selected, tag);
+								}}
+							>
+								{tag}
+							</Tag>
+						))}
+					</div>
+				) : (
+					//显示全部
+					<div></div>
+				)}
+
+				{conversations == null ? (
 					<div>
 						<Loading></Loading>
 					</div>
@@ -190,7 +257,7 @@ class Content extends Component {
 							/>
 							<WhiteSpace size="lg" />
 						</div>
-						{this.state.conversations
+						{conversations
 							.slice(
 								(currentPage - 1) * pageSize,
 								(currentPage - 1) * pageSize + pageSize
@@ -198,7 +265,7 @@ class Content extends Component {
 							.map((conversation, index) => (
 								<div key={index}>
 									<LetterCard
-                                        conversation={conversation}
+										conversation={conversation}
 									></LetterCard>
 									<WhiteSpace size="lg" />
 								</div>
