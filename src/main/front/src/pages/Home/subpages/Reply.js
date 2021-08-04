@@ -38,6 +38,8 @@ class Reply extends Component {
 						Toast.info("Reply successfully!", 2);
 						setTimeout(() => {
 							this.props.history.push("/");
+		                    let key = "home_replies_" + letter.id;
+                            localStorage.removeItem(key);
 						}, 2000);
 					},
 					(err) => {

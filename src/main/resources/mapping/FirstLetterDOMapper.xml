@@ -36,7 +36,8 @@
     <include refid="Base_Column_List"/>
     from first_letter
     where userid != #{userid,jdbcType=VARCHAR}
-    order by reply_number ASC, created_at ASC;
+    order by reply_number ASC, created_at ASC
+    limit 3;
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from first_letter

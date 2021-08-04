@@ -37,4 +37,8 @@ public interface LetterService {
      */
     List<LetterModel> listRepliesByFirstLetterId(Integer firstLetterId) throws BusinessException;
 
+    /**
+     * 获取回复：用于首页 点击某个信 显示信和信的回复
+     */
+    List<LetterModel> listMyRepliesByFirstLetterId(Integer userId, Integer firstLetterId) throws BusinessException;
 }

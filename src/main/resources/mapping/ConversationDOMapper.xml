@@ -28,6 +28,14 @@
     where encrypt_addressee_userid = #{encryptAddresseeUserid,jdbcType=VARCHAR}
     order by created_at ASC;
   </select>
+  <select id="getMyConversationByFirstLetterId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from conversation
+    where first_letter_id = #{firstLetterId,jdbcType=INTEGER} and
+          encrypt_addressee_userid = #{encryptAddresseeUserid,jdbcType=VARCHAR}
+    order by created_at ASC;
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from conversation
     where id = #{id,jdbcType=INTEGER}

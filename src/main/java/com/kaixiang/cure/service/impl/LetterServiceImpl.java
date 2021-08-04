@@ -12,12 +12,13 @@ import com.kaixiang.cure.service.LetterService;
 import com.kaixiang.cure.service.model.FirstLetterModel;
 import com.kaixiang.cure.service.model.LetterModel;
 import com.kaixiang.cure.utils.Convertor;
+import com.kaixiang.cure.utils.RedisUtils;
 import com.kaixiang.cure.utils.encrypt.EncryptUtils;
 import com.kaixiang.cure.utils.validator.ValidationResult;
 import com.kaixiang.cure.utils.validator.ValidatorImpl;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +45,10 @@ public class LetterServiceImpl implements LetterService {
     private EncryptUtils encryptUtils;
     @Autowired
     private Convertor convertor;
+    @Autowired
+    private RedisTemplate redisTemplate;
+    @Autowired
+    private RedisUtils redisUtils;
 
     @Override
     public void sendFirstLetter(FirstLetterModel firstLetterModel) throws BusinessException {
@@ -185,6 +190,28 @@ public class LetterServiceImpl implements LetterService {
         }
     }
 
+    /**
+     * 获取回复：用于首页 点击某个信 显示信和信的回复
+     *
+     * @param userId
+     * @param firstLetterId
+     */
+    @Override
+    public List<LetterModel> listMyRepliesByFirstLetterId(Integer userId, Integer firstLetterId) throws BusinessException {
+        if (userId == null || firstLetterId == null) {
+            throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR);
+        }
+        try {
+            //1. 根据addresseeUserid，查询conversation表 获取我回复的conversationId
+            ConversationDO conversationDO = conversationDOMapper.getMyConversationByFirstLetterId(encryptUtils.encrypt(String.valueOf(userId)), firstLetterId);
+            //2. 根据conversationId，获取letterDOs
+            List<LetterDO> letterDOS = letterDOMapper.listLettersByConversationId(conversationDO.getId());
+            return letterDOS.stream().map(letterDO -> convertor.letterModelFromLetterDO(letterDO)
+            ).collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
+        }
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 }

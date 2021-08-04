@@ -107,7 +107,7 @@ public class LetterController {
 
 
     /**
-     * 首页：回复首页的信 todo: 换成get
+     * 首页：回复首页的信
      */
     @RequestMapping(value = "/reply", method = {RequestMethod.POST})
     @ResponseBody
@@ -144,6 +144,20 @@ public class LetterController {
         ).collect(Collectors.toList()));
     }
 
+    /**
+     * 首页：根据firstLetterId，获取我的回信  todo:有点慢，最好也存到redis中
+     */
+    @RequestMapping(value = "/home/replies/firstLetterId", params = {"firstLetterId"}, method = {RequestMethod.GET})
+    @ResponseBody
+    @UserLoginToken
+    public CommonReturnType listMyRepliesByFirstLetterId(HttpServletRequest request) throws BusinessException {
+        Integer userId = (Integer) request.getAttribute(ATTRIBUTE_KEY_USERID);
+        Integer firstLetterId = Integer.valueOf(request.getParameter("firstLetterId"));
+        List<LetterModel> letterModels = letterService.listMyRepliesByFirstLetterId(userId,firstLetterId);
+        return CommonReturnType.create(letterModels.stream().map(letterModel -> convertor.letterVOFromLetterModel(letterModel)
+        ).collect(Collectors.toList()));
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void verifyRefreshBar(Integer userid) throws BusinessException {
@@ -174,21 +188,6 @@ public class LetterController {
         if (!showReplyNumber) {
             firstLetterVO.setReplyNumber(null);
         }
-        return firstLetterVO;
-    }
-
-    private FirstLetterVO convertFirstLetterModelFromConversationModel(ConversationModel conversationModel) {
-        if (conversationModel == null) {
-            return null;
-        }
-        FirstLetterVO firstLetterVO = new FirstLetterVO();
-
-//        firstLetterVO.setCreatedAt(firstLetterModel.getCreatedAt().
-//                toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
-//        if (firstLetterModel.getLastRepliedAt() != null) {
-//            firstLetterVO.setLastRepliedAt(firstLetterModel.getLastRepliedAt().
-//                    toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
-//        }
         return firstLetterVO;
     }
 }

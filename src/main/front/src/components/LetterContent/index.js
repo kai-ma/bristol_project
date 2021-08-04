@@ -20,11 +20,14 @@ class LetterContent extends Component {
 							<Card.Header title={letter.title} />
 						) : null}
 						<Card.Body>
+                            <WhiteSpace size="lg" />
 							<div>{letter.content}</div>
-						</Card.Body>
+                            <WhiteSpace size="lg" />
+                            <WhiteSpace size="lg" />
+                        </Card.Body>
                         <Card.Footer
 							content={<div>{letter.createdAt}</div>}
-							// extra={<div>{letter.pseudonym}</div>} todo：回信没有pseudonym，暂时先注释掉。
+							extra={<div>{letter.pseudonym}</div>}
 						/>
 					</Card>
 					<WhiteSpace size="lg" />
