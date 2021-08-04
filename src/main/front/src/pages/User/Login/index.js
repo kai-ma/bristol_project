@@ -11,6 +11,7 @@ import {
 import { createForm } from "rc-form";
 import { FaSignInAlt, FaUserPlus } from "react-icons/fa";
 import Http from "@src/utils/http.js";
+import { setObjectToLocalStorage, getObjectFromLocalStorage } from "@src/utils";
 
 const alert = Modal.alert;
 
@@ -50,6 +51,7 @@ class Login extends Component {
 					{ text: "Ok", onPress: this.navToHome },
 				]);
 				localStorage.setItem("token", res.token);
+                setObjectToLocalStorage("user", res.user);
 			},
 			(err) => {
 				Toast.fail(err.errMsg, 2);

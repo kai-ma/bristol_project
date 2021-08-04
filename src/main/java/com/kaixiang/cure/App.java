@@ -24,7 +24,7 @@ public class App {
         if (userDO == null) {
             return "user is not exist";
         } else {
-            return userDO.getUsername();
+            return userDO.getPseudonym();
         }
 //        return "Hello World!";
     }

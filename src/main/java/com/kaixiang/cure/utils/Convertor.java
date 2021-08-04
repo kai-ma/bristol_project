@@ -1,17 +1,8 @@
 package com.kaixiang.cure.utils;
 
-import com.kaixiang.cure.controller.viewobject.ConversationVOInAnswerBook;
-import com.kaixiang.cure.controller.viewobject.FirstLetterVO;
-import com.kaixiang.cure.controller.viewobject.LetterVO;
-import com.kaixiang.cure.controller.viewobject.TopicVO;
-import com.kaixiang.cure.dataobject.ConversationDO;
-import com.kaixiang.cure.dataobject.FirstLetterDO;
-import com.kaixiang.cure.dataobject.LetterDO;
-import com.kaixiang.cure.dataobject.TopicDO;
-import com.kaixiang.cure.service.model.ConversationModelInAnswerBook;
-import com.kaixiang.cure.service.model.FirstLetterModel;
-import com.kaixiang.cure.service.model.LetterModel;
-import com.kaixiang.cure.service.model.TopicModel;
+import com.kaixiang.cure.controller.viewobject.*;
+import com.kaixiang.cure.dataobject.*;
+import com.kaixiang.cure.service.model.*;
 import com.kaixiang.cure.utils.encrypt.EncryptUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -172,5 +163,32 @@ public class Convertor {
         firstLetterDO.setUserid(encryptUtils.encrypt(String.valueOf(firstLetterModel.getUserId())));
         firstLetterDO.setFilepath(firstLetterModel.getContent());
         return firstLetterDO;
+    }
+
+
+    public UserVO userVOFromUserModel(UserModel userModel) {
+        if (userModel == null) {
+            return null;
+        }
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(userModel, userVO);
+        if (userModel.getLastLoginAt() != null) {
+            userVO.setLastLoginAt(userModel.getLastLoginAt().
+                    toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+        }
+        return userVO;
+    }
+
+    public UserModel userModelFromUserDOAndPasswordDO(UserDO userDO, UserPasswordDO userPasswordDO) {
+        if (userDO == null) {
+            return null;
+        }
+        UserModel userModel = new UserModel();
+        BeanUtils.copyProperties(userDO, userModel);
+        userModel.setLastLoginAt(new DateTime(userDO.getLastLoginAt()));
+        if (userPasswordDO != null) {
+            userModel.setEncryptPassword(userPasswordDO.getEncryptPassword());
+        }
+        return userModel;
     }
 }

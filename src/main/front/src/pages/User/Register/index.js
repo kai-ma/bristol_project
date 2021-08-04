@@ -67,9 +67,9 @@ class Register extends Component {
 							rules: [{ required: true }],
 						})}
 						labelNumber={6}
-						placeholder="username"
+						placeholder="pseudonym"
 					>
-						UserName
+						Pseudonym
 					</InputItem>
 
 					<InputItem

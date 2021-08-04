@@ -3,42 +3,20 @@ package com.kaixiang.cure.controller.viewobject;
 import java.util.Date;
 
 public class UserVO {
-    private Integer id;
-
-    private String username;
-
-    private String email;
+    private String pseudonym;
 
     private Integer stamp;
 
-    private Date lastLoginAt;
+    private String lastLoginAt;
 
     private Integer continuousLoginDays;
 
-    private Integer status;
-
-    public Integer getId() {
-        return id;
+    public String getPseudonym() {
+        return pseudonym;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setPseudonym(String pseudonym) {
+        this.pseudonym = pseudonym;
     }
 
     public Integer getStamp() {
@@ -49,11 +27,11 @@ public class UserVO {
         this.stamp = stamp;
     }
 
-    public Date getLastLoginAt() {
+    public String getLastLoginAt() {
         return lastLoginAt;
     }
 
-    public void setLastLoginAt(Date lastLoginAt) {
+    public void setLastLoginAt(String lastLoginAt) {
         this.lastLoginAt = lastLoginAt;
     }
 
@@ -63,13 +41,5 @@ public class UserVO {
 
     public void setContinuousLoginDays(Integer continuousLoginDays) {
         this.continuousLoginDays = continuousLoginDays;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 }

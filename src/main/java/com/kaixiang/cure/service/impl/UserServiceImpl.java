@@ -8,6 +8,7 @@ import com.kaixiang.cure.error.BusinessException;
 import com.kaixiang.cure.error.EnumBusinessError;
 import com.kaixiang.cure.service.UserService;
 import com.kaixiang.cure.service.model.UserModel;
+import com.kaixiang.cure.utils.Convertor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserPasswordDOMapper userPasswordDOMapper;
 
+    @Autowired
+    private Convertor convertor;
+
     @Override
     public UserModel getUserById(Integer id) {
 
@@ -33,7 +37,7 @@ public class UserServiceImpl implements UserService {
         }
         //通过用户id获取对应的加密密码信息
         UserPasswordDO userPasswordDO = userPasswordDOMapper.selectByUserId(id);
-        return convertFromDataObject(userDO, userPasswordDO);
+        return convertor.userModelFromUserDOAndPasswordDO(userDO, userPasswordDO);
     }
 
 
@@ -82,23 +86,10 @@ public class UserServiceImpl implements UserService {
         if(userPasswordDO == null){
             return null;
         }
-        return convertFromDataObject(userDO, userPasswordDO);
+        return convertor.userModelFromUserDOAndPasswordDO(userDO, userPasswordDO);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    private UserModel convertFromDataObject(UserDO userDO, UserPasswordDO userPasswordDO) {
-        if (userDO == null) {
-            return null;
-        }
-        UserModel userModel = new UserModel();
-        BeanUtils.copyProperties(userDO, userModel);
-        if (userPasswordDO != null) {
-            userModel.setEncryptPassword(userPasswordDO.getEncryptPassword());
-        }
-        return userModel;
-    }
 
     private UserDO convertFromModel(UserModel userModel) {
         if (userModel == null) {

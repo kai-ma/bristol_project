@@ -1,25 +1,27 @@
 package com.kaixiang.cure.service.model;
 
+import org.joda.time.DateTime;
+
 import java.util.Date;
 
 public class UserModel {
     private Integer id;
 
-    private String username;
+    private String pseudonym;
 
     private String email;
 
     private Integer stamp;
 
-    private Date lastLoginAt;
+    private DateTime lastLoginAt;
 
     private Integer continuousLoginDays;
 
     private Integer status;
 
-    private String encryptPassword;
-
     private String role;
+
+    private String encryptPassword;
 
     public Integer getId() {
         return id;
@@ -29,12 +31,12 @@ public class UserModel {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getPseudonym() {
+        return pseudonym;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setPseudonym(String pseudonym) {
+        this.pseudonym = pseudonym;
     }
 
     public String getEmail() {
@@ -53,11 +55,11 @@ public class UserModel {
         this.stamp = stamp;
     }
 
-    public Date getLastLoginAt() {
+    public DateTime getLastLoginAt() {
         return lastLoginAt;
     }
 
-    public void setLastLoginAt(Date lastLoginAt) {
+    public void setLastLoginAt(DateTime lastLoginAt) {
         this.lastLoginAt = lastLoginAt;
     }
 

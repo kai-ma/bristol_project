@@ -14,9 +14,9 @@ const PrivateRoute = ({ component: Component, ...props }) => {
 					return <Component {...props} />;
 				} else {
 					// 没有登录就重定向至登录页面  可以调整下面的if判断，只让部分页面显示提示信息
-					if (props.location.pathname != "/login" && props.location.pathname != "/user") {
-						Toast.offline("Please login to see the content", 1);
-					}
+					// if (props.location.pathname != "/login" && props.location.pathname != "/user") {
+					// 	Toast.offline("Please login to see the content", 1);
+					// }
 					return (
 						<Redirect
 							to={{

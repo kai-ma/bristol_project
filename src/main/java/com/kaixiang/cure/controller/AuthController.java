@@ -6,6 +6,7 @@ import com.kaixiang.cure.error.EnumBusinessError;
 import com.kaixiang.cure.response.CommonReturnType;
 import com.kaixiang.cure.service.UserService;
 import com.kaixiang.cure.service.model.UserModel;
+import com.kaixiang.cure.utils.Convertor;
 import com.kaixiang.cure.utils.JwtTokenUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -35,6 +36,9 @@ public class AuthController extends BaseController {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Autowired
+    private Convertor convertor;
+
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
@@ -50,7 +54,7 @@ public class AuthController extends BaseController {
         if (userModel == null) {
             throw new BusinessException(EnumBusinessError.USER_NOT_EXIST);
         } else {
-            return convertFromModel(userModel);
+            return convertor.userVOFromUserModel(userModel);
         }
     }
 
@@ -60,19 +64,19 @@ public class AuthController extends BaseController {
      */
     @RequestMapping(value = "/register", method = {RequestMethod.POST})
     @ResponseBody
-    public CommonReturnType register(@RequestParam(name = "username") String username,
+    public CommonReturnType register(@RequestParam(name = "pseudonym") String pseudonym,
                                      @RequestParam(name = "email") String email,
                                      @RequestParam(name = "password") String password) throws Exception {
 
 
         //2.用户的注册流程
         UserModel userModel = new UserModel();
-        userModel.setUsername(username);
+        userModel.setPseudonym(pseudonym);
         userModel.setEmail(email);
         userModel.setEncryptPassword(bCryptPasswordEncoder.encode(password));
         userModel.setRole(ROLE_USER);
         userService.register(userModel);
-        return CommonReturnType.create(convertFromModel(userModel));
+        return CommonReturnType.create(convertor.userVOFromUserModel(userModel));
     }
 
     /**
@@ -80,9 +84,7 @@ public class AuthController extends BaseController {
      */
     @RequestMapping(value = "/login", method = {RequestMethod.POST})
     @ResponseBody
-    public CommonReturnType login(@RequestBody Map<String, String> map) throws Exception {
-//        String email = request.getParameter("email");
-//        String password = request.getParameter("password");
+    public CommonReturnType login(@RequestBody Map<String, String> map) throws BusinessException {
         //1.入参校验
         String email = map.get("email");
         String password = map.get("password");
@@ -98,8 +100,9 @@ public class AuthController extends BaseController {
         if (!bCryptPasswordEncoder.matches(password, userModel.getEncryptPassword())) {
             throw new BusinessException(EnumBusinessError.INVALID_PASSWORD);
         }
-        Map<String, Object> returnMap = new HashMap<>(1);
+        Map<String, Object> returnMap = new HashMap<>(2);
         returnMap.put("token", JwtTokenUtils.createToken(userModel.getId(), userModel.getRole(), false));
+        returnMap.put("user", convertor.userVOFromUserModel(userModel));
         return CommonReturnType.create(returnMap);
     }
 
@@ -112,15 +115,5 @@ public class AuthController extends BaseController {
         //加密字符串
         String newstr = base64Encoder.encode(md5.digest(str.getBytes("utf-8")));
         return newstr;
-    }
-
-    private UserVO convertFromModel(UserModel userModle) {
-        if (userModle == null) {
-            return null;
-        }
-        UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(userModle, userVO);
-
-        return userVO;
     }
 }
