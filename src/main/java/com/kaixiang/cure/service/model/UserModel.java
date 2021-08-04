@@ -2,7 +2,6 @@ package com.kaixiang.cure.service.model;
 
 import org.joda.time.DateTime;
 
-import java.util.Date;
 
 public class UserModel {
     private Integer id;
@@ -20,6 +19,8 @@ public class UserModel {
     private Integer status;
 
     private String role;
+
+    private Boolean allowCollect;
 
     private String encryptPassword;
 
@@ -93,5 +94,13 @@ public class UserModel {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public Boolean getAllowCollect() {
+        return allowCollect;
+    }
+
+    public void setAllowCollect(Boolean allowCollect) {
+        this.allowCollect = allowCollect;
     }
 }

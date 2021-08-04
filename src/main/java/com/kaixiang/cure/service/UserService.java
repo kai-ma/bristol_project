@@ -16,4 +16,9 @@ public interface UserService {
     UserModel validateLogin(String email, String encryptPassword) throws Exception;
 
     UserModel getUserModelByEmail(String email);
+
+    /**
+     * 修改用户设置
+     */
+    void changeSettings(UserModel userModel);
 }

@@ -191,4 +191,13 @@ public class Convertor {
         }
         return userModel;
     }
+
+    public UserDO userDOFromUserModel(UserModel userModel) {
+        if (userModel == null) {
+            return null;
+        }
+        UserDO userDO = new UserDO();
+        BeanUtils.copyProperties(userModel, userDO);
+        return userDO;
+    }
 }

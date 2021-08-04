@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
 
         //todo: ValidationResult result = validator.validate(userModel);
 
-        UserDO userDO = convertFromModel(userModel);
+        UserDO userDO = convertor.userDOFromUserModel(userModel);
         try {
             userDOMapper.insertSelective(userDO);
         } catch (DuplicateKeyException e) {
@@ -89,16 +89,21 @@ public class UserServiceImpl implements UserService {
         return convertor.userModelFromUserDOAndPasswordDO(userDO, userPasswordDO);
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private UserDO convertFromModel(UserModel userModel) {
-        if (userModel == null) {
-            return null;
+    /**
+     * 修改用户设置
+     *
+     * @param userModel
+     */
+    @Override
+    public void changeSettings(UserModel userModel) {
+        UserDO userDO = convertor.userDOFromUserModel(userModel);
+        int rows = userDOMapper.updateByPrimaryKeySelective(userDO);
+        if(rows > 0){
+            //成功修改的log
         }
-        UserDO userDO = new UserDO();
-        BeanUtils.copyProperties(userModel, userDO);
-        return userDO;
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private UserPasswordDO convertPassWordFromModel(UserModel userModel) {
         if (userModel == null) {

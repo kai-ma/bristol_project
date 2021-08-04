@@ -19,6 +19,8 @@ public class UserDO {
 
     private String role;
 
+    private Boolean allowCollect;
+
     public Integer getId() {
         return id;
     }
@@ -81,5 +83,13 @@ public class UserDO {
 
     public void setRole(String role) {
         this.role = role == null ? null : role.trim();
+    }
+
+    public Boolean getAllowCollect() {
+        return allowCollect;
+    }
+
+    public void setAllowCollect(Boolean allowCollect) {
+        this.allowCollect = allowCollect;
     }
 }

@@ -9,7 +9,6 @@ import com.kaixiang.cure.service.model.UserModel;
 import com.kaixiang.cure.utils.Convertor;
 import com.kaixiang.cure.utils.JwtTokenUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

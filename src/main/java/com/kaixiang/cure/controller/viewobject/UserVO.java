@@ -11,6 +11,8 @@ public class UserVO {
 
     private Integer continuousLoginDays;
 
+    private Boolean allowCollect;
+
     public String getPseudonym() {
         return pseudonym;
     }
@@ -41,5 +43,13 @@ public class UserVO {
 
     public void setContinuousLoginDays(Integer continuousLoginDays) {
         this.continuousLoginDays = continuousLoginDays;
+    }
+
+    public Boolean getAllowCollect() {
+        return allowCollect;
+    }
+
+    public void setAllowCollect(Boolean allowCollect) {
+        this.allowCollect = allowCollect;
     }
 }
