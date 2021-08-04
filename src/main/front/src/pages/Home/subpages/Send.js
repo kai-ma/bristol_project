@@ -8,10 +8,12 @@ import {
 	WhiteSpace,
 	Toast,
 	Picker,
+    Modal,
 } from "antd-mobile";
 import { createForm } from "rc-form";
 import Http from "@src/utils/http.js";
 
+const alert = Modal.alert;
 class Send extends Component {
 	constructor(props) {
 		super(props);
@@ -66,24 +68,34 @@ class Send extends Component {
 				);
 				return;
 			} else {
-				Http({
-					url: "/letter/send/first",
-					body: { ...value, topicId: value.topic[0] },
-					mock: false,
-				}).then(
-					(res) => {
-						Toast.info("Send successfully!", 2);
-						setTimeout(() => {
-							this.props.history.push("/");
-						}, 2000);
-					},
-					(err) => {
-						Toast.fail(err.errMsg, 2);
-					}
-				);
+                alert("Confirm send this letter", "Cost 1 stamp to send a letter", [
+                    {
+                        text: "Confirm",
+                        onPress: () => {this.sendLetter(value)}
+                    },
+                    { text: "Cancel" , onPress: () => console.log('cancel')},
+                ]);
 			}
 		});
 	};
+
+    sendLetter = (value) => {
+        Http({
+            url: "/letter/send/first",
+            body: { ...value, topicId: value.topic[0] },
+            mock: false,
+        }).then(
+            (res) => {
+                Toast.info("Send successfully!", 2);
+                setTimeout(() => {
+                    this.props.history.push("/");
+                }, 2000);
+            },
+            (err) => {
+                Toast.fail(err.errMsg, 2);
+            }
+        );
+    }
 
 	linkToHome = () => {
 		this.props.history.push("/");

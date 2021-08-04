@@ -6,10 +6,13 @@ import {
 	Button,
 	Toast,
 	WhiteSpace,
+	Modal,
 } from "antd-mobile";
 import { createForm } from "rc-form";
 import { connect } from "react-redux";
 import Http from "@src/utils/http.js";
+
+const alert = Modal.alert;
 
 class Reply extends Component {
 	constructor(props) {
@@ -30,23 +33,21 @@ class Reply extends Component {
 				);
 				return;
 			} else {
-                //回信 type是0
-				Http({ url: "/letter/reply", body: { ...value, firstLetterId: letter.id, type:0}, mock: false }).then(
-					(res) => {
-						Toast.info("Reply successfully!", 2);
-						setTimeout(() => {
-							this.props.history.push("/");
-		                    let key = "home_replies_" + letter.id;
-                            localStorage.removeItem(key);
-						}, 2000);
-					},
-					(err) => {
-                        if(err.errCode === 30002){
-                            Toast.fail(err.errMsg, 2);
-                        }else{
-                            Toast.info("Network error, please try again", 2);
-                        }
-                    }
+				alert(
+					"Confirm reply",
+					"Cost 1 stamp to reply",
+					[
+						{
+							text: "Confirm",
+							onPress: () => {
+								this.reply(letter, value);
+							},
+						},
+						{
+							text: "Cancel",
+							onPress: () => console.log("cancel"),
+						},
+					]
 				);
 			}
 		});
@@ -54,6 +55,31 @@ class Reply extends Component {
 
 	linkToHome = () => {
 		this.props.history.push("/");
+	};
+
+	reply = (letter, value) => {
+		//回信 type是0
+		Http({
+			url: "/letter/reply",
+			body: { ...value, firstLetterId: letter.id, type: 0 },
+			mock: false,
+		}).then(
+			(res) => {
+				Toast.info("Reply successfully!", 2);
+				setTimeout(() => {
+					this.props.history.push("/");
+					let key = "home_replies_" + letter.id;
+					localStorage.removeItem(key);
+				}, 2000);
+			},
+			(err) => {
+				if (err.errCode === 30002) {
+					Toast.fail(err.errMsg, 2);
+				} else {
+					Toast.info("Network error, please try again", 2);
+				}
+			}
+		);
 	};
 
 	render() {
@@ -105,7 +131,10 @@ class Reply extends Component {
 					/>
 				</List>
 				<List renderHeader={() => ""}></List>
-				<Button type="primary" onClick={() => this.handleSubmit(letter)}>
+				<Button
+					type="primary"
+					onClick={() => this.handleSubmit(letter)}
+				>
 					Reply
 				</Button>
 			</div>
