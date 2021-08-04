@@ -21,8 +21,6 @@ class Settings extends Component {
 		this.state = this.initialState;
 	}
 
-	componentDidMount() {}
-
 	initialState = {};
 
 	save = () => {
