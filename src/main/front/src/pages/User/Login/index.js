@@ -11,7 +11,7 @@ import {
 import { createForm } from "rc-form";
 import { FaSignInAlt, FaUserPlus } from "react-icons/fa";
 import Http from "@src/utils/http.js";
-import { setObjectToLocalStorage, getObjectFromLocalStorage } from "@src/utils";
+import { setObjectToLocalStorage } from "@src/utils";
 
 const alert = Modal.alert;
 

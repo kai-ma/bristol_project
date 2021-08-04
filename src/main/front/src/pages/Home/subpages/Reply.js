@@ -22,8 +22,6 @@ class Reply extends Component {
 	initialState = {};
 
 	handleSubmit = (letter) => {
-		const input = this.props.form.getFieldsValue();
-
 		// console.log(input);
 		this.props.form.validateFields((error, value) => {
 			if (error) {

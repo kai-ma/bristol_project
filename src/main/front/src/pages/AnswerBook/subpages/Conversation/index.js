@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { NavBar, WingBlank, Button, Toast } from "antd-mobile";
+import { NavBar, WingBlank, Button } from "antd-mobile";
 import { withRouter } from "react-router-dom";
 import Loading from "@src/components/Loading";
 import LetterContent from "@src/components/LetterContent";

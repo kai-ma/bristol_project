@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { NavBar, Icon, Tabs, WhiteSpace, Badge, Card } from "antd-mobile";
+import { NavBar, WhiteSpace, Card } from "antd-mobile";
 import { connect } from "react-redux";
 import { loadConversationsStarted } from "../../../redux/actions/letter";
 

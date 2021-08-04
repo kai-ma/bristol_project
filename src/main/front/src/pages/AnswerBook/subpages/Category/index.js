@@ -3,7 +3,6 @@ import { Grid, WingBlank, WhiteSpace, Toast } from "antd-mobile";
 import { withRouter } from "react-router-dom";
 import Http from "@src/utils/http.js";
 import Loading from "../../../../components/Loading";
-import { getTopics } from "../../../../utils/functions";
 class Category extends Component {
 	constructor(props) {
 		super(props);
@@ -17,13 +16,27 @@ class Category extends Component {
 		return this.props.history.push("/answerbook/content/" + id);
 	};
 
+    //todo，把这个和写信页面的提取成公用的redux的
 	componentDidMount() {
-		let topics = getTopics();
-		if (topics != null && topics.length > 0) {
-			this.setState({
-				topics: topics,
-				loadTopics: false,
-			});
+		let key = "topic";
+		let topicString = localStorage.getItem(key);
+		if (topicString == null) {
+			Http({
+				url: "/answerbook/get/topic",
+				method: "get",
+				mock: false,
+			}).then(
+				(res) => {
+					let topicString = JSON.stringify(res);
+					localStorage.setItem(key, topicString);
+					this.setState({ topics: res });
+				},
+				(err) => {
+					Toast.info("Network error, please try again", 2);
+				}
+			);
+		} else {
+			this.setState({ topics: JSON.parse(topicString) });
 		}
 	}
 
@@ -36,12 +49,12 @@ class Category extends Component {
                     <div className="sub-title">Grid item adjust accroiding to img size </div>
     <Grid data={data} square={false} className="not-square-grid" /> */}
 
-					{/* <div className="sub-title">ColumnNum=3 </div> */}
 
 					{this.state.topics ? (
 						<Grid
 							data={this.state.topics}
 							onClick={(data) => this.handleClick(data)}
+                            columnNum={3}
 						/>
 					) : (
 						<div>

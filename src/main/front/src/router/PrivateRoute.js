@@ -1,7 +1,6 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import { isLogin } from "../utils";
-import { Toast } from "antd-mobile";
 
 const PrivateRoute = ({ component: Component, ...props }) => {
 	// 解构赋值 将 props 里面的 pros 赋值给 Component

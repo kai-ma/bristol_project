@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { NavBar, Icon, Tabs, WhiteSpace, Badge, Card, WingBlank } from "antd-mobile";
+import { NavBar, Tabs, WhiteSpace, Badge, Card, WingBlank } from "antd-mobile";
 import { connect } from "react-redux";
 import { loadMyFirstLetters, loadFirstLettersIReplied } from "../../redux/actions/letter";
 import Loading from "../../components/Loading";
@@ -85,6 +85,8 @@ class LetterBox extends Component {
 															) + "..."}
 														</div>
 													</Card.Body>
+                                                    <WhiteSpace />
+                                                    <WhiteSpace />
 													<Card.Footer
 														content={letter.createdAt}
 														extra={<div>{letter.pseudonym}</div>}

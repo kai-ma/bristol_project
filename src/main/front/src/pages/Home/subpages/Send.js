@@ -11,7 +11,6 @@ import {
 } from "antd-mobile";
 import { createForm } from "rc-form";
 import Http from "@src/utils/http.js";
-import { getTopics } from "../../../utils/functions";
 
 class Send extends Component {
 	constructor(props) {
@@ -20,9 +19,25 @@ class Send extends Component {
 	}
 
 	componentDidMount() {
-		let topics = getTopics();
-		if (topics != null && topics.length > 0) {
-			this.convertTopic(topics);
+		let key = "topic";
+		let topicString = localStorage.getItem(key);
+		if (topicString == null) {
+			Http({
+				url: "/answerbook/get/topic",
+				method: "get",
+				mock: false,
+			}).then(
+				(res) => {
+					let topicString = JSON.stringify(res);
+					localStorage.setItem(key, topicString);
+                    this.convertTopic(res);
+				},
+				(err) => {
+					Toast.info("Network error, please try again", 2);
+				}
+			);
+		} else {
+			this.convertTopic(JSON.parse(topicString));
 		}
 	}
 
@@ -44,7 +59,6 @@ class Send extends Component {
 	};
 
 	handleSubmit = () => {
-		const input = this.props.form.getFieldsValue();
 		this.props.form.validateFields((error, value) => {
 			if (error) {
 				Toast.info(
@@ -54,7 +68,7 @@ class Send extends Component {
 			} else {
 				Http({
 					url: "/letter/send/first",
-					body: {...value, topicId:value.topic[0]},
+					body: { ...value, topicId: value.topic[0] },
 					mock: false,
 				}).then(
 					(res) => {
