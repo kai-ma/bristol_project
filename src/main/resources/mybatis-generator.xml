@@ -5,6 +5,10 @@
 
 <generatorConfiguration>
     <context id="DB2Tables" targetRuntime="MyBatis3">
+        <commentGenerator>
+            <property name="suppressDate" value="true"/>
+            <property name="suppressAllComments" value="true" />
+        </commentGenerator>
         <!--数据库连接地址账号密码  解析哪一个数据库对应的表的映射到mybatis的目录里-->
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
                         connectionURL="jdbc:mysql://localhost:3306/final_project?characterEncoding=utf8&amp;serverTimezone=GMT"
@@ -12,7 +16,7 @@
 
         </jdbcConnection>
         <!--生成data object存放位置  数据库miaosha会分别建立dataobject到下面的目录-->
-        <javaModelGenerator targetPackage="com.kaixiang.finalproject.dataobject" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="com.kaixiang.cure.dataobject" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
@@ -22,11 +26,10 @@
         </sqlMapGenerator>
         <!--生成Dao类存放位置-->
         <!--客户端代码，生成针对model对象和xml配置文件的代码-->
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.kaixiang.finalproject.dao"
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.kaixiang.cure.dao"
                              targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
-
 <!--        <table tableName="user_info" domainObjectName="UserDO" enableCountByExample="false"-->
 <!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
 <!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
@@ -35,7 +38,10 @@
 <!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
 <!--               enableSelectByExample="false" selectByExampleQueryId="false">-->
 <!--        </table>-->
-
+        <table tableName="first_letter" domainObjectName="FirstLetterDO" enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
         <!--生成对应表及类名
         <table tableName="user_info" domainObjectName="UserDO" enableCountByExample="false"
                enableUpdateByExample="false" enableDeleteByExample="false"
@@ -61,8 +67,8 @@
         <!--        <table tableName="promo" domainObjectName="PromoDO" enableCountByExample="false"-->
         <!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
         <!--               enableSelectByExample="false" selectByExampleQueryId="false"></table>-->
-        <table tableName="stock_log" domainObjectName="StockLogDO" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false"></table>
+<!--        <table tableName="stock_log" domainObjectName="StockLogDO" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false"></table>-->
     </context>
 </generatorConfiguration>

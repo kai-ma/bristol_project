@@ -11,3 +11,8 @@ target/
 **/*.iml
 **/.idea
 **/.gradle
+
+./src/main/webapp
+
+/docs/*
+/src/main/resources/mybatis-generator.xml

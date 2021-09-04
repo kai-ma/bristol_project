@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaixiang.cure.dao.FirstLetterDOMapper">
+  <resultMap id="BaseResultMap" type="com.kaixiang.cure.dataobject.FirstLetterDO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="userid" jdbcType="VARCHAR" property="userid" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="filepath" jdbcType="VARCHAR" property="filepath" />
+    <result column="topic_id" jdbcType="INTEGER" property="topicId" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="last_replied_at" jdbcType="TIMESTAMP" property="lastRepliedAt" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="reply_number" jdbcType="INTEGER" property="replyNumber" />
+    <result column="quality" jdbcType="INTEGER" property="quality" />
+    <result column="pseudonym" jdbcType="VARCHAR" property="pseudonym" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, userid, title, filepath, topic_id, created_at, last_replied_at, status, reply_number, 
+    quality, pseudonym
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from first_letter
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="listMyFirstLetters" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from first_letter
+    where userid = #{userid,jdbcType=VARCHAR}
+    order by reply_number DESC;
+  </select>
+  <select id="listFirstLettersNotMine" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from first_letter
+    where userid != #{userid,jdbcType=VARCHAR}
+    order by reply_number ASC, created_at ASC
+    limit 3;
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from first_letter
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.kaixiang.cure.dataobject.FirstLetterDO">
+    insert into first_letter (id, userid, title, 
+      filepath, topic_id, created_at, 
+      last_replied_at, status, reply_number, 
+      quality, pseudonym)
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
+      #{filepath,jdbcType=VARCHAR}, #{topicId,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, 
+      #{lastRepliedAt,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{replyNumber,jdbcType=INTEGER}, 
+      #{quality,jdbcType=INTEGER}, #{pseudonym,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.FirstLetterDO">
+    insert into first_letter
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="filepath != null">
+        filepath,
+      </if>
+      <if test="topicId != null">
+        topic_id,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+      <if test="lastRepliedAt != null">
+        last_replied_at,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="replyNumber != null">
+        reply_number,
+      </if>
+      <if test="quality != null">
+        quality,
+      </if>
+      <if test="pseudonym != null">
+        pseudonym,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="filepath != null">
+        #{filepath,jdbcType=VARCHAR},
+      </if>
+      <if test="topicId != null">
+        #{topicId,jdbcType=INTEGER},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastRepliedAt != null">
+        #{lastRepliedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="replyNumber != null">
+        #{replyNumber,jdbcType=INTEGER},
+      </if>
+      <if test="quality != null">
+        #{quality,jdbcType=INTEGER},
+      </if>
+      <if test="pseudonym != null">
+        #{pseudonym,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kaixiang.cure.dataobject.FirstLetterDO">
+    update first_letter
+    <set>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="filepath != null">
+        filepath = #{filepath,jdbcType=VARCHAR},
+      </if>
+      <if test="topicId != null">
+        topic_id = #{topicId,jdbcType=INTEGER},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastRepliedAt != null">
+        last_replied_at = #{lastRepliedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="replyNumber != null">
+        reply_number = #{replyNumber,jdbcType=INTEGER},
+      </if>
+      <if test="quality != null">
+        quality = #{quality,jdbcType=INTEGER},
+      </if>
+      <if test="pseudonym != null">
+        pseudonym = #{pseudonym,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kaixiang.cure.dataobject.FirstLetterDO">
+    update first_letter
+    set userid = #{userid,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      filepath = #{filepath,jdbcType=VARCHAR},
+      topic_id = #{topicId,jdbcType=INTEGER},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      last_replied_at = #{lastRepliedAt,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      reply_number = #{replyNumber,jdbcType=INTEGER},
+      quality = #{quality,jdbcType=INTEGER},
+      pseudonym = #{pseudonym,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
