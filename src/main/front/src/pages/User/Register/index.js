@@ -44,8 +44,11 @@ class Register extends Component {
 						);
 					},
 					(err) => {
-						console.log(err);
-						Toast.fail(err.errMsg, 2);
+                        if(err.errMsg != null){
+                            Toast.fail(err.errMsg, 2);
+                        }else{
+                            Toast.fail("Network error, please try again", 2);
+                        }
 					}
 				);
 			}

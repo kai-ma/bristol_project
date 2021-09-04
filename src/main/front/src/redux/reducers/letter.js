@@ -94,7 +94,8 @@ const reducer = (preState = initialState, action) => {
 				loading: false,
 				error: action.payload,
 			};
-
+        case actionTypes.CLEAR_LETTERS:
+            return initialState;
 		default:
 			return preState;
 	}

@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import { Button, Toast, WhiteSpace, NavBar, List } from "antd-mobile";
 import { FaSignInAlt, FaSignOutAlt, FaUserPlus } from "react-icons/fa";
 import { AiOutlineSetting } from "react-icons/ai";
-
 import { getObjectFromLocalStorage } from "@src/utils";
+import { clearLetters } from "../../redux/actions/letter";
+import { connect } from "react-redux";
 
 const Item = List.Item;
-export default class User extends Component {
+class User extends Component {
 	constructor(props) {
 		super(props);
 		this.state = this.initialState;
@@ -25,6 +26,7 @@ export default class User extends Component {
 	};
 
 	handleLogOut = () => {
+        this.props.clearLetters();
         localStorage.clear();
 		Toast.success("Log out successfully", 1);
 		setTimeout(() => {
@@ -100,3 +102,15 @@ export default class User extends Component {
 		);
 	}
 }
+
+const mapStateToProps = (state) => {
+	return {
+	};
+};
+
+const mapDispatchToProps = (dispatch) => {
+	return {
+		clearLetters: () => dispatch(clearLetters()),
+	};
+};
+export default connect(mapStateToProps, mapDispatchToProps)(User);

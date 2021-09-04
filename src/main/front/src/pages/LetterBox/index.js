@@ -62,6 +62,7 @@ class LetterBox extends Component {
                             }
 						}}
 					>
+                        {/* tab0 我发送的 */}
 						<div>
 							{this.props.loading ? (
 								<div>

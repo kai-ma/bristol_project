@@ -220,3 +220,12 @@ const conversationFailure = (error) => {
 		payload: error,
 	};
 };
+
+
+export const clearLetters = () => {
+	return (dispatch) => {
+		dispatch({
+			type: actionTypes.CLEAR_LETTERS,
+		});
+	};
+};
