@@ -10,7 +10,6 @@ import com.kaixiang.cure.service.UserService;
 import com.kaixiang.cure.service.model.UserModel;
 import com.kaixiang.cure.utils.Convertor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -42,14 +41,12 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void register(UserModel userModel) throws BusinessException {
         //为什么必须判空？ 工作中service层和Controller层可能不是一个人做的
         if (userModel == null) {
             throw new BusinessException(EnumBusinessError.UNKNOWN_ERROR);
         }
-
-        //todo: ValidationResult result = validator.validate(userModel);
 
         UserDO userDO = convertor.userDOFromUserModel(userModel);
         try {

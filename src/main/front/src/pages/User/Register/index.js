@@ -23,10 +23,10 @@ class Register extends Component {
 
 	handleSubmit = () => {
 		const input = this.props.form.getFieldsValue();
-        if(input.confirm_password !== input.password) {
-            Toast.fail("Confirmation password is not identical.", 1);
-            return;
-        }
+		if (input.confirm_password !== input.password) {
+			Toast.fail("Confirmation password is not identical.", 1);
+			return;
+		}
 		this.props.form.validateFields((error, value) => {
 			if (error) {
 				Toast.info(
@@ -34,7 +34,7 @@ class Register extends Component {
 				);
 				return;
 			} else {
-				Http({ url: "/register", body: value }).then(
+				Http({ url: "/auth/register", body: value, mock: false }).then(
 					(res) => {
 						console.log(res);
 						Toast.info(
@@ -44,7 +44,8 @@ class Register extends Component {
 						);
 					},
 					(err) => {
-						// console.log(err);
+						console.log(err);
+						Toast.fail(err.errMsg, 2);
 					}
 				);
 			}
@@ -62,7 +63,7 @@ class Register extends Component {
 				<NavBar mode="light">Register</NavBar>
 				<List renderHeader={() => ""}>
 					<InputItem
-						{...getFieldProps("name", {
+						{...getFieldProps("pseudonym", {
 							rules: [{ required: true }],
 						})}
 						labelNumber={6}
@@ -95,7 +96,7 @@ class Register extends Component {
 							rules: [{ required: true }],
 						})}
 						placeholder="confirm password"
-                        type="password"
+						type="password"
 						labelNumber={6}
 					>
 						Confirm

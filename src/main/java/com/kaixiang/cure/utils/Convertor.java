@@ -1,5 +1,6 @@
 package com.kaixiang.cure.utils;
 
+import com.kaixiang.cure.controller.dataobject.RegisterDTO;
 import com.kaixiang.cure.controller.viewobject.*;
 import com.kaixiang.cure.dataobject.*;
 import com.kaixiang.cure.service.model.*;
@@ -8,12 +9,14 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.kaixiang.cure.utils.Constants.FIRST_LETTER_TYPE;
+import static com.kaixiang.cure.utils.Constants.ROLE_USER;
 
 /**
  * @description: Convertor.java: 各种model之间的转换
@@ -199,5 +202,17 @@ public class Convertor {
         UserDO userDO = new UserDO();
         BeanUtils.copyProperties(userModel, userDO);
         return userDO;
+    }
+
+    public UserModel userModelFromRegisterDTO(RegisterDTO registerDTO) {
+        if(registerDTO == null){
+            return null;
+        }
+        UserModel userModel = new UserModel();
+        userModel.setPseudonym(registerDTO.getPseudonym());
+        userModel.setEmail(registerDTO.getEmail());
+        userModel.setEncryptPassword(registerDTO.getPassword());
+        userModel.setRole(ROLE_USER);
+        return userModel;
     }
 }

@@ -64,8 +64,8 @@ class Content extends Component {
 				(res) => {
 					//需要JSON.stringify，不然会存入[Object,Object]
 					if (
-						res.conversaitons != null &&
-						res.conversaitons.length > 0
+						res.conversations != null &&
+						res.conversations.length > 0
 					) {
 						let contentString = JSON.stringify(res);
 						localStorage.setItem(key, contentString);
@@ -91,6 +91,7 @@ class Content extends Component {
 				totalPage: Math.ceil(conversations.length / pageSize),
 				tagToConversationIds: content.tagToConversationIds,
 				tags: Object.keys(content.tagToConversationIds),
+                loading:false,
 			});
 		}
 	}

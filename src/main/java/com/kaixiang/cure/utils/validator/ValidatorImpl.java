@@ -23,20 +23,41 @@ public class ValidatorImpl implements InitializingBean {
         this.validator = Validation.buildDefaultValidatorFactory().getValidator();
     }
 
-    //实现校验方法并返回校验结果
+    /**
+     * 实现校验方法并返回校验结果
+     */
     public ValidationResult validate(Object bean) {
         ValidationResult result = new ValidationResult();
         //若对应bean中的参数规则违背了对应validation定义的@的话，set中就会有这个值
         Set<ConstraintViolation<Object>> constraintViolationSet = validator.validate(bean);
-        if (constraintViolationSet.size() > 0) {  //有错误
+        //有错误
+        if (constraintViolationSet.size() > 0) {
             result.setHasErrors(true);
-            //有错误，遍历对应的set   java8 lambda表达式
-            constraintViolationSet.forEach(constraintViolation -> {
-                String errMsg = constraintViolation.getMessage();  //把存放的errMsg--错误信息提取出来
-                String propertyName = constraintViolation.getPropertyPath().toString();  //把错误字段名提取出来
-                result.getErrorMsgMap().put(propertyName, errMsg);
-            });
+            //显示所有错误：
+            // 有错误，遍历对应的set
+//            getAllErrMsg(result, constraintViolationSet);
+            getFirstErrMsg(result, constraintViolationSet);
         }
         return result;
+    }
+
+    private void getAllErrMsg(ValidationResult result, Set<ConstraintViolation<Object>> constraintViolationSet) {
+        constraintViolationSet.forEach(constraintViolation -> {
+            //把存放的errMsg--错误信息提取出来
+            String errMsg = constraintViolation.getMessage();
+            //把错误字段名提取出来
+            String propertyName = constraintViolation.getPropertyPath().toString();
+            result.getErrorMsgMap().put(propertyName, errMsg);
+        });
+    }
+
+    private void getFirstErrMsg(ValidationResult result, Set<ConstraintViolation<Object>> constraintViolationSet) {
+        for(ConstraintViolation<Object> constraintViolation : constraintViolationSet){
+            String errMsg = constraintViolation.getMessage();
+            //把错误字段名提取出来
+            String propertyName = constraintViolation.getPropertyPath().toString();
+            result.getErrorMsgMap().put(propertyName, errMsg);
+            break;
+        }
     }
 }
