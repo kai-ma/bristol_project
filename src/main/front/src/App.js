@@ -12,7 +12,7 @@ import Login from "./pages/User/Login";
 import Settings from "./pages/User/subpages/Settings"
 import Send from "./pages/Home/subpages/Send"
 import Reply from "./pages/Home/subpages/Reply"
-import Letter from "./pages/Home/subpages/Letter"
+import Letter from "./pages/Home/subpages/letter"
 import Conversation from "./pages/LetterBox/Conversation"
 import PrivateRoute from './router/PrivateRoute';
 

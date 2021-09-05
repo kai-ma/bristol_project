@@ -4,7 +4,7 @@ public interface EncryptUtils {
     /**
      * todo: 加密
      */
-    public String encrypt(String content);
+    String encrypt(String content);
 
-    public String decrypt(String content);
+    String decrypt(String content);
 }

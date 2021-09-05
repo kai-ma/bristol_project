@@ -1,5 +1,7 @@
 package com.kaixiang.cure.utils;
 
+import com.kaixiang.cure.controller.dataobject.FirstLetterDTO;
+import com.kaixiang.cure.controller.dataobject.LetterDTO;
 import com.kaixiang.cure.controller.dataobject.RegisterDTO;
 import com.kaixiang.cure.controller.viewobject.*;
 import com.kaixiang.cure.dataobject.*;
@@ -9,7 +11,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -54,8 +55,7 @@ public class Convertor {
             return null;
         }
         LetterDO letterDO = new LetterDO();
-        letterDO.setFilepath(letterModel.getContent());
-        letterDO.setType(letterModel.getType());
+        BeanUtils.copyProperties(letterModel, letterDO);
         return letterDO;
     }
 
@@ -65,7 +65,6 @@ public class Convertor {
         }
         LetterModel letterModel = new LetterModel();
         BeanUtils.copyProperties(letterDO, letterModel);
-        letterModel.setContent(letterDO.getFilepath());
         letterModel.setCreatedAt(new DateTime(letterDO.getCreatedAt()));
         return letterModel;
     }
@@ -100,8 +99,7 @@ public class Convertor {
         if (firstLetterDO.getReplyNumber() != null && firstLetterDO.getReplyNumber() != 0) {
             firstLetterModel.setLastRepliedAt(new DateTime(firstLetterDO.getLastRepliedAt()));
         }
-        firstLetterModel.setContent(firstLetterDO.getFilepath());
-        firstLetterModel.setUserId(Integer.valueOf(encryptUtils.decrypt(firstLetterDO.getUserid())));
+        firstLetterModel.setUserId(Integer.valueOf(encryptUtils.decrypt(firstLetterDO.getEncryptUserId())));
         if (conversationId != null) {
             firstLetterModel.setConversationId(conversationId);
         }
@@ -163,8 +161,7 @@ public class Convertor {
         }
         FirstLetterDO firstLetterDO = new FirstLetterDO();
         BeanUtils.copyProperties(firstLetterModel, firstLetterDO);
-        firstLetterDO.setUserid(encryptUtils.encrypt(String.valueOf(firstLetterModel.getUserId())));
-        firstLetterDO.setFilepath(firstLetterModel.getContent());
+        firstLetterDO.setEncryptUserId(encryptUtils.encrypt(String.valueOf(firstLetterModel.getUserId())));
         return firstLetterDO;
     }
 
@@ -214,5 +211,23 @@ public class Convertor {
         userModel.setEncryptPassword(registerDTO.getPassword());
         userModel.setRole(ROLE_USER);
         return userModel;
+    }
+
+    public FirstLetterModel FirstLetterModelFromDTO(FirstLetterDTO firstLetterDTO) {
+        if (firstLetterDTO == null) {
+            return null;
+        }
+        FirstLetterModel firstLetterModel = new FirstLetterModel();
+        BeanUtils.copyProperties(firstLetterDTO, firstLetterModel);
+        return firstLetterModel;
+    }
+
+    public LetterModel LetterModelFromDTO(LetterDTO letterDTO) {
+        if (letterDTO == null) {
+            return null;
+        }
+        LetterModel letterModel = new LetterModel();
+        BeanUtils.copyProperties(letterDTO, letterModel);
+        return letterModel;
     }
 }

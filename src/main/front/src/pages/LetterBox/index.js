@@ -79,6 +79,7 @@ class LetterBox extends Component {
                                                         title={letter.title}
                                                         extra={letter.replyNumber > 0 ?  letter.replyNumber + " replied" : null}
                                                     />
+                                                    <WhiteSpace />
 													<Card.Body>
 														<div>
 															{letter.content.substring(0,
@@ -117,6 +118,7 @@ class LetterBox extends Component {
                                                         title={letter.title}
                                                         extra={letter.replyNumber > 0 ?  letter.replyNumber + " replied" : null}
                                                     />
+                                                    <WhiteSpace />
 													<Card.Body>
 														<div>
 															{letter.content.substring(0,
@@ -124,6 +126,8 @@ class LetterBox extends Component {
 															) + "..."}
 														</div>
 													</Card.Body>
+                                                    <WhiteSpace />
+                                                    <WhiteSpace />
 													<Card.Footer
 														content={letter.createdAt}
 														extra={<div>{letter.pseudonym}</div>}

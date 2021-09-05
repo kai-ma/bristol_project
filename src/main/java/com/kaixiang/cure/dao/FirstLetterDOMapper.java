@@ -13,9 +13,9 @@ public interface FirstLetterDOMapper {
 
     FirstLetterDO selectByPrimaryKey(Integer id);
 
-    List<FirstLetterDO> listMyFirstLetters(String userid);
+    List<FirstLetterDO> listMyFirstLetters(String encryptUserId);
 
-    List<FirstLetterDO> listFirstLettersNotMine(String userid);
+    List<FirstLetterDO> listFirstLettersNotMine(String encryptUserId);
 
     int updateByPrimaryKeySelective(FirstLetterDO record);
 

@@ -65,7 +65,7 @@ export const loadMyFirstLetters = () => {
 				dispatch(loadMyFirstLettersSuccess(res));
 			},
 			(err) => {
-				Toast.fail(err, 1);  
+				Toast.fail(err.errMsg, 1);
 				dispatch(loadMyFirstLettersFailure(err));
 			}
 		);
@@ -99,7 +99,7 @@ export const loadFirstLettersIReplied = () => {
 				dispatch(loadFirstLettersRepliedSuccess(res));
 			},
 			(err) => {
-				Toast.fail(err, 1);  
+				Toast.fail(err.errMsg, 1);   
 				dispatch(loadFirstLettersRepliedFailure(err));
 			}
 		);
@@ -133,7 +133,7 @@ export const loadDetailOfMyFirstLetter = () => {
 				dispatch(loadDetailOfMyFirstLetterSuccess(res));
 			},
 			(err) => {
-				Toast.fail(err, 1);  
+				Toast.fail(err.errMsg, 1);   
 				dispatch(loadMyFirstLettersFailure(err));
 			}
 		);
@@ -159,7 +159,7 @@ export const loadDetailOfFirstLetterReplied = (conversationId) => {
 				dispatch(loadDetailOfFirstLetterRepliedSuccess(res));
 			},
 			(err) => {
-				Toast.fail(err, 1);  
+				Toast.fail(err.errMsg, 1);  
 				dispatch(loadMyFirstLettersFailure(err));
 			}
 		);

@@ -12,7 +12,6 @@ import javax.validation.constraints.NotBlank;
 public class FirstLetterModel extends LetterModel{
     private Integer userId;
 
-    @NotBlank(message = "Title can't be empty")
     private String title;
 
     private DateTime lastRepliedAt;

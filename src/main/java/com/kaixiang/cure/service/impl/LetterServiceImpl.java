@@ -75,7 +75,8 @@ public class LetterServiceImpl implements LetterService {
             return null;
         }
         try {
-            List<FirstLetterDO> firstLetterDOList = firstLetterDOMapper.listMyFirstLetters(encryptUtils.encrypt(String.valueOf(userid)));
+            String encryptUserId = encryptUtils.encrypt(String.valueOf(userid));
+            List<FirstLetterDO> firstLetterDOList = firstLetterDOMapper.listMyFirstLetters(encryptUserId);
             return firstLetterDOList.stream().map(firstLetterDO -> convertor.firstLetterModelFromFirstLetterDO(firstLetterDO, null)
             ).collect(Collectors.toList());
         } catch (Exception e) {
@@ -110,7 +111,7 @@ public class LetterServiceImpl implements LetterService {
         try {
             //1.根据firstLetterId，查询firstLetterDO，获取对方的userId
             FirstLetterDO firstLetterDO = firstLetterDOMapper.selectByPrimaryKey(letterModel.getFirstLetterId());
-            letterModel.setAddresseeUserId(Integer.valueOf(encryptUtils.decrypt(firstLetterDO.getUserid())));
+            letterModel.setAddresseeUserId(Integer.valueOf(encryptUtils.decrypt(firstLetterDO.getEncryptUserId())));
             //2.存储conversation，获取conversationId
             ConversationDO conversationDO = convertor.conversationDOFromLetterModel(letterModel);
             conversationDOMapper.insertSelective(conversationDO);
