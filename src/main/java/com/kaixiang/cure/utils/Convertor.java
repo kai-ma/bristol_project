@@ -1,7 +1,7 @@
 package com.kaixiang.cure.utils;
 
 import com.kaixiang.cure.controller.dataobject.FirstLetterDTO;
-import com.kaixiang.cure.controller.dataobject.LetterDTO;
+import com.kaixiang.cure.controller.dataobject.ReplyLetterDTO;
 import com.kaixiang.cure.controller.dataobject.RegisterDTO;
 import com.kaixiang.cure.controller.viewobject.*;
 import com.kaixiang.cure.dataobject.*;
@@ -222,12 +222,12 @@ public class Convertor {
         return firstLetterModel;
     }
 
-    public LetterModel LetterModelFromDTO(LetterDTO letterDTO) {
-        if (letterDTO == null) {
+    public LetterModel LetterModelFromDTO(ReplyLetterDTO replyLetterDTO) {
+        if (replyLetterDTO == null) {
             return null;
         }
         LetterModel letterModel = new LetterModel();
-        BeanUtils.copyProperties(letterDTO, letterModel);
+        BeanUtils.copyProperties(replyLetterDTO, letterModel);
         return letterModel;
     }
 
@@ -267,6 +267,16 @@ public class Convertor {
             firstLetterModel.setConversationId(letterDO.getConversationId());
         }
         firstLetterModel.setType(FIRST_LETTER_TYPE);
+        return firstLetterModel;
+    }
+
+    public FirstLetterModel firstLetterModelFromLetterDO(LetterDO letterDO) {
+        if(letterDO == null){
+            return null;
+        }
+        FirstLetterModel firstLetterModel = new FirstLetterModel();
+        BeanUtils.copyProperties(letterDO, firstLetterModel);
+        firstLetterModel.setCreatedAt(new DateTime(letterDO.getCreatedAt()));
         return firstLetterModel;
     }
 }

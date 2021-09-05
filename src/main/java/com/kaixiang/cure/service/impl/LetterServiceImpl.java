@@ -16,7 +16,6 @@ import com.kaixiang.cure.service.model.LetterModel;
 import com.kaixiang.cure.utils.Convertor;
 import com.kaixiang.cure.utils.RedisUtils;
 import com.kaixiang.cure.utils.encrypt.EncryptUtils;
-import com.kaixiang.cure.utils.validator.ValidatorImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -36,8 +35,6 @@ import java.util.stream.Collectors;
  */
 @Service
 public class LetterServiceImpl implements LetterService {
-    @Autowired
-    private ValidatorImpl validator;
     @Autowired
     private FirstLetterDOMapper firstLetterDOMapper;
     @Autowired
@@ -64,14 +61,16 @@ public class LetterServiceImpl implements LetterService {
 
         try {
             LetterDO letterDO = convertor.letterDOFromFirstLetterModel(firstLetterModel);
-            Integer letterId = letterDOMapper.insertSelective(letterDO);
+            Integer rows = letterDOMapper.insertSelective(letterDO);
+            if (rows != 1) {
+                throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
+            }
 
             FirstLetterMetaDO firstLetterMetaDO = convertor.firstLetterMetaDOFromFirstLetterModel(firstLetterModel);
-            firstLetterMetaDO.setLetterId(letterId);
-            firstLetterMetaDOMapper.insert(firstLetterMetaDO);
+            firstLetterMetaDO.setLetterId(letterDO.getId());
+            firstLetterMetaDOMapper.insertSelective(firstLetterMetaDO);
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
         }
     }
@@ -114,17 +113,30 @@ public class LetterServiceImpl implements LetterService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    //论文：多写的 事务可以写到论文中
     public void replyFirstLetter(LetterModel letterModel) throws BusinessException {
         if (letterModel == null) {
-            throw new BusinessException(EnumBusinessError.UNKNOWN_ERROR);
+            throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR);
         }
         try {
-            //1.根据firstLetterId，查询firstLetterDO，获取对方的userId
-            FirstLetterDO firstLetterDO = firstLetterDOMapper.selectByPrimaryKey(letterModel.getFirstLetterId());
-            letterModel.setAddresseeUserId(Integer.valueOf(encryptUtils.decrypt(firstLetterDO.getEncryptUserId())));
+
+            //1.根据要回复的 首封信的id，查询firstLetterMeta信息，获取对方的userId  同时回复数量+1。
+            FirstLetterMetaDO firstLetterMetaDO = firstLetterMetaDOMapper.selectByLetterId(letterModel.getFirstLetterId());
+            if (firstLetterMetaDO == null) {
+                throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION.setDescription("根据首封信的id，查询first_letter_meta失败"));
+            }
+            firstLetterMetaDO.setReplyNumber(firstLetterMetaDO.getReplyNumber() + 1);
+            firstLetterMetaDOMapper.updateByPrimaryKeySelective(firstLetterMetaDO);
+
+            letterModel.setAddresseeUserId(Integer.valueOf(encryptUtils.decrypt(firstLetterMetaDO.getEncryptUserId())));
+
             //2.存储conversation，获取conversationId
             ConversationDO conversationDO = convertor.conversationDOFromLetterModel(letterModel);
-            conversationDOMapper.insertSelective(conversationDO);
+            int row = conversationDOMapper.insertSelective(conversationDO);
+            if (row != 1) {
+                throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION.setDescription("conversationId 获取失败"));
+            }
+
             //3.存储letter
             LetterDO letterDO = convertor.letterDOFromLetterModel(letterModel);
             letterDO.setConversationId(conversationDO.getId());
@@ -147,29 +159,42 @@ public class LetterServiceImpl implements LetterService {
             throw new BusinessException(EnumBusinessError.TOKEN_ILLEGAL);
         }
         try {
-            //1. 根据addresseeUserid，查询conversation表 获取firstLetterId
-            List<ConversationDO> conversationDOList = conversationDOMapper.listConversationsIReplied(encryptUtils.encrypt(String.valueOf(userid)));
-            //2. 根据firstLetterId，查询first_letter表，获取first_letter
-            List<FirstLetterModel> firstLetterModelList = new ArrayList<>();
+            List<FirstLetterModel> firstLetterModels = new ArrayList<>();
+
+            String encryptAddresseeUserid = encryptUtils.encrypt(String.valueOf(userid));
+            //1. 根据addresseeUserid，查询conversation表 获取全部的我回复的ConversationDO
+            List<ConversationDO> conversationDOList = conversationDOMapper.listConversationsIReplied(encryptAddresseeUserid);
+
+            //2. 根据ConversationDO的firstLetterIds，批量查询first_letter_meta表
+            List<Integer> letterIds = new ArrayList<>();
+            Map<Integer, Integer> letterId2ConversationId = new HashMap<>();
             for (ConversationDO conversationDO : conversationDOList) {
-                FirstLetterDO firstLetterDO = firstLetterDOMapper.selectByPrimaryKey(conversationDO.getFirstLetterId());
-                if (firstLetterDO != null) {
-                    firstLetterModelList.add(convertor.firstLetterModelFromFirstLetterDO(firstLetterDO, conversationDO.getId()));
-                }
+                letterIds.add(conversationDO.getFirstLetterId());
+                letterId2ConversationId.put(conversationDO.getFirstLetterId(), conversationDO.getId());
             }
-            return firstLetterModelList;
+
+            if(letterIds.size() > 0){
+                List<FirstLetterMetaDO> firstLetterMetaDOS = firstLetterMetaDOMapper.selectByLetterIds(letterIds);
+                firstLetterModels = fetchFirstLetterModelsByMetaDOs(firstLetterMetaDOS);
+            }
+
+            for(FirstLetterModel firstLetterModel : firstLetterModels){
+                firstLetterModel.setConversationId(letterId2ConversationId.get(firstLetterModel.getId()));
+            }
+
+            return firstLetterModels;
         } catch (Exception e) {
             throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
         }
     }
 
     /**
-     * 根据conversationId，获取除了firstLetter以外的所有letter
+     * 根据firstLetterId，获取剩余的回复的letter
      *
      * @param conversationId
      */
     @Override
-    public List<LetterModel> getRestLettersOfConversation(Integer conversationId) throws BusinessException {
+    public List<LetterModel> getReplyLetters(Integer conversationId) throws BusinessException {
         if (conversationId == null) {
             throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR);
         }
@@ -215,10 +240,14 @@ public class LetterServiceImpl implements LetterService {
         try {
             //1. 根据addresseeUserid，查询conversation表 获取我回复的conversationId
             ConversationDO conversationDO = conversationDOMapper.getMyConversationByFirstLetterId(encryptUtils.encrypt(String.valueOf(userId)), firstLetterId);
-            //2. 根据conversationId，获取letterDOs
-            List<LetterDO> letterDOS = letterDOMapper.listLettersByConversationId(conversationDO.getId());
-            return letterDOS.stream().map(letterDO -> convertor.letterModelFromLetterDO(letterDO)
-            ).collect(Collectors.toList());
+            if(conversationDO != null){
+                //2. 根据conversationId，获取letterDOs
+                List<LetterDO> letterDOS = letterDOMapper.listLettersByConversationId(conversationDO.getId());
+                return letterDOS.stream().map(letterDO -> convertor.letterModelFromLetterDO(letterDO)
+                ).collect(Collectors.toList());
+            }
+            return new ArrayList<>();
+
         } catch (Exception e) {
             throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
         }
@@ -226,6 +255,9 @@ public class LetterServiceImpl implements LetterService {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * 根据firstLetterMetaDO的list，获取对应的LetterDO，然后组装成FirstLetterModel的list
+     */
     private List<FirstLetterModel> fetchFirstLetterModelsByMetaDOs(List<FirstLetterMetaDO> firstLetterMetaDOS) {
         Map<Integer, FirstLetterMetaDO> letterId2FirstLetterMeta = new HashMap<>();
         List<FirstLetterModel> firstLetterModels = new ArrayList<>();

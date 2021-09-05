@@ -17,6 +17,8 @@ public class FirstLetterDTO {
     private String content;
 
     @NotBlank(message = "Title can't be empty")
+    @Length(max = 100, message = "Too much characters for title input")
+    @Length(min = 1, message = "Too few characters for title input")
     private String title;
 
     @NotNull(message = "Please choose a topic")

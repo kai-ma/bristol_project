@@ -11,6 +11,7 @@ import {
 import { createForm } from "rc-form";
 import { connect } from "react-redux";
 import Http from "@src/utils/http.js";
+import { reply } from "@src/redux/actions/letter";
 
 const alert = Modal.alert;
 
@@ -33,22 +34,18 @@ class Reply extends Component {
 				);
 				return;
 			} else {
-				alert(
-					"Confirm reply",
-					"Cost 1 stamp to reply",
-					[
-						{
-							text: "Confirm",
-							onPress: () => {
-								this.reply(letter, value);
-							},
+				alert("Confirm reply", "Cost 1 stamp to reply", [
+					{
+						text: "Confirm",
+						onPress: () => {
+							this.props.reply(letter, value, this.props.history);
 						},
-						{
-							text: "Cancel",
-							onPress: () => console.log("cancel"),
-						},
-					]
-				);
+					},
+					{
+						text: "Cancel",
+						onPress: () => console.log("cancel"),
+					},
+				]);
 			}
 		});
 	};
@@ -149,7 +146,9 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-	return {};
+	return {
+		reply: (letter, value, history) => dispatch(reply(letter, value, history)),
+	};
 };
 export default connect(
 	mapStateToProps,

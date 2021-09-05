@@ -25,6 +25,7 @@ const reducer = (preState = initialState, action) => {
 		case actionTypes.LOAD_FIRST_LETTERS_REPLIED:
 		case actionTypes.LOAD_DETAIL_OF_MY_FIRST_LETTER:
 		case actionTypes.LOAD_DETAIL_OF_FIRST_LETTER_REPLIED:
+        case actionTypes.REPLY:
 			return {
 				...preState,
 				loading: true,
@@ -84,6 +85,12 @@ const reducer = (preState = initialState, action) => {
 				error: "",
 				reloadDetailOfFirstLetterReplied: false,
 			};
+        case actionTypes.REPLY_SUCCESS:
+            return {
+                ...preState,
+                loading: false,
+                reloadFirstLettersIReplied: true,
+            };
 		case actionTypes.LETTERS_FAILURE:
 		case actionTypes.CONVERSATION_STARTED_FAILURE:
 		case actionTypes.CONVERSATION_REPLIED_FAILURE:

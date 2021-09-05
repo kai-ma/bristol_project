@@ -81,7 +81,8 @@ public enum EnumBusinessError implements CommonError {
         return description;
     }
 
-    public void setDescription(String description) {
+    public CommonError setDescription(String description) {
         this.description = description;
+        return this;
     }
 }

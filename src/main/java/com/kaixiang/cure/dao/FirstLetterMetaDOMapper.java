@@ -20,4 +20,8 @@ public interface FirstLetterMetaDOMapper {
     List<FirstLetterMetaDO> listMyFirstLetterMetas(String encryptUserId);
 
     List<FirstLetterMetaDO> listMetasInHomePage(String encryptUserId);
+
+    FirstLetterMetaDO selectByLetterId(Integer firstLetterId);
+
+    List<FirstLetterMetaDO> selectByLetterIds(List<Integer> letterIds);
 }

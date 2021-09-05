@@ -36,6 +36,8 @@ public class BaseController {
             System.out.println(exception.getMessage());
             responseData.put("errCode", EnumBusinessError.UNKNOWN_ERROR.getErrorCode());
             responseData.put("errMsg", EnumBusinessError.UNKNOWN_ERROR.getErrorMessage());
+            //todo:开发阶段使用，最后注释掉
+            responseData.put("errorDescription", EnumBusinessError.UNKNOWN_ERROR.getDescription());
         }
         return CommonReturnType.create(responseData, "fail");
     }

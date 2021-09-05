@@ -35,6 +35,10 @@ class Home extends Component {
 		this.props.history.push("/send");
 	};
 
+    navToAnswerBook = () => {
+        this.props.history.push("/answerbook");
+    }
+
 	initialState = {
 		letters: [],
 	};
@@ -105,7 +109,7 @@ class Home extends Component {
 								</WingBlank>
 							</div>
 						))}
-						<p className="p">{2} hours to refresh</p>
+                        <WhiteSpace />
 						<WingBlank>
 							<Button
 								icon={<BsPencilSquare />}
@@ -117,7 +121,8 @@ class Home extends Component {
 								write letter
 							</Button>
 						</WingBlank>
-						<WhiteSpace />
+                        <p className="p" onClick={this.navToAnswerBook}>See more? </p>
+                        <WhiteSpace />
 					</div>
 				)}
 			</div>

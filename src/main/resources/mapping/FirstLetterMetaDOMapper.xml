@@ -37,8 +37,22 @@
     <include refid="Base_Column_List"/>
     from first_letter_meta
     where encrypt_user_id != #{encryptUserId,jdbcType=VARCHAR}
-    order by reply_number ASC, created_at ASC
+    order by reply_number ASC, created_at DESC
     limit 3;
+  </select>
+
+  <select id="selectByLetterId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from first_letter_meta
+    where letter_id = #{letterId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByLetterIds" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from first_letter_meta where letter_id in
+    <foreach collection="letterIds" item="letterId" open="(" close=")" separator=",">
+      #{letterId}
+    </foreach>
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
@@ -47,13 +61,13 @@
   </delete>
   <insert id="insert" parameterType="com.kaixiang.cure.dataobject.FirstLetterMetaDO">
     insert into first_letter_meta (id, letter_id, encrypt_user_id, 
-      title, topic_id, created_at, last_replied_at,
-      status, reply_number, quality
-      )
+      title, topic_id, created_at, 
+      last_replied_at, status, reply_number, 
+      quality)
     values (#{id,jdbcType=INTEGER}, #{letterId,jdbcType=INTEGER}, #{encryptUserId,jdbcType=VARCHAR}, 
-      #{title,jdbcType=VARCHAR}, #{topicId,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP},
-      #{lastRepliedAt,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{replyNumber,jdbcType=INTEGER}, #{quality,jdbcType=INTEGER}
-      )
+      #{title,jdbcType=VARCHAR}, #{topicId,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, 
+      #{lastRepliedAt,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{replyNumber,jdbcType=INTEGER}, 
+      #{quality,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.FirstLetterMetaDO" keyProperty="id" useGeneratedKeys="true">
     insert into first_letter_meta
@@ -104,6 +118,9 @@
       </if>
       <if test="topicId != null">
         #{topicId,jdbcType=INTEGER},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
       </if>
       <if test="lastRepliedAt != null">
         #{lastRepliedAt,jdbcType=TIMESTAMP},

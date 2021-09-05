@@ -1,7 +1,7 @@
 package com.kaixiang.cure.controller;
 
 import com.kaixiang.cure.controller.dataobject.FirstLetterDTO;
-import com.kaixiang.cure.controller.dataobject.LetterDTO;
+import com.kaixiang.cure.controller.dataobject.ReplyLetterDTO;
 import com.kaixiang.cure.controller.viewobject.FirstLetterVO;
 import com.kaixiang.cure.error.BusinessException;
 import com.kaixiang.cure.error.EnumBusinessError;
@@ -124,14 +124,14 @@ public class LetterController {
     @RequestMapping(value = "/reply", method = {RequestMethod.POST})
     @ResponseBody
     @UserLoginToken
-    public CommonReturnType replyLetter(@RequestBody LetterDTO letterDTO, HttpServletRequest request) throws BusinessException {
+    public CommonReturnType replyLetter(@RequestBody ReplyLetterDTO replyLetterDTO, HttpServletRequest request) throws BusinessException {
         //校验参数
-        ValidationResult result = validator.validate(letterDTO);
+        ValidationResult result = validator.validate(replyLetterDTO);
         if (result.isHasErrors()) {
             throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR, result.getErrMsg());
         }
 
-        LetterModel letterModel = convertor.LetterModelFromDTO(letterDTO);
+        LetterModel letterModel = convertor.LetterModelFromDTO(replyLetterDTO);
         Integer userid = (Integer) request.getAttribute(ATTRIBUTE_KEY_USERID);
         letterModel.setSenderUserId(userid);
         letterService.replyFirstLetter(letterModel);
@@ -145,8 +145,11 @@ public class LetterController {
     @ResponseBody
     @UserLoginToken
     public CommonReturnType getLetterBoxDetailReplied(@RequestBody Map<String, String> map) throws BusinessException {
-        Integer conversationId = Integer.valueOf(map.get("conversationId"));
-        List<LetterModel> letterModels = letterService.getRestLettersOfConversation(conversationId);
+        String conversationId = map.get("conversationId");
+        if(conversationId == null || conversationId.length() == 0){
+            throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR);
+        }
+        List<LetterModel> letterModels = letterService.getReplyLetters(Integer.valueOf(conversationId));
         return CommonReturnType.create(letterModels.stream().map(letterModel -> convertor.letterVOFromLetterModel(letterModel)).collect(Collectors.toList()));
     }
 
@@ -198,8 +201,10 @@ public class LetterController {
         }
         FirstLetterVO firstLetterVO = new FirstLetterVO();
         BeanUtils.copyProperties(firstLetterModel, firstLetterVO);
-        firstLetterVO.setCreatedAt(firstLetterModel.getCreatedAt().
-                toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+        if(firstLetterModel.getCreatedAt() != null){
+            firstLetterVO.setCreatedAt(firstLetterModel.getCreatedAt().
+                    toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+        }
         if (firstLetterModel.getLastRepliedAt() != null) {
             firstLetterVO.setLastRepliedAt(firstLetterModel.getLastRepliedAt().
                     toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));

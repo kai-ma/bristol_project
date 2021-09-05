@@ -229,3 +229,37 @@ export const clearLetters = () => {
 		});
 	};
 };
+
+export const reply = (letter, value, history) => {
+	return (dispatch) => {
+		dispatch({
+			type: actionTypes.REPLY,
+		});
+
+        //回信 type是0
+        Http({
+            url: "/letter/reply",
+            body: { ...value, firstLetterId: letter.id, type: 0 },
+            mock: false,
+        }).then(
+            () => {
+                Toast.info("Reply successfully!", 2);
+                dispatch(replySuccess());
+                setTimeout(() => {
+                    history.push("/");
+                    let key = "home_replies_" + letter.id;
+                    localStorage.removeItem(key);
+                }, 2000);
+            },
+            (err) => {
+                Toast.info("Network error, please try again", 2);
+            }
+        );
+	};
+};
+
+const replySuccess = () => {
+	return {
+		type: actionTypes.REPLY_SUCCESS,
+	};
+};

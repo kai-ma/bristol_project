@@ -168,7 +168,7 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         conversationModelInAnswerBook.setSenderUserid(Integer.valueOf(encryptUtils.decrypt(conversationDO.getEncryptSenderUserid())));
         FirstLetterDO firstLetterDO = firstLetterDOMapper.selectByPrimaryKey(conversationDO.getFirstLetterId());
         FirstLetterModel firstLetterModel = convertor.firstLetterModelFromFirstLetterDO(firstLetterDO, conversationDO.getId());
-        conversationModelInAnswerBook.setLetterModelList(letterService.getRestLettersOfConversation(conversationDO.getId()));
+        conversationModelInAnswerBook.setLetterModelList(letterService.getReplyLetters(conversationDO.getId()));
         conversationModelInAnswerBook.getLetterModelList().add(0, firstLetterModel);
         return conversationModelInAnswerBook;
     }
