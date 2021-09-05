@@ -2,9 +2,11 @@ package com.kaixiang.cure.service.impl;
 
 import com.kaixiang.cure.dao.ConversationDOMapper;
 import com.kaixiang.cure.dao.FirstLetterDOMapper;
+import com.kaixiang.cure.dao.FirstLetterMetaDOMapper;
 import com.kaixiang.cure.dao.LetterDOMapper;
 import com.kaixiang.cure.dataobject.ConversationDO;
 import com.kaixiang.cure.dataobject.FirstLetterDO;
+import com.kaixiang.cure.dataobject.FirstLetterMetaDO;
 import com.kaixiang.cure.dataobject.LetterDO;
 import com.kaixiang.cure.error.BusinessException;
 import com.kaixiang.cure.error.EnumBusinessError;
@@ -14,7 +16,6 @@ import com.kaixiang.cure.service.model.LetterModel;
 import com.kaixiang.cure.utils.Convertor;
 import com.kaixiang.cure.utils.RedisUtils;
 import com.kaixiang.cure.utils.encrypt.EncryptUtils;
-import com.kaixiang.cure.utils.validator.ValidationResult;
 import com.kaixiang.cure.utils.validator.ValidatorImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -23,7 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -42,6 +45,8 @@ public class LetterServiceImpl implements LetterService {
     @Autowired
     private LetterDOMapper letterDOMapper;
     @Autowired
+    private FirstLetterMetaDOMapper firstLetterMetaDOMapper;
+    @Autowired
     private EncryptUtils encryptUtils;
     @Autowired
     private Convertor convertor;
@@ -51,15 +56,20 @@ public class LetterServiceImpl implements LetterService {
     private RedisUtils redisUtils;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void sendFirstLetter(FirstLetterModel firstLetterModel) throws BusinessException {
-        //校验Model
-        ValidationResult result = validator.validate(firstLetterModel);
-        if (result.isHasErrors()) {
-            throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR, result.getErrMsg());
+        if (firstLetterModel == null) {
+            return;
         }
-        FirstLetterDO firstLetterDO = convertor.firstLetterDOFromModel(firstLetterModel);
+
         try {
-            firstLetterDOMapper.insertSelective(firstLetterDO);
+            LetterDO letterDO = convertor.letterDOFromFirstLetterModel(firstLetterModel);
+            Integer letterId = letterDOMapper.insertSelective(letterDO);
+
+            FirstLetterMetaDO firstLetterMetaDO = convertor.firstLetterMetaDOFromFirstLetterModel(firstLetterModel);
+            firstLetterMetaDO.setLetterId(letterId);
+            firstLetterMetaDOMapper.insert(firstLetterMetaDO);
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
@@ -72,13 +82,12 @@ public class LetterServiceImpl implements LetterService {
     @Override
     public List<FirstLetterModel> getMyFirstLetters(Integer userid) throws BusinessException {
         if (userid == null) {
-            return null;
+            throw new BusinessException(EnumBusinessError.TOKEN_ILLEGAL);
         }
         try {
             String encryptUserId = encryptUtils.encrypt(String.valueOf(userid));
-            List<FirstLetterDO> firstLetterDOList = firstLetterDOMapper.listMyFirstLetters(encryptUserId);
-            return firstLetterDOList.stream().map(firstLetterDO -> convertor.firstLetterModelFromFirstLetterDO(firstLetterDO, null)
-            ).collect(Collectors.toList());
+            List<FirstLetterMetaDO> firstLetterMetaDOS = firstLetterMetaDOMapper.listMyFirstLetterMetas(encryptUserId);
+            return fetchFirstLetterModelsByMetaDOs(firstLetterMetaDOS);
         } catch (Exception e) {
             throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
         }
@@ -91,12 +100,13 @@ public class LetterServiceImpl implements LetterService {
     @Override
     public List<FirstLetterModel> getLettersInHomePage(Integer userid) throws BusinessException {
         if (userid == null) {
-            return null;
+            throw new BusinessException(EnumBusinessError.TOKEN_ILLEGAL);
         }
         try {
-            List<FirstLetterDO> firstLetterDOList = firstLetterDOMapper.listFirstLettersNotMine(encryptUtils.encrypt(String.valueOf(userid)));
-            return firstLetterDOList.stream().map(firstLetterDO -> convertor.firstLetterModelFromFirstLetterDO(firstLetterDO, null)
-            ).collect(Collectors.toList());
+            String encryptUserId = encryptUtils.encrypt(String.valueOf(userid));
+            List<FirstLetterMetaDO> firstLetterMetaDOS = firstLetterMetaDOMapper.listMetasInHomePage(encryptUserId);
+
+            return fetchFirstLetterModelsByMetaDOs(firstLetterMetaDOS);
         } catch (Exception e) {
             throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
         }
@@ -215,4 +225,24 @@ public class LetterServiceImpl implements LetterService {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private List<FirstLetterModel> fetchFirstLetterModelsByMetaDOs(List<FirstLetterMetaDO> firstLetterMetaDOS) {
+        Map<Integer, FirstLetterMetaDO> letterId2FirstLetterMeta = new HashMap<>();
+        List<FirstLetterModel> firstLetterModels = new ArrayList<>();
+        List<Integer> ids = new ArrayList<>();
+        for (FirstLetterMetaDO firstLetterMetaDO : firstLetterMetaDOS) {
+            Integer letterId = firstLetterMetaDO.getLetterId();
+            ids.add(letterId);
+            letterId2FirstLetterMeta.put(letterId, firstLetterMetaDO);
+        }
+        if (ids.size() > 0) {
+            List<LetterDO> letterDOS = letterDOMapper.selectByIds(ids);
+            for (LetterDO letterDO : letterDOS) {
+                FirstLetterMetaDO firstLetterMetaDO = letterId2FirstLetterMeta.get(letterDO.getId());
+                firstLetterModels.add(convertor.firstLetterModelFromDOAndMeta(firstLetterMetaDO, letterDO));
+            }
+        }
+        return firstLetterModels;
+    }
+
 }

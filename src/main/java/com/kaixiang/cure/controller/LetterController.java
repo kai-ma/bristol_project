@@ -61,7 +61,7 @@ public class LetterController {
         }
         //1.构建完整的FirstLetterModel，从token中获取userId
         FirstLetterModel firstLetterModel = convertor.FirstLetterModelFromDTO(firstLetterDTO);
-        firstLetterModel.setUserId((Integer) request.getAttribute(ATTRIBUTE_KEY_USERID));
+        firstLetterModel.setUserId(getUserIdFromToken(request));
         letterService.sendFirstLetter(firstLetterModel);
         return CommonReturnType.create("Send successfully!");
     }
@@ -75,7 +75,7 @@ public class LetterController {
     @UserLoginToken
     public CommonReturnType getLettersInHomePage(HttpServletRequest request) throws BusinessException {
         //从token中获取userId
-        Integer userid = (Integer) request.getAttribute(ATTRIBUTE_KEY_USERID);
+        Integer userid = getUserIdFromToken(request);
 
         //1. 用redis限制刷新时间 todo 解决更新问题，结合前端修改
 //        verifyRefreshBar(userid);
@@ -208,5 +208,9 @@ public class LetterController {
             firstLetterVO.setReplyNumber(null);
         }
         return firstLetterVO;
+    }
+
+    private Integer getUserIdFromToken(HttpServletRequest request){
+       return (Integer) request.getAttribute(ATTRIBUTE_KEY_USERID);
     }
 }

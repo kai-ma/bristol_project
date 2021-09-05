@@ -14,12 +14,21 @@
   <sql id="Base_Column_List">
     id, first_letter_id, conversation_id, type, content, created_at, sender_status, addressee_status
   </sql>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from letter
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="selectByIds" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from letter where id in
+    <foreach collection="ids" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </select>
+
   <select id="listLettersByConversationId" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List"/>
@@ -27,6 +36,7 @@
     where conversation_id = #{conversationId,jdbcType=INTEGER}
     order by created_at DESC;
   </select>
+
   <select id="listLettersByFirstLetterId" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List"/>
@@ -34,6 +44,7 @@
     where first_letter_id = #{firstLetterId,jdbcType=INTEGER}
     order by created_at DESC;
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from letter
     where id = #{id,jdbcType=INTEGER}
@@ -46,7 +57,7 @@
       #{type,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, 
       #{senderStatus,jdbcType=INTEGER}, #{addresseeStatus,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.LetterDO">
+  <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.LetterDO" keyProperty="id" useGeneratedKeys="true">
     insert into letter
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

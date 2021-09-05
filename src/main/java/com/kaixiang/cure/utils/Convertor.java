@@ -230,4 +230,43 @@ public class Convertor {
         BeanUtils.copyProperties(letterDTO, letterModel);
         return letterModel;
     }
+
+    public LetterDO letterDOFromFirstLetterModel(FirstLetterModel firstLetterModel) {
+        if (firstLetterModel == null) {
+            return null;
+        }
+        LetterDO letterDO = new LetterDO();
+        letterDO.setType(FIRST_LETTER_TYPE);
+        letterDO.setContent(firstLetterModel.getContent());
+        return letterDO;
+    }
+
+    public FirstLetterMetaDO firstLetterMetaDOFromFirstLetterModel(FirstLetterModel firstLetterModel) {
+        if (firstLetterModel == null) {
+            return null;
+        }
+        FirstLetterMetaDO firstLetterMetaDO = new FirstLetterMetaDO();
+        BeanUtils.copyProperties(firstLetterModel, firstLetterMetaDO);
+        firstLetterMetaDO.setEncryptUserId(encryptUtils.encrypt(String.valueOf(firstLetterModel.getUserId())));
+        return firstLetterMetaDO;
+    }
+
+    public FirstLetterModel firstLetterModelFromDOAndMeta(FirstLetterMetaDO firstLetterMetaDO, LetterDO letterDO) {
+        if(firstLetterMetaDO == null || letterDO == null){
+            return null;
+        }
+        FirstLetterModel firstLetterModel = new FirstLetterModel();
+        BeanUtils.copyProperties(firstLetterMetaDO, firstLetterModel);
+        BeanUtils.copyProperties(letterDO, firstLetterModel);
+        firstLetterModel.setCreatedAt(new DateTime(letterDO.getCreatedAt()));
+        if (firstLetterMetaDO.getReplyNumber() != null && firstLetterMetaDO.getReplyNumber() != 0) {
+            firstLetterModel.setLastRepliedAt(new DateTime(firstLetterMetaDO.getLastRepliedAt()));
+        }
+        firstLetterModel.setUserId(Integer.valueOf(encryptUtils.decrypt(firstLetterMetaDO.getEncryptUserId())));
+        if (letterDO.getConversationId() != null) {
+            firstLetterModel.setConversationId(letterDO.getConversationId());
+        }
+        firstLetterModel.setType(FIRST_LETTER_TYPE);
+        return firstLetterModel;
+    }
 }

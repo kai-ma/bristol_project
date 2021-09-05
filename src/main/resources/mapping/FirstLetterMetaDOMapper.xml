@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kaixiang.cure.dao.FirstLetterDOMapper">
-  <resultMap id="BaseResultMap" type="com.kaixiang.cure.dataobject.FirstLetterDO">
+<mapper namespace="com.kaixiang.cure.dao.FirstLetterMetaDOMapper">
+  <resultMap id="BaseResultMap" type="com.kaixiang.cure.dataobject.FirstLetterMetaDO">
     <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="letter_id" jdbcType="INTEGER" property="letterId" />
     <result column="encrypt_user_id" jdbcType="VARCHAR" property="encryptUserId" />
     <result column="title" jdbcType="VARCHAR" property="title" />
-    <result column="content" jdbcType="VARCHAR" property="content" />
     <result column="topic_id" jdbcType="INTEGER" property="topicId" />
     <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
     <result column="last_replied_at" jdbcType="TIMESTAMP" property="lastRepliedAt" />
@@ -14,60 +14,61 @@
     <result column="quality" jdbcType="INTEGER" property="quality" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, encrypt_user_id, title, content, topic_id, created_at, last_replied_at, status, 
-    reply_number, quality
+    id, letter_id, encrypt_user_id, title, topic_id, created_at, last_replied_at, status, reply_number,
+    quality
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from first_letter
+    from first_letter_meta
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <select id="listMyFirstLetters" resultMap="BaseResultMap">
+
+  <select id="listMyFirstLetterMetas" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List"/>
-    from first_letter
+    from first_letter_meta
     where encrypt_user_id = #{encryptUserId,jdbcType=VARCHAR}
     order by reply_number DESC;
   </select>
 
-  <select id="listFirstLettersNotMine" resultMap="BaseResultMap">
+  <select id="listMetasInHomePage" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List"/>
-    from first_letter
+    from first_letter_meta
     where encrypt_user_id != #{encryptUserId,jdbcType=VARCHAR}
     order by reply_number ASC, created_at ASC
     limit 3;
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from first_letter
+    delete from first_letter_meta
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.kaixiang.cure.dataobject.FirstLetterDO">
-    insert into first_letter (id, encrypt_user_id, title, 
-      content, topic_id, created_at, 
-      last_replied_at, status, reply_number, 
-      quality)
-    values (#{id,jdbcType=INTEGER}, #{encryptUserId,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
-      #{content,jdbcType=VARCHAR}, #{topicId,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, 
-      #{lastRepliedAt,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{replyNumber,jdbcType=INTEGER}, 
-      #{quality,jdbcType=INTEGER})
+  <insert id="insert" parameterType="com.kaixiang.cure.dataobject.FirstLetterMetaDO">
+    insert into first_letter_meta (id, letter_id, encrypt_user_id, 
+      title, topic_id, created_at, last_replied_at,
+      status, reply_number, quality
+      )
+    values (#{id,jdbcType=INTEGER}, #{letterId,jdbcType=INTEGER}, #{encryptUserId,jdbcType=VARCHAR}, 
+      #{title,jdbcType=VARCHAR}, #{topicId,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP},
+      #{lastRepliedAt,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{replyNumber,jdbcType=INTEGER}, #{quality,jdbcType=INTEGER}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.FirstLetterDO">
-    insert into first_letter
+  <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.FirstLetterMetaDO" keyProperty="id" useGeneratedKeys="true">
+    insert into first_letter_meta
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
+      </if>
+      <if test="letterId != null">
+        letter_id,
       </if>
       <if test="encryptUserId != null">
         encrypt_user_id,
       </if>
       <if test="title != null">
         title,
-      </if>
-      <if test="content != null">
-        content,
       </if>
       <if test="topicId != null">
         topic_id,
@@ -92,20 +93,17 @@
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
+      <if test="letterId != null">
+        #{letterId,jdbcType=INTEGER},
+      </if>
       <if test="encryptUserId != null">
         #{encryptUserId,jdbcType=VARCHAR},
       </if>
       <if test="title != null">
         #{title,jdbcType=VARCHAR},
       </if>
-      <if test="content != null">
-        #{content,jdbcType=VARCHAR},
-      </if>
       <if test="topicId != null">
         #{topicId,jdbcType=INTEGER},
-      </if>
-      <if test="createdAt != null">
-        #{createdAt,jdbcType=TIMESTAMP},
       </if>
       <if test="lastRepliedAt != null">
         #{lastRepliedAt,jdbcType=TIMESTAMP},
@@ -121,17 +119,17 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.kaixiang.cure.dataobject.FirstLetterDO">
-    update first_letter
+  <update id="updateByPrimaryKeySelective" parameterType="com.kaixiang.cure.dataobject.FirstLetterMetaDO">
+    update first_letter_meta
     <set>
+      <if test="letterId != null">
+        letter_id = #{letterId,jdbcType=INTEGER},
+      </if>
       <if test="encryptUserId != null">
         encrypt_user_id = #{encryptUserId,jdbcType=VARCHAR},
       </if>
       <if test="title != null">
         title = #{title,jdbcType=VARCHAR},
-      </if>
-      <if test="content != null">
-        content = #{content,jdbcType=VARCHAR},
       </if>
       <if test="topicId != null">
         topic_id = #{topicId,jdbcType=INTEGER},
@@ -154,11 +152,11 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.kaixiang.cure.dataobject.FirstLetterDO">
-    update first_letter
-    set encrypt_user_id = #{encryptUserId,jdbcType=VARCHAR},
+  <update id="updateByPrimaryKey" parameterType="com.kaixiang.cure.dataobject.FirstLetterMetaDO">
+    update first_letter_meta
+    set letter_id = #{letterId,jdbcType=INTEGER},
+      encrypt_user_id = #{encryptUserId,jdbcType=VARCHAR},
       title = #{title,jdbcType=VARCHAR},
-      content = #{content,jdbcType=VARCHAR},
       topic_id = #{topicId,jdbcType=INTEGER},
       created_at = #{createdAt,jdbcType=TIMESTAMP},
       last_replied_at = #{lastRepliedAt,jdbcType=TIMESTAMP},
