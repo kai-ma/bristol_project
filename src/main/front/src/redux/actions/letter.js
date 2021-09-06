@@ -2,9 +2,6 @@ import * as actionTypes from "../../constants/letter";
 import Http from "@src/utils/http.js";
 import { Toast } from "antd-mobile";
 
-//是把数据从应用（这些数据有可能是服务器响应，用户输入或其它非 view 的数据 ）传到 store 的有效载荷。
-//它是 store 数据的唯一来源。
-
 //获取首页的信
 export const loadLetters = () => {
 	return (dispatch) => {
@@ -17,8 +14,6 @@ export const loadLetters = () => {
 				dispatch(letterSuccess(res));
 			},
 			(err) => {
-                //todo: 应该把这里的toast换成根据errorcode判断，如果是刷新时间未到，不显示；
-                //如果是空，转换到答案之书
 				Toast.fail(err.errMsg, 1);  
 				dispatch(letterFailure(err));
 			}
@@ -173,20 +168,19 @@ export const reply = (letter, value, history) => {
             mock: false,
         }).then(
             () => {
-                Toast.success("Reply successfully!", 1);
                 dispatch(replySuccess());
-                setTimeout(() => {
+                dispatch(reloadUserInfo());
+                Toast.success("Reply successfully!", 2, () => {
                     history.push("/");
                     let key = "home_replies_" + letter.id;
                     localStorage.removeItem(key);
-                }, 2000);
+                });
             },
             (err) => {
-                Toast.fail(err.errMsg, 2);
                 dispatch(replyFailure(err));
-                setTimeout(() => {
+                Toast.fail(err.errMsg, 2, () => {
                     history.push("/");
-                }, 2000);
+                });
             }
         );
 	};
@@ -197,6 +191,13 @@ const replySuccess = () => {
 		type: actionTypes.REPLY_SUCCESS,
 	};
 };
+
+const reloadUserInfo = () => {
+    return {
+		type: 'RELOAD_USER_INFO',
+	};
+}
+
 
 const replyFailure = (error) => {
 	return {
@@ -217,18 +218,17 @@ export const send = (value, history) => {
             mock: false,
         }).then(
             (res) => {
-                Toast.success("Send successfully!", 1);
                 dispatch(sendSuccess());
-                setTimeout(() => {
+                dispatch(reloadUserInfo());
+                Toast.success("Send successfully!", 2, () => {
                     history.push("/");
-                }, 2000);
+                });
             },
             (err) => {
-                Toast.fail(err.errMsg, 3);
                 dispatch(sendFailure(err));
-                setTimeout(() => {
+                Toast.fail(err.errMsg, 2, () => {
                     history.push("/");
-                }, 2000);
+                });
             }
         );
 	};

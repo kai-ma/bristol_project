@@ -88,11 +88,11 @@ public class UserServiceImpl implements UserService {
      * @param userModel
      */
     @Override
-    public void changeSettings(UserModel userModel) {
+    public void changeSettings(UserModel userModel) throws BusinessException {
         UserDO userDO = convertor.userDOFromUserModel(userModel);
         int rows = userDOMapper.updateByPrimaryKeySelective(userDO);
-        if (rows > 0) {
-            //成功修改的log
+        if (rows != 1) {
+            throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
         }
     }
 
@@ -140,8 +140,24 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    /**
+     * 获取用户的信息 用于user页面展示
+     *
+     * @param userId
+     */
+    @Override
+    public UserModel getUserInfo(Integer userId) throws BusinessException {
+        if (userId == null) {
+            throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR);
+        }
+        UserDO userDO = userDOMapper.selectByPrimaryKey(userId);
+        if (userDO == null) {
+            throw new BusinessException(EnumBusinessError.USER_NOT_EXIST);
+        }
+        return convertor.userModelFromUserDOAndPasswordDO(userDO, null);
+    }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
     private UserPasswordDO convertPassWordFromModel(UserModel userModel) {
         if (userModel == null) {

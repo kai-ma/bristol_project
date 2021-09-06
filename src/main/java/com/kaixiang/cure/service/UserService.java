@@ -15,11 +15,17 @@ public interface UserService {
     /**
      * 修改用户设置
      */
-    void changeSettings(UserModel userModel);
+    void changeSettings(UserModel userModel) throws BusinessException;
 
     /**
      * 根据登录，添加奖励
      * @param userModel
      */
     String loginBonus(UserModel userModel) throws BusinessException;
+
+    /**
+     * 获取用户的信息 用于user页面展示
+     * @param userId
+     */
+    UserModel getUserInfo(Integer userId) throws BusinessException;
 }

@@ -2,15 +2,14 @@ import React, { Component } from "react";
 import { Button, Toast, WhiteSpace, NavBar, List } from "antd-mobile";
 import { FaSignInAlt, FaSignOutAlt, FaUserPlus } from "react-icons/fa";
 import { AiOutlineSetting } from "react-icons/ai";
-import { getObjectFromLocalStorage } from "@src/utils";
 import { clearLetters } from "../../redux/actions/letter";
+import { loadUserInfo } from "../../redux/actions/user";
 import { connect } from "react-redux";
 
 const Item = List.Item;
 class User extends Component {
 	constructor(props) {
 		super(props);
-		this.state = this.initialState;
 	}
 
 	navToLogin = () => {
@@ -26,36 +25,31 @@ class User extends Component {
 	};
 
 	handleLogOut = () => {
-        this.props.clearLetters();
-        localStorage.clear();
+		this.props.clearLetters();
 		Toast.success("Log out successfully", 1);
 		setTimeout(() => {
+            localStorage.clear();
 			this.props.history.push("/");
 		}, 1000);
 	};
 
 	componentDidMount() {
-		let user = getObjectFromLocalStorage("user");
-		if (user != null) {
-			this.setState({ user: user });
-		}
-	}
-
-	initialState = {
-		user: [],
-	};
+        if(this.props.reloadUserInfo){
+            this.props.loadUserInfo();
+        }
+    }
 
 	render() {
-		const { user } = this.state;
+		const { userinfo } = this.props;
 		return (
 			<div>
-				{user != null ? (
+				<NavBar mode="light">User</NavBar>
+				{userinfo != null ? (
 					<div>
-						<NavBar mode="light">User</NavBar>
 						<List renderHeader={() => "User profile"}>
-							<Item extra={user.pseudonym}>pseudonym</Item>
-							<Item extra={user.stamp}>Stamps left</Item>
-							<Item extra={user.continuousLoginDays}>
+							<Item extra={userinfo.pseudonym}>pseudonym</Item>
+							<Item extra={userinfo.stamp}>Stamps left</Item>
+							<Item extra={userinfo.continuousLoginDays}>
 								Consecutive login days
 							</Item>
 						</List>
@@ -105,12 +99,15 @@ class User extends Component {
 
 const mapStateToProps = (state) => {
 	return {
+		userinfo: state.user.userinfo,
+        reloadUserInfo: state.user.reloadUserInfo,
 	};
 };
 
 const mapDispatchToProps = (dispatch) => {
 	return {
 		clearLetters: () => dispatch(clearLetters()),
+        loadUserInfo : () => dispatch(loadUserInfo()),
 	};
 };
 export default connect(mapStateToProps, mapDispatchToProps)(User);
