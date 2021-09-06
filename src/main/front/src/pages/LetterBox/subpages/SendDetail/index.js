@@ -54,7 +54,6 @@ class SendDetail extends Component {
 	}
 
 	initialState = {
-		reload: true,
 		replies: [],
 	};
 

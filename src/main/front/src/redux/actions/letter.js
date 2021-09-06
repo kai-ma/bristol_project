@@ -23,19 +23,6 @@ export const loadLetters = () => {
 				dispatch(letterFailure(err));
 			}
 		);
-
-		// setTimeout(
-		// 	() =>
-		// 		Http({ url: "/loadletters", method: "get" }).then(
-		// 			(res) => {
-		// 				dispatch(letterSuccess(res));
-		// 			},
-		// 			(err) => {
-		// 				dispatch(letterFailure(err));
-		// 			}
-		// 		),
-		// 	1000
-		// );
 	};
 };
 
@@ -121,32 +108,6 @@ const loadFirstLettersRepliedFailure = (error) => {
 };
 
 
-//根据letterBox中我发出的某个信，获取detail
-export const loadDetailOfMyFirstLetter = () => {
-	return (dispatch) => {
-		dispatch({
-			type: actionTypes.LOAD_DETAIL_OF_MY_FIRST_LETTER,
-		});
-
-		Http({ url: "/letter/letterbox/detail/my", method: "get", mock:false}).then(
-			(res) => {
-				dispatch(loadDetailOfMyFirstLetterSuccess(res));
-			},
-			(err) => {
-				Toast.fail(err.errMsg, 1);   
-				dispatch(loadMyFirstLettersFailure(err));
-			}
-		);
-	};
-};
-
-const loadDetailOfMyFirstLetterSuccess = (res) => {
-	return {
-		type: actionTypes.LOAD_DETAIL_OF_MY_FIRST_LETTER_SUCCESS,
-		payload: res,
-	};
-};
-
 //根据letterBox中我回复的首封信，获取detail
 export const loadDetailOfFirstLetterReplied = (conversationId) => {
 	return (dispatch) => {
@@ -190,37 +151,6 @@ export const updateLetters = () => {
 	};
 };
 
-export const loadConversationsStarted = () => {
-	return (dispatch) => {
-		dispatch({
-			type: actionTypes.LOAD_CONVERSATIONS_STARTED,
-		});
-
-		Http({ url: "/loadconversations/started", method: "get" }).then(
-			(res) => {
-                dispatch(conversationStartedSuccess(res));
-			},
-			(err) => {
-				dispatch(conversationFailure(err));
-			}
-		);
-	};
-};
-
-const conversationStartedSuccess = (res) => {
-	return {
-		type: actionTypes.CONVERSATION_STARTED_SUCCESS,
-		payload: res,
-	};
-};
-
-const conversationFailure = (error) => {
-	return {
-		type: actionTypes.CONVERSATION_STARTED_FAILURE,
-		payload: error,
-	};
-};
-
 
 export const clearLetters = () => {
 	return (dispatch) => {
@@ -243,7 +173,7 @@ export const reply = (letter, value, history) => {
             mock: false,
         }).then(
             () => {
-                Toast.info("Reply successfully!", 2);
+                Toast.success("Reply successfully!", 1);
                 dispatch(replySuccess());
                 setTimeout(() => {
                     history.push("/");
@@ -252,7 +182,8 @@ export const reply = (letter, value, history) => {
                 }, 2000);
             },
             (err) => {
-                Toast.info("Network error, please try again", 2);
+                Toast.fail(err.errMsg, 2);
+                dispatch(replyFailure(err));
             }
         );
 	};
@@ -261,5 +192,51 @@ export const reply = (letter, value, history) => {
 const replySuccess = () => {
 	return {
 		type: actionTypes.REPLY_SUCCESS,
+	};
+};
+
+const replyFailure = (error) => {
+	return {
+		type: actionTypes.REPLY_FAILURE,
+        payload: error,
+	};
+};
+
+export const send = (value, history) => {
+	return (dispatch) => {
+		dispatch({
+			type: actionTypes.SEND,
+		});
+
+        Http({
+            url: "/letter/send/first",
+            body: { ...value, topicId: value.topic[0] },
+            mock: false,
+        }).then(
+            (res) => {
+                Toast.success("Send successfully!", 1);
+                dispatch(sendSuccess());
+                setTimeout(() => {
+                    history.push("/");
+                }, 2000);
+            },
+            (err) => {
+                Toast.fail(err.errMsg, 2);
+                dispatch(sendFailure(err));
+            }
+        );
+	};
+};
+
+const sendSuccess = () => {
+	return {
+		type: actionTypes.SEND_SUCCESS,
+	};
+};
+
+const sendFailure = (error) => {
+	return {
+		type: actionTypes.SEND_FAILURE,
+        payload: error,
 	};
 };

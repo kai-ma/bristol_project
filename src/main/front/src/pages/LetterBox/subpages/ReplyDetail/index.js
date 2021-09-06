@@ -1,13 +1,9 @@
 import React, { Component } from "react";
-import {
-	NavBar,
-	Toast,
-    WhiteSpace,
-} from "antd-mobile";
+import { NavBar, Toast, WhiteSpace } from "antd-mobile";
 import { connect } from "react-redux";
 import LetterContent from "@src/components/LetterContent";
-import { loadDetailOfFirstLetterReplied } from "@src/redux/actions/letter";
-
+import Http from "@src/utils/http.js";
+    
 class ReplyDetail extends Component {
 	constructor(props) {
 		super(props);
@@ -15,21 +11,47 @@ class ReplyDetail extends Component {
 	}
 
 	componentDidMount() {
-        const matchedLetter = this.props.firstLettersIReplied.find(
-            (x) => x.id == this.props.match.params.id
-        );
-        if(matchedLetter != null) {
-            const conversationId = matchedLetter.conversationId;
-            this.props.loadDetailOfFirstLetterReplied(conversationId);
-        }else{
-            this.showMessage(
-                "Error url, please input correct url"
-            )
-        }        
+		const matchedLetter = this.props.firstLettersIReplied.find(
+			(x) => x.id == this.props.match.params.id
+		);
+		if (matchedLetter != null) {
+			const conversationId = matchedLetter.conversationId;
+			//从localStorage中获取conversation的剩余回信，如果获取不到，发送http请求，获取content。
+			let key = "con_replies_" + conversationId;
+			let repliesString = localStorage.getItem(key);
+			if (repliesString == null) {
+				Http({
+					url: "/letter/letterbox/detail/replied",
+					method: "post",
+					body: { conversationId: conversationId },
+					mock: false,
+				}).then(
+					(res) => {
+						if (res != null && res.length > 0) {
+							let repliesString = JSON.stringify(res);
+							localStorage.setItem(key, repliesString);
+							this.setState({
+								replies: res,
+							});
+						}
+					},
+					(err) => {
+						Toast.fail(err.errMsg, 1);
+					}
+				);
+			} else {
+				let replies = JSON.parse(repliesString);
+				this.setState({
+					replies: replies,
+				});
+			}
+		} else {
+			this.showMessage("Error url, please input correct url");
+		}
 	}
 
 	initialState = {
-		reload: true,
+		replies: [],
 	};
 
 	//todo: 往回跳转有问题，tab会回到第一个tab
@@ -45,8 +67,7 @@ class ReplyDetail extends Component {
 		const letter = this.props.firstLettersIReplied.find(
 			(x) => x.id == this.props.match.params.id
 		);
-		const repliedLetters = this.props.detailOfFirstLetterReplied;
-        console.log(repliedLetters);
+		const replies = this.state.replies;
 		return (
 			<div>
 				<NavBar
@@ -65,12 +86,12 @@ class ReplyDetail extends Component {
 					</div>
 				) : (
 					<div>
-                        <WhiteSpace size="lg" />
+						<WhiteSpace size="lg" />
 						<LetterContent letter={letter}></LetterContent>
 						<div>
-							{repliedLetters.map((detailLetter, index) => (
+							{replies.map((detailLetter, index) => (
 								<div key={index}>
-                                    {/* todo:写一个回复卡片 */}
+									{/* todo:写一个回复卡片 */}
 									<LetterContent
 										letter={detailLetter}
 									></LetterContent>
@@ -88,14 +109,10 @@ const mapStateToProps = (state) => {
 	return {
 		firstLettersIReplied: state.letter.firstLettersIReplied,
 		detailOfFirstLetterReplied: state.letter.detailOfFirstLetterReplied,
-		reloadDetailOfFirstLetterReplied: state.letter.reloadDetailOfFirstLetterReplied,
 	};
 };
 
-const mapDispatchToProps = (dispatch) => {
-	return {
-		loadDetailOfFirstLetterReplied: (firstLetterId) =>
-			dispatch(loadDetailOfFirstLetterReplied(firstLetterId)),
-	};
+const mapDispatchToProps = () => {
+	return {};
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ReplyDetail);

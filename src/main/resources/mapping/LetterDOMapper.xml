@@ -27,6 +27,7 @@
     <foreach collection="ids" item="id" open="(" close=")" separator=",">
       #{id}
     </foreach>
+    order by created_at DESC;
   </select>
 
   <select id="listLettersByConversationId" resultMap="BaseResultMap">
