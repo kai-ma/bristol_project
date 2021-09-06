@@ -22,3 +22,5 @@ export const REPLY_FAILURE = 'REPLY_FAILURE'
 export const SEND = 'SEND'
 export const SEND_SUCCESS = 'SEND_SUCCESS'
 export const SEND_FAILURE = 'SEND_FAILURE'
+
+export const CHANGE_LETTER_BOX_PAGE = 'CHANGE_LETTER_BOX_PAGE'

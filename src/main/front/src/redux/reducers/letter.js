@@ -10,6 +10,7 @@ const initialState = {
 	reLoadLetters: true,
 	reloadMyFirstLetters: true,
 	reloadFirstLettersIReplied: true,
+    page: 0,
 };
 
 const reducer = (preState = initialState, action) => {
@@ -69,6 +70,11 @@ const reducer = (preState = initialState, action) => {
                 loading: false,
                 reloadMyFirstLetters: true,
             };
+        case actionTypes.CHANGE_LETTER_BOX_PAGE:
+            return {
+                ...preState,
+                page:action.payload,
+            }
 		case actionTypes.LETTERS_FAILURE:
 		case actionTypes.LOAD_MY_FIRST_LETTERS_FAILURE:
 		case actionTypes.LOAD_FIRST_LETTERS_REPLIED_FAILURE:

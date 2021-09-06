@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { NavBar, Tabs, WhiteSpace, Badge, Card, WingBlank } from "antd-mobile";
 import { connect } from "react-redux";
-import { loadMyFirstLetters, loadFirstLettersIReplied } from "../../redux/actions/letter";
+import { loadMyFirstLetters, loadFirstLettersIReplied, changeLetterBoxPage } from "../../redux/actions/letter";
 import Loading from "../../components/Loading";
 
 const tabs = [
@@ -24,12 +24,21 @@ class LetterBox extends Component {
 	}
 
     initialState = {
-		myFirstLetters: [],
+        page: 0,
 	};
 
-    handleClickTab1 = () => {
+    handleClickTab1 = (index) => {
+        if(index !== this.props.page){
+            this.props.changeLetterBoxPage(index);
+        }
         if(this.props.reloadFirstLettersIReplied){
             this.props.loadFirstLettersIReplied();
+        }
+    }
+
+    handleClickTab0 = (index) => {
+        if(index !== this.props.page){
+            this.props.changeLetterBoxPage(index);
         }
     }
 
@@ -44,6 +53,7 @@ class LetterBox extends Component {
 	render() {
 		const myFirstLetters = this.props.myFirstLetters;
         const firstLettersIReplied = this.props.firstLettersIReplied;
+        const {page} = this.props;
 		return (
 			<div>
 				<NavBar mode="light">Letter Box</NavBar>
@@ -51,14 +61,16 @@ class LetterBox extends Component {
 				<div>
 					<Tabs
 						tabs={tabs}
-						initialPage={0}
+						initialPage={page}
 						onChange={(tab, index) => {
 							// console.log("onChange", index, tab);
 						}}
 						onTabClick={(tab, index) => {
 							// console.log("onTabClick", index, tab);
                             if(index == 1){
-                                this.handleClickTab1();
+                                this.handleClickTab1(index);
+                            }else if(index == 0){
+                                this.handleClickTab0(index);
                             }
 						}}
 					>
@@ -155,6 +167,7 @@ const mapStateToProps = (state) => {
 		loading: state.letter.loading,
         reloadMyFirstLetters: state.letter.reloadMyFirstLetters,
 		reloadFirstLettersIReplied: state.letter.reloadFirstLettersIReplied,
+        page: state.letter.page,
 	};
 };
 
@@ -162,6 +175,7 @@ const mapDispatchToProps = (dispatch) => {
 	return {
 		loadMyFirstLetters: () => dispatch(loadMyFirstLetters()),
         loadFirstLettersIReplied: () => dispatch(loadFirstLettersIReplied()),
+        changeLetterBoxPage : (page) => dispatch(changeLetterBoxPage(page)),
 	};
 };
 export default connect(mapStateToProps, mapDispatchToProps)(LetterBox);

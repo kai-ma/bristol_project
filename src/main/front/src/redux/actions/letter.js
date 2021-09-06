@@ -240,3 +240,12 @@ const sendFailure = (error) => {
         payload: error,
 	};
 };
+
+export const changeLetterBoxPage = (page) => {
+	return (dispatch) => {
+		dispatch({
+			type: actionTypes.CHANGE_LETTER_BOX_PAGE,
+            payload: page,
+		});
+	};
+};
