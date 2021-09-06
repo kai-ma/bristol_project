@@ -184,6 +184,9 @@ export const reply = (letter, value, history) => {
             (err) => {
                 Toast.fail(err.errMsg, 2);
                 dispatch(replyFailure(err));
+                setTimeout(() => {
+                    history.push("/");
+                }, 2000);
             }
         );
 	};
@@ -221,8 +224,11 @@ export const send = (value, history) => {
                 }, 2000);
             },
             (err) => {
-                Toast.fail(err.errMsg, 2);
+                Toast.fail(err.errMsg, 3);
                 dispatch(sendFailure(err));
+                setTimeout(() => {
+                    history.push("/");
+                }, 2000);
             }
         );
 	};

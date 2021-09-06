@@ -47,9 +47,15 @@ class Login extends Component {
 			mock: false,
 		}).then(
 			(res) => {
-				alert("Login successfully", "Stamp bonus:1", [
-					{ text: "Ok", onPress: this.navToHome },
-				]);
+                console.log(res);
+                //显示奖励
+                if (res.bonus != null) {
+                    alert("Login successfully", res.bonus, [
+                        { text: "Ok", onPress: this.navToHome },
+                    ]);
+                }else{
+                    Toast.success("Login successfully", 1, this.navToHome);
+                }
 				localStorage.setItem("token", res.token);
                 setObjectToLocalStorage("user", res.user);
 			},

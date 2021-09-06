@@ -80,7 +80,14 @@ public class AuthController extends BaseController {
         if (!bCryptPasswordEncoder.matches(loginDTO.getPassword(), userModel.getEncryptPassword())) {
             throw new BusinessException(EnumBusinessError.INVALID_PASSWORD);
         }
-        Map<String, Object> returnMap = new HashMap<>(2);
+
+        Map<String, Object> returnMap = new HashMap<>(3);
+
+        //3. 登录相关记录和奖励
+        String message = userService.loginBonus(userModel);
+        if (message != null) {
+            returnMap.put("bonus", message);
+        }
         returnMap.put("token", JwtTokenUtils.createToken(userModel.getId(), userModel.getRole(), false));
         returnMap.put("user", convertor.userVOFromUserModel(userModel));
         return CommonReturnType.create(returnMap);

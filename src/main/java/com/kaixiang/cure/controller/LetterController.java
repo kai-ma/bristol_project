@@ -182,6 +182,9 @@ public class LetterController {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * 刷新的bar，暂时不用
+     */
     private void verifyRefreshBar(Integer userid) throws BusinessException {
         String refresh = (String) redisTemplate.opsForValue().get(userid + "_refresh_bar");
         if (StringUtils.isNotBlank(refresh)) {

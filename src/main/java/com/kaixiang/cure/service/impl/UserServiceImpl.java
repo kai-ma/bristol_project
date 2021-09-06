@@ -9,9 +9,13 @@ import com.kaixiang.cure.error.EnumBusinessError;
 import com.kaixiang.cure.service.UserService;
 import com.kaixiang.cure.service.model.UserModel;
 import com.kaixiang.cure.utils.Convertor;
-import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.Hours;
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +30,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private Convertor convertor;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Override
     public UserModel getUserById(Integer id) {
@@ -61,26 +68,15 @@ public class UserServiceImpl implements UserService {
         userPasswordDOMapper.insertSelective(userPasswordDO);
     }
 
-    @Override
-    public UserModel validateLogin(String email, String encryptPassword) throws Exception {
-        UserModel userModel = getUserModelByEmail(email);
-
-        //2.对比数据库中用户信息内的加密密码和用户输入的密码是否匹配
-        if (!StringUtils.equals(encryptPassword, userModel.getEncryptPassword())) {
-            throw new Exception("USER_LOGIN_FAIL");
-        }
-        return userModel;
-    }
-
 
     @Override
     public UserModel getUserModelByEmail(String email) {
         UserDO userDO = userDOMapper.selectByEmail(email);
-        if(userDO == null){
+        if (userDO == null) {
             return null;
         }
         UserPasswordDO userPasswordDO = userPasswordDOMapper.selectByUserId(userDO.getId());
-        if(userPasswordDO == null){
+        if (userPasswordDO == null) {
             return null;
         }
         return convertor.userModelFromUserDOAndPasswordDO(userDO, userPasswordDO);
@@ -95,10 +91,55 @@ public class UserServiceImpl implements UserService {
     public void changeSettings(UserModel userModel) {
         UserDO userDO = convertor.userDOFromUserModel(userModel);
         int rows = userDOMapper.updateByPrimaryKeySelective(userDO);
-        if(rows > 0){
+        if (rows > 0) {
             //成功修改的log
         }
     }
+
+
+    /**
+     * 记录登录相关信息，并添加奖励
+     *
+     * @param userModel
+     */
+    @Override
+    public String loginBonus(UserModel userModel) throws BusinessException {
+        if (userModel.getContinuousLoginDays() == null || userModel.getLastLoginAt() == null) {
+            return null;
+        }
+        Integer bonus = null;
+        DateTime now = new DateTime();
+        if (Days.daysBetween(userModel.getLastLoginAt(), now).getDays() >= 1 &&
+                Hours.hoursBetween(userModel.getLastLoginAt(), now).getHours() >= 48) {
+            //没有连续登录  连续登录天数归零
+            userModel.setContinuousLoginDays(1);
+            bonus = getBonus(1);
+        } else {
+            //连续登录，且不在同一天
+            LocalDate localDate1 = userModel.getLastLoginAt().toLocalDate();
+            LocalDate localDate2 = now.toLocalDate();
+            if (!localDate1.equals(localDate2)) {
+                userModel.setContinuousLoginDays(userModel.getContinuousLoginDays() + 1);
+                bonus = getBonus(userModel.getContinuousLoginDays());
+            }
+        }
+        userModel.setLastLoginAt(now);
+        if (bonus != null) {
+            userModel.setStamp(userModel.getStamp() + bonus);
+        }
+
+        UserDO userDO = convertor.userDOFromUserModel(userModel);
+        int rows = userDOMapper.updateByPrimaryKeySelective(userDO);
+        if(rows != 1){
+            throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
+        }
+        if(bonus != null){
+            return "Continuous login " + userModel.getContinuousLoginDays() + " days, " + bonus +
+                    (bonus > 1 ? " stamps bonus" : " stamp bonus");
+        }
+        return null;
+    }
+
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -114,4 +155,13 @@ public class UserServiceImpl implements UserService {
         return userPasswordDO;
     }
 
+    private Integer getBonus(Integer continuousLoginDays) {
+        if (continuousLoginDays >= 7) {
+            return 3;
+        }
+        if (continuousLoginDays == 1) {
+            return 1;
+        }
+        return continuousLoginDays / 2;
+    }
 }

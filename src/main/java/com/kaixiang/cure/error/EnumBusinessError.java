@@ -20,6 +20,7 @@ public enum EnumBusinessError implements CommonError {
     TOKEN_EXPIRED(20003, "please refresh and log in", "token过期"),
     TOKEN_ILLEGAL(20004, "Invalid token, please refresh and log in", "无效token"),
     INVALID_PASSWORD(20005, "Incorrect password or email, please retry", "密码错误"),
+    STAMPS_NOT_ENOUGH(20005, "Sorry, stamps are not enough", "邮票不足"),
 
     DATABASE_EXCEPTION(30001, "Network error, please refresh and retry", "数据库错误"),
     DUPLICATE_REPLY_TO_FIRST_LETTER(30002, "Duplicate reply", "重复回信"),

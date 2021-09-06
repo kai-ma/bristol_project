@@ -144,7 +144,9 @@ class Send extends Component {
 							cols={1}
 							okText="Confirm"
 							dismissText="Cancel"
-							{...getFieldProps("topic")}
+							{...getFieldProps("topic", {
+                                rules: [{ required: true }],
+                            })}
 							className="forss"
 						>
 							<List.Item arrow="horizontal">Topic</List.Item>
