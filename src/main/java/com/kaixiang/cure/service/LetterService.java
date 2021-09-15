@@ -4,6 +4,7 @@ import com.kaixiang.cure.error.BusinessException;
 import com.kaixiang.cure.service.model.ConversationModel;
 import com.kaixiang.cure.service.model.FirstLetterModel;
 import com.kaixiang.cure.service.model.LetterModel;
+import com.kaixiang.cure.service.model.RecommendModel;
 
 import java.util.List;
 
@@ -41,4 +42,6 @@ public interface LetterService {
      * 获取回复：用于首页 点击某个信 显示信和信的回复
      */
     List<LetterModel> listMyRepliesByFirstLetterId(Integer userId, Integer firstLetterId) throws BusinessException;
+
+    void recommend(RecommendModel recommendModel) throws BusinessException;
 }

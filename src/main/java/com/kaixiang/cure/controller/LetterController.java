@@ -1,6 +1,7 @@
 package com.kaixiang.cure.controller;
 
 import com.kaixiang.cure.controller.dataobject.FirstLetterDTO;
+import com.kaixiang.cure.controller.dataobject.RecommendDTO;
 import com.kaixiang.cure.controller.dataobject.ReplyLetterDTO;
 import com.kaixiang.cure.controller.viewobject.FirstLetterVO;
 import com.kaixiang.cure.error.BusinessException;
@@ -9,6 +10,7 @@ import com.kaixiang.cure.response.CommonReturnType;
 import com.kaixiang.cure.service.LetterService;
 import com.kaixiang.cure.service.model.FirstLetterModel;
 import com.kaixiang.cure.service.model.LetterModel;
+import com.kaixiang.cure.service.model.RecommendModel;
 import com.kaixiang.cure.utils.Convertor;
 import com.kaixiang.cure.utils.annotation.UserLoginToken;
 import com.kaixiang.cure.utils.validator.ValidationResult;
@@ -179,6 +181,26 @@ public class LetterController {
         return CommonReturnType.create(letterModels.stream().map(letterModel -> convertor.letterVOFromLetterModel(letterModel)
         ).collect(Collectors.toList()));
     }
+
+    /**
+     * 推荐
+     */
+    @RequestMapping(value = "/recommend", method = {RequestMethod.POST})
+    @ResponseBody
+    @UserLoginToken
+    public CommonReturnType report(@RequestBody RecommendDTO recommendDTO, HttpServletRequest request) throws BusinessException {
+        //校验参数
+        ValidationResult result = validator.validate(recommendDTO);
+        if (result.isHasErrors()) {
+            throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR, result.getErrMsg());
+        }
+        //1.构建完整的FirstLetterModel，从token中获取userId
+        RecommendModel recommendModel = convertor.recommendModelFromReportDTO(recommendDTO);
+        recommendModel.setUserid(getUserIdFromToken(request));
+        letterService.recommend(recommendModel);
+        return CommonReturnType.create("Report successfully!");
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 

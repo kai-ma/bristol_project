@@ -1,8 +1,6 @@
 package com.kaixiang.cure.utils;
 
-import com.kaixiang.cure.controller.dataobject.FirstLetterDTO;
-import com.kaixiang.cure.controller.dataobject.ReplyLetterDTO;
-import com.kaixiang.cure.controller.dataobject.RegisterDTO;
+import com.kaixiang.cure.controller.dataobject.*;
 import com.kaixiang.cure.controller.viewobject.*;
 import com.kaixiang.cure.dataobject.*;
 import com.kaixiang.cure.service.model.*;
@@ -278,5 +276,59 @@ public class Convertor {
         BeanUtils.copyProperties(letterDO, firstLetterModel);
         firstLetterModel.setCreatedAt(new DateTime(letterDO.getCreatedAt()));
         return firstLetterModel;
+    }
+
+    public ReportModel reportModelFromReportDTO(ReportDTO reportDTO) {
+        if(reportDTO == null){
+            return null;
+        }
+        ReportModel reportModel = new ReportModel();
+        BeanUtils.copyProperties(reportDTO, reportModel);
+        return reportModel;
+    }
+
+    public ReportDO reportDOFromModel(ReportModel reportModel) {
+        if(reportModel == null){
+            return null;
+        }
+        ReportDO reportDO = new ReportDO();
+        BeanUtils.copyProperties(reportModel, reportDO);
+        return reportDO;
+    }
+
+    public RecommendModel recommendModelFromReportDTO(RecommendDTO recommendDTO) {
+        if(recommendDTO == null){
+            return null;
+        }
+        RecommendModel recommendModel = new RecommendModel();
+        BeanUtils.copyProperties(recommendDTO, recommendModel);
+        return recommendModel;
+    }
+
+    public RecommendDO recommendDOFromModel(RecommendModel recommendModel) {
+        if(recommendModel == null){
+            return null;
+        }
+        RecommendDO recommendDO = new RecommendDO();
+        BeanUtils.copyProperties(recommendModel, recommendDO);
+        return recommendDO;
+    }
+
+    public FeedbackModel feedbackModelFromDTO(FeedbackDTO feedbackDTO) {
+        if(feedbackDTO == null){
+            return null;
+        }
+        FeedbackModel feedbackModel = new FeedbackModel();
+        BeanUtils.copyProperties(feedbackDTO, feedbackModel);
+        return feedbackModel;
+    }
+
+    public FeedbackDO feedBackDOFromModel(FeedbackModel feedbackModel) {
+        if(feedbackModel == null){
+            return null;
+        }
+        FeedbackDO feedbackDO = new FeedbackDO();
+        BeanUtils.copyProperties(feedbackModel, feedbackDO);
+        return feedbackDO;
     }
 }

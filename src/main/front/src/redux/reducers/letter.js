@@ -4,13 +4,17 @@ const initialState = {
 	letters: [],
 	myFirstLetters: [],
 	firstLettersIReplied: [],
-    detailOfFirstLetterReplied: [],
+	detailOfFirstLetterReplied: [],
 	error: "",
 	loading: false,
 	reLoadLetters: true,
 	reloadMyFirstLetters: true,
 	reloadFirstLettersIReplied: true,
-    page: 0,
+	page: 0,
+	conversation: {},
+	reportLetter: {},
+	recommendedConversationIds: [],
+	recommending: false,
 };
 
 const reducer = (preState = initialState, action) => {
@@ -20,12 +24,27 @@ const reducer = (preState = initialState, action) => {
 		case actionTypes.LOAD_MY_FIRST_LETTERS:
 		case actionTypes.LOAD_FIRST_LETTERS_REPLIED:
 		case actionTypes.LOAD_DETAIL_OF_FIRST_LETTER_REPLIED:
-        case actionTypes.REPLY:
-        case actionTypes.SEND:
+		case actionTypes.REPLY:
+		case actionTypes.SEND:
 			return {
 				...preState,
 				loading: true,
 				error: "",
+			};
+		case actionTypes.PREPARE_REPLY_TO_ME:
+			return {
+				...preState,
+				conversation: action.payload,
+			};
+		case actionTypes.PREPARE_REPORT:
+			return {
+				...preState,
+				reportLetter: action.payload,
+			};
+		case actionTypes.RECOMMEND_REQUEST:
+			return {
+				...preState,
+				recommending: true,
 			};
 		case actionTypes.LETTERS_SUCCESS:
 			return {
@@ -58,35 +77,47 @@ const reducer = (preState = initialState, action) => {
 				loading: false,
 				error: "",
 			};
-        case actionTypes.REPLY_SUCCESS:
-            return {
-                ...preState,
-                loading: false,
-                reloadFirstLettersIReplied: true,
-            };
-        case actionTypes.SEND_SUCCESS:
-            return {
-                ...preState,
-                loading: false,
-                reloadMyFirstLetters: true,
-            };
-        case actionTypes.CHANGE_LETTER_BOX_PAGE:
-            return {
-                ...preState,
-                page:action.payload,
-            }
+		case actionTypes.REPLY_SUCCESS:
+			return {
+				...preState,
+				loading: false,
+				reloadFirstLettersIReplied: true,
+			};
+		case actionTypes.SEND_SUCCESS:
+			return {
+				...preState,
+				loading: false,
+				reloadMyFirstLetters: true,
+			};
+		case actionTypes.CHANGE_LETTER_BOX_PAGE:
+			return {
+				...preState,
+				page: action.payload,
+			};
+		case actionTypes.RECOMMEND_SUCCESS:
+			return {
+				...preState,
+				recommending: false,
+				recommendedConversationIds: action.payload,
+			};
 		case actionTypes.LETTERS_FAILURE:
 		case actionTypes.LOAD_MY_FIRST_LETTERS_FAILURE:
 		case actionTypes.LOAD_FIRST_LETTERS_REPLIED_FAILURE:
-        case actionTypes.REPLY_FAILURE:
-        case actionTypes.SEND_FAILURE:    
+		case actionTypes.REPLY_FAILURE:
+		case actionTypes.SEND_FAILURE:
 			return {
 				...preState,
 				loading: false,
 				error: action.payload,
 			};
-        case actionTypes.CLEAR_LETTERS:
-            return initialState;
+		case actionTypes.REPLY_FAILURE:
+			return {
+				...preState,
+				recommending: false,
+				error: action.payload,
+			};
+		case actionTypes.CLEAR_LETTERS:
+			return initialState;
 		default:
 			return preState;
 	}

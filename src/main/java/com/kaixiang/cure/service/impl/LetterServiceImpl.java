@@ -1,15 +1,13 @@
 package com.kaixiang.cure.service.impl;
 
 import com.kaixiang.cure.dao.*;
-import com.kaixiang.cure.dataobject.ConversationDO;
-import com.kaixiang.cure.dataobject.FirstLetterMetaDO;
-import com.kaixiang.cure.dataobject.LetterDO;
-import com.kaixiang.cure.dataobject.UserDO;
+import com.kaixiang.cure.dataobject.*;
 import com.kaixiang.cure.error.BusinessException;
 import com.kaixiang.cure.error.EnumBusinessError;
 import com.kaixiang.cure.service.LetterService;
 import com.kaixiang.cure.service.model.FirstLetterModel;
 import com.kaixiang.cure.service.model.LetterModel;
+import com.kaixiang.cure.service.model.RecommendModel;
 import com.kaixiang.cure.utils.Convertor;
 import com.kaixiang.cure.utils.encrypt.EncryptUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +45,8 @@ public class LetterServiceImpl implements LetterService {
     private UserDOMapper userDOMapper;
     @Autowired
     private RedisTemplate redisTemplate;
+    @Autowired
+    private RecommendDOMapper recommendDOMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -244,6 +244,20 @@ public class LetterServiceImpl implements LetterService {
 
         } catch (Exception e) {
             throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
+        }
+    }
+
+    @Override
+    public void recommend(RecommendModel recommendModel) throws BusinessException {
+        if (recommendModel == null) {
+            throw new BusinessException(EnumBusinessError.UNKNOWN_ERROR);
+        }
+
+        RecommendDO recommendDO = convertor.recommendDOFromModel(recommendModel);
+        try {
+            recommendDOMapper.insertSelective(recommendDO);
+        } catch (DuplicateKeyException e) {
+            throw new BusinessException(EnumBusinessError.DUPLICATE_REPORT);
         }
     }
 

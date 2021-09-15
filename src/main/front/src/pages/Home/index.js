@@ -4,7 +4,7 @@ import { updateLetters, loadLetters } from "../../redux/actions/letter";
 //redux可以参考：https://www.freecodecamp.org/news/loading-data-in-react-redux-thunk-redux-saga-suspense-hooks-666b21da1569/
 import { BsPencilSquare } from "react-icons/bs";
 import "./index.css";
-import { Card, WingBlank, WhiteSpace, Button } from "antd-mobile";
+import { Card, WingBlank, WhiteSpace, Button, NavBar, List } from "antd-mobile";
 
 import Loading from "../../components/Loading";
 class Home extends Component {
@@ -35,9 +35,9 @@ class Home extends Component {
 		this.props.history.push("/send");
 	};
 
-    navToAnswerBook = () => {
-        this.props.history.push("/answerbook");
-    }
+	navToAnswerBook = () => {
+		this.props.history.push("/answerbook");
+	};
 
 	initialState = {
 		letters: [],
@@ -59,9 +59,10 @@ class Home extends Component {
 
 		return (
 			<div>
-				<div>
-					<h2 className="pull-left">Welcome to Cure</h2>
-				</div>
+				<NavBar mode="light">Home</NavBar>
+				{/* <div>
+					<h2 className="pull-left">Welcome to Cure!</h2>
+				</div> */}
 				{/* 根据loading判读是否显示loading图标 */}
 				{this.props.loading ? (
 					<div>
@@ -69,6 +70,9 @@ class Home extends Component {
 					</div>
 				) : (
 					<div>
+						<List
+							renderHeader={() => "Letters recieved:"}
+						></List>
 						{/* 参考：https://www.robinwieruch.de/react-state-array-add-update-remove */}
 						{letters.map((letter, index) => (
 							<div key={index}>
@@ -78,7 +82,7 @@ class Home extends Component {
 										onClick={() => this.handleClick(letter)}
 									>
 										<Card.Header title={letter.title} />
-                                        <WhiteSpace />
+										<WhiteSpace />
 										<Card.Body>
 											<div>
 												{letter.content.substring(
@@ -90,8 +94,8 @@ class Home extends Component {
 												) + "..."}
 											</div>
 										</Card.Body>
-                                        <WhiteSpace />
-                                        <WhiteSpace />
+										<WhiteSpace />
+										<WhiteSpace />
 										<Card.Footer
 											content={letter.createdAt}
 											extra={
@@ -109,7 +113,7 @@ class Home extends Component {
 								</WingBlank>
 							</div>
 						))}
-                        <WhiteSpace />
+						<WhiteSpace />
 						<WingBlank>
 							<Button
 								icon={<BsPencilSquare />}
@@ -121,8 +125,10 @@ class Home extends Component {
 								write letter
 							</Button>
 						</WingBlank>
-                        <p className="p" onClick={this.navToAnswerBook}>See more? </p>
-                        <WhiteSpace />
+						<p className="p" onClick={this.navToAnswerBook}>
+							See more?{" "}
+						</p>
+						<WhiteSpace />
 					</div>
 				)}
 			</div>

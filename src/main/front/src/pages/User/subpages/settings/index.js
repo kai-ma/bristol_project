@@ -9,22 +9,21 @@ import {
 	Modal,
 } from "antd-mobile";
 import { createForm } from "rc-form";
-import { getObjectFromLocalStorage, setObjectToLocalStorage } from "@src/utils";
 import { AiOutlineSave } from "react-icons/ai";
-import Http from "@src/utils/http.js";
+import { loadUserInfo, updateUserSettings } from "@src/redux/actions/user";
+import { connect } from "react-redux";
 
 const alert = Modal.alert;
 
 class Settings extends Component {
 	constructor(props) {
 		super(props);
-		this.state = this.initialState;
 	}
 
 	initialState = {};
 
 	save = () => {
-		const user = this.state.user;
+		const userinfo = this.props.userinfo;
 		this.props.form.validateFields((error, value) => {
 			if (error) {
 				Toast.info(
@@ -34,8 +33,8 @@ class Settings extends Component {
 			} else {
 				//发送post请求
 				if (
-					value.pseudonym !== user.pseudonym ||
-					value.allowCollect !== user.allowCollect
+					value.pseudonym !== userinfo.pseudonym ||
+					value.allowCollect !== userinfo.allowCollect
 				) {
 					alert("Confirm change settings", "Are you confirm to change?", [
 						{
@@ -51,36 +50,15 @@ class Settings extends Component {
 	};
 
 	changeSettings = (value) => {
-        let user = this.state.user;
+        let userinfo = this.props.userinfo;
 		let settings = {};
-		if (value.pseudonym !== user.pseudonym) {
+		if (value.pseudonym !== userinfo.pseudonym) {
 			settings.pseudonym = value.pseudonym;
 		}
-		if (value.allowCollect !== user.allowCollect) {
+		if (value.allowCollect !== userinfo.allowCollect) {
 			settings.allowCollect = value.allowCollect;
 		}
-		Http({
-			url: "/user/settings",
-			body: settings,
-			mock: false,
-		}).then(
-			(res) => {
-				Toast.info("change settings successfully", 2, () => this.props.history.push("/user"));
-                //成功修改 更新state 和 localStorage
-                if(settings.pseudonym != null){
-                    user.pseudonym = settings.pseudonym;
-                }
-                if(settings.allowCollect != null){
-                    user.allowCollect = settings.allowCollect;
-                }
-                // this.setState({user: user});
-                setObjectToLocalStorage("user", user);
-                
-			},
-			(err) => {
-				Toast.fail(err.errMsg, 2);
-			}
-		);
+        this.props.updateUserSettings(userinfo, settings, this.props.history);
 	};
 
 	linkToBack = () => {
@@ -88,18 +66,14 @@ class Settings extends Component {
 	};
 
 	componentDidMount() {
-		let user = getObjectFromLocalStorage("user");
-		if (user != null) {
-			this.setState({ user: user });
-		}
-	}
-
-	initialState = {
-		user: [],
-	};
+        if(this.props.reloadUserInfo){
+            this.props.loadUserInfo();
+        }
+    }
 
 	render() {
-		const { user } = this.state;
+		const { userinfo } = this.props;
+
 		const { getFieldProps } = this.props.form;
 		return (
 			<div>
@@ -114,10 +88,10 @@ class Settings extends Component {
 				<List renderHeader={() => "Change pseudonym"}>
 					<InputItem
 						// clear
-						defaultValue={user.pseudonym}
+						defaultValue={userinfo.pseudonym}
 						placeholder="Change pseudonym"
 						{...getFieldProps("pseudonym", {
-							initialValue: user.pseudonym,
+							initialValue: userinfo.pseudonym,
 							rules: [{ required: true }],
 						})}
 						labelNumber={7}
@@ -135,7 +109,7 @@ class Settings extends Component {
 						extra={
 							<Switch
 								{...getFieldProps("allowCollect", {
-									initialValue: user.allowCollect,
+									initialValue: userinfo.allowCollect,
 									valuePropName: "checked",
 									rules: [{ required: true }],
 								})}
@@ -160,4 +134,18 @@ class Settings extends Component {
 	}
 }
 
-export default createForm()(Settings);
+
+const mapStateToProps = (state) => {
+	return {
+		userinfo: state.user.userinfo,
+        reloadUserInfo: state.user.reloadUserInfo,
+	};
+};
+
+const mapDispatchToProps = (dispatch) => {
+	return {
+        loadUserInfo : () => dispatch(loadUserInfo()),
+        updateUserSettings: (userinfo, settings, history) => dispatch(updateUserSettings(userinfo, settings, history)),
+	};
+};
+export default connect(mapStateToProps, mapDispatchToProps)(createForm()(Settings));

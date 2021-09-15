@@ -255,3 +255,69 @@ export const changeLetterBoxPage = (page) => {
 		});
 	};
 };
+
+export const prepareReplyToMe = (conversation) => {
+	return (dispatch) => {
+		dispatch({
+			type: actionTypes.PREPARE_REPLY_TO_ME,
+            payload: conversation,
+		});
+	};
+};
+
+export const prepareReport = (letter) => {
+	return (dispatch) => {
+		dispatch({
+			type: actionTypes.PREPARE_REPORT,
+            payload: letter,
+		});
+	};
+};
+
+export const recommend = (body, recommendedConversationIds) => {
+	return (dispatch) => {
+		if (recommendedConversationIds != null && recommendedConversationIds.indexOf(body.conversationId) > -1) {
+			Toast.fail("You have recommened the conversation", 2);
+		} else {
+			dispatch({
+				type: actionTypes.RECOMMEND_REQUEST,
+			});
+            console.log(body);
+			Http({
+				url: "/letter/recommend",
+				body: body,
+				mock: false,
+			}).then(
+				(res) => {
+					dispatch(recommendSuccess(body, recommendedConversationIds));
+					Toast.success("Recommend successfully", 2);
+				},
+				(err) => {
+					//已经举报过
+					if (err.errCode != null && err.errCode === 20006) {
+						recommendedConversationIds.push(body.conversationId);
+					}
+					dispatch(recommendFailure(err));
+					Toast.fail(err.errMsg, 2);
+				}
+			);
+		}
+	};
+};
+
+const recommendSuccess = (body, recommendedConversationIds) => {
+	//向数组中添加已经recommend过的letterId
+	recommendedConversationIds.push(body.conversationId);
+
+	return {
+		type: actionTypes.RECOMMEND_SUCCESS,
+		payload: recommendedConversationIds,
+	};
+};
+
+const recommendFailure = (error) => {
+	return {
+		type: actionTypes.RECOMMEND_FAILURE,
+		payload: error,
+	};
+};

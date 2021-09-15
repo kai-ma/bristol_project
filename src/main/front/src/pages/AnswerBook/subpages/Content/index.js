@@ -239,6 +239,7 @@ class Content extends Component {
 					//按照tag显示
 					<div>
 						<List renderHeader={() => "Filter by tags"}></List>
+                        <div className="tag-container">
 						{tags.map((tag, index) => (
 							<Tag
 								key={index}
@@ -249,6 +250,7 @@ class Content extends Component {
 								{tag}
 							</Tag>
 						))}
+                        </div>
 					</div>
 				) : (
 					//显示全部

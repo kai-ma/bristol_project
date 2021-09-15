@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Button, Toast, WhiteSpace, NavBar, List } from "antd-mobile";
 import { FaSignInAlt, FaSignOutAlt, FaUserPlus } from "react-icons/fa";
 import { AiOutlineSetting } from "react-icons/ai";
+import { RiFeedbackLine } from "react-icons/ri";
 import { clearLetters } from "../../redux/actions/letter";
 import { loadUserInfo } from "../../redux/actions/user";
 import { connect } from "react-redux";
@@ -20,8 +21,13 @@ class User extends Component {
 		this.props.history.push("/register");
 	};
 
-	navToSettings = () => {
+    navToSettings = () => {
 		this.props.history.push("/settings");
+	};
+
+
+	navtoFeedBack = () => {
+		this.props.history.push("/feedback");
 	};
 
 	handleLogOut = () => {
@@ -55,11 +61,19 @@ class User extends Component {
 						</List>
 						<List renderHeader={() => "Settings"}>
 							<Button
-								type="primary"
 								onClick={this.navToSettings}
 								icon={<AiOutlineSetting />}
 							>
 								Settings
+							</Button>
+						</List>
+                        <List renderHeader={() => "Feedback"}>
+							<Button
+								type="primary"
+								onClick={this.navtoFeedBack}
+								icon={<RiFeedbackLine />}
+							>
+								Feedback
 							</Button>
 						</List>
 						<List renderHeader={() => "Log out"}>

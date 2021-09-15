@@ -1,12 +1,15 @@
 package com.kaixiang.cure.service.impl;
 
+import com.kaixiang.cure.dao.FeedbackDOMapper;
 import com.kaixiang.cure.dao.UserDOMapper;
 import com.kaixiang.cure.dao.UserPasswordDOMapper;
+import com.kaixiang.cure.dataobject.FeedbackDO;
 import com.kaixiang.cure.dataobject.UserDO;
 import com.kaixiang.cure.dataobject.UserPasswordDO;
 import com.kaixiang.cure.error.BusinessException;
 import com.kaixiang.cure.error.EnumBusinessError;
 import com.kaixiang.cure.service.UserService;
+import com.kaixiang.cure.service.model.FeedbackModel;
 import com.kaixiang.cure.service.model.UserModel;
 import com.kaixiang.cure.utils.Convertor;
 import org.joda.time.DateTime;
@@ -33,6 +36,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private FeedbackDOMapper feedbackDOMapper;
 
     @Override
     public UserModel getUserById(Integer id) {
@@ -157,7 +163,17 @@ public class UserServiceImpl implements UserService {
         return convertor.userModelFromUserDOAndPasswordDO(userDO, null);
     }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+    @Override
+    public void feedback(FeedbackModel feedbackModel) throws BusinessException {
+        if (feedbackModel == null) {
+            throw new BusinessException(EnumBusinessError.UNKNOWN_ERROR);
+        }
+
+        FeedbackDO feedbackDO = convertor.feedBackDOFromModel(feedbackModel);
+        feedbackDOMapper.insertSelective(feedbackDO);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     private UserPasswordDO convertPassWordFromModel(UserModel userModel) {
         if (userModel == null) {

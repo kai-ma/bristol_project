@@ -5,6 +5,7 @@ import LetterContent from "@src/components/LetterContent";
 import { getObjectFromLocalStorage, setObjectToLocalStorage } from "@src/utils";
 import Http from "@src/utils/http.js";
 import { GoReport } from "react-icons/go";
+import { prepareReport } from "@src/redux/actions/letter";
 const alert = Modal.alert;
 
 class Letter extends Component {
@@ -50,34 +51,14 @@ class Letter extends Component {
 	};
 
 	handelReport = () => {
-		alert("Confirm Report", "Are you confirm to report this letter?", [
-			{
-				text: "Confirm",
-				onPress: () => {
-					const letter = this.props.letters.find(
-						(x) => x.id === this.props.match.params.id * 1
-					);
-					if (letter != null) {
-						console.log("report" + letter.id);
-						Http({
-							url: "/letter/report",
-							body: { type: "firstLetter", letterId: letter.id },
-							mock: false,
-						}).then(
-							(res) => {
-								alert(
-									"Report successfully",
-									"Please wait for the processing result",
-									[{ text: "Ok", onPress: this.navToHome }]
-								);
-							},
-							(err) => {}
-						);
-					}
-				},
-			},
-			{ text: "Cancel", onPress: () => console.log("cancel") },
-		]);
+        const letter = this.props.letters.find(
+            (x) => x.id === this.props.match.params.id * 1
+        );
+
+        if (letter != null) {
+            this.props.prepareReport(letter);
+            this.props.history.push("/report");
+        }
 	};
 
 	showMessage = (message) => {
@@ -167,7 +148,13 @@ const mapStateToProps = (state) => {
 	};
 };
 
-export default connect(mapStateToProps)(Letter);
+const mapDispatchToProps = (dispatch) => {
+	return {
+		prepareReport: (letter) => dispatch(prepareReport(letter)),
+	};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Letter);
 
 //todo:刷新一下state就没有了。可以改成把Letter存到localStorage里，如果刷新的话，再更改。或者都写成loading的函数
 //问题是如果这里设置成直接获取，一刷新就没有了。如果设置成重新取，那每次都得去取。感觉就是得存到localStorage里。

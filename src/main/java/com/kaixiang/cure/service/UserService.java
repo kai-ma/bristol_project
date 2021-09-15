@@ -1,6 +1,7 @@
 package com.kaixiang.cure.service;
 
 import com.kaixiang.cure.error.BusinessException;
+import com.kaixiang.cure.service.model.FeedbackModel;
 import com.kaixiang.cure.service.model.UserModel;
 import org.springframework.stereotype.Service;
 
@@ -28,4 +29,6 @@ public interface UserService {
      * @param userId
      */
     UserModel getUserInfo(Integer userId) throws BusinessException;
+
+    void feedback(FeedbackModel feedbackModel) throws BusinessException;
 }
