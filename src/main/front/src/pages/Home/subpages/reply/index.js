@@ -96,9 +96,13 @@ class Reply extends Component {
 							initialValue: "",
 							rules: [{ required: true }],
 						})}
-						rows={8}
-						count={1000}
-						placeholder="Give advice or warmth to strangers"
+						rows={12}
+						count={1500}
+						placeholder="- Read the thoughts carefully to understand the emotions behind them.
+                        - Take your time to think before your respond.
+                        - Your words matter. Use them to show support.
+                        - Try to be as honest and open-minded as possible.
+                        - Personal responses go a long way in keeping the community kind, loving and empathetic."
 					/>
 				</List>
 				<List renderHeader={() => ""}></List>

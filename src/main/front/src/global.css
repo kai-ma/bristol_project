@@ -1,0 +1,13 @@
+html,
+body,
+#root {
+  height: 100%;
+}
+
+@media screen and (min-width: 600px) {
+  body {
+    padding-left: 5%;
+    padding-right: 5% !important;
+    zoom: 0.7;
+  }
+}

@@ -30,8 +30,6 @@ import java.util.stream.Collectors;
 @Service
 public class LetterServiceImpl implements LetterService {
     @Autowired
-    private FirstLetterDOMapper firstLetterDOMapper;
-    @Autowired
     private ConversationDOMapper conversationDOMapper;
     @Autowired
     private LetterDOMapper letterDOMapper;

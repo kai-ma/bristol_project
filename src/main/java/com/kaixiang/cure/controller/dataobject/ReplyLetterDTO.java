@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
  */
 public class ReplyLetterDTO {
     @NotBlank(message = "Content can't be empty")
-    @Length(max = 1000, message = "Too much characters for content input")
+    @Length(max = 1500, message = "Too much characters for content input")
     @Length(min = 10, message = "Too few characters for content input")
     private String content;
 
