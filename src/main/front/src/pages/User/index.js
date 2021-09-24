@@ -4,6 +4,7 @@ import { FaSignInAlt, FaSignOutAlt, FaUserPlus } from "react-icons/fa";
 import { AiOutlineSetting } from "react-icons/ai";
 import { RiFeedbackLine } from "react-icons/ri";
 import { clearLetters } from "../../redux/actions/letter";
+import { clearAnswerbooks } from "../../redux/actions/answerbook";
 import { loadUserInfo } from "../../redux/actions/user";
 import { connect } from "react-redux";
 
@@ -21,10 +22,9 @@ class User extends Component {
 		this.props.history.push("/register");
 	};
 
-    navToSettings = () => {
+	navToSettings = () => {
 		this.props.history.push("/settings");
 	};
-
 
 	navtoFeedBack = () => {
 		this.props.history.push("/feedback");
@@ -32,21 +32,21 @@ class User extends Component {
 
 	handleLogOut = () => {
 		this.props.clearLetters();
-		Toast.success("Log out successfully", 1);
-		setTimeout(() => {
-            localStorage.clear();
+		Toast.success("Log out successfully", 1, () => {
+			localStorage.clear();
 			this.props.history.push("/");
-		}, 1000);
+		});
 	};
 
 	componentDidMount() {
-        if(this.props.reloadUserInfo){
-            this.props.loadUserInfo();
-        }
-    }
+		if (this.props.reloadUserInfo) {
+			this.props.loadUserInfo();
+		}
+	}
 
 	render() {
 		const { userinfo } = this.props;
+        const Brief = Item.Brief;
 		return (
 			<div>
 				<NavBar mode="light">User</NavBar>
@@ -54,12 +54,20 @@ class User extends Component {
 					<div>
 						<List renderHeader={() => "User profile"}>
 							<Item extra={userinfo.pseudonym}>pseudonym</Item>
-							<Item extra={userinfo.stamp}>Stamps left</Item>
-							<Item extra={userinfo.continuousLoginDays}>
+                            <Item extra={userinfo.continuousLoginDays}>
 								Consecutive login days
 							</Item>
+                            <Item
+								arrow="horizontal"
+								multipleLine
+								onClick={() => {
+                                    this.props.history.push("/stamp");
+                                }}
+							>
+								Stamp rewards <Brief>{"Remaining stamps: " + userinfo.stamp }</Brief>
+							</Item>
 						</List>
-						<List renderHeader={() => "Settings"}>
+						<List renderHeader={() => ""}>
 							<Button
 								onClick={this.navToSettings}
 								icon={<AiOutlineSetting />}
@@ -67,7 +75,7 @@ class User extends Component {
 								Settings
 							</Button>
 						</List>
-                        <List renderHeader={() => "Feedback"}>
+						<List renderHeader={() => ""}>
 							<Button
 								type="primary"
 								onClick={this.navtoFeedBack}
@@ -76,7 +84,7 @@ class User extends Component {
 								Feedback
 							</Button>
 						</List>
-						<List renderHeader={() => "Log out"}>
+						<List renderHeader={() => ""}>
 							<Button
 								type="warning"
 								onClick={this.handleLogOut}
@@ -85,6 +93,13 @@ class User extends Component {
 								Log Out
 							</Button>
 						</List>
+						<WhiteSpace />
+						<p className="p" onClick={this.navToAnswerBook}>
+							{/* {"Tomorrow login reward: " + userinfo.bonusTomorrow + " stamps"} */}
+							{"The reward for tomorrow's login: " +
+								userinfo.bonusTomorrow +
+								" stamps"}
+						</p>
 					</div>
 				) : (
 					<div>
@@ -114,14 +129,15 @@ class User extends Component {
 const mapStateToProps = (state) => {
 	return {
 		userinfo: state.user.userinfo,
-        reloadUserInfo: state.user.reloadUserInfo,
+		reloadUserInfo: state.user.reloadUserInfo,
 	};
 };
 
 const mapDispatchToProps = (dispatch) => {
 	return {
 		clearLetters: () => dispatch(clearLetters()),
-        loadUserInfo : () => dispatch(loadUserInfo()),
+		clearAnswerbooks: () => dispatch(clearAnswerbooks()),
+		loadUserInfo: () => dispatch(loadUserInfo()),
 	};
 };
 export default connect(mapStateToProps, mapDispatchToProps)(User);

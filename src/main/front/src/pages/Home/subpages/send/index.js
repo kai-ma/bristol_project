@@ -71,9 +71,10 @@ class Send extends Component {
 				);
 				return;
 			} else {
+                let stamp = this.props.userinfo.stamp;
 				alert(
 					"Confirm send this letter",
-					"Cost 1 stamp to send a letter",
+					stamp + " stamps left",
 					[
 						{
 							text: "Confirm",
@@ -131,8 +132,13 @@ class Send extends Component {
 									rules: [{ required: true }],
 								})}
 								rows={10}
-								count={1000}
-								placeholder="It is suggested that key people and places use pseudonyms."
+								count={1500}
+								placeholder="-It is suggested that key people and places use pseudonyms.
+                                - Note that this is not a professional consulting software, and the suggestions of others are for reference only. 
+                                - Please do not disclose your sensitive information.
+                                - Please send friendly content and don't bother others.
+                                - Sending a letter will consume 1 stamp.
+                                - Creating 'Sex', 'Finding someone to date' and related posts can lead to your account being permanently banned."
 							/>
 						</List>
 						<List renderHeader={() => "Topic"}></List>
@@ -145,8 +151,8 @@ class Send extends Component {
 							okText="Confirm"
 							dismissText="Cancel"
 							{...getFieldProps("topic", {
-                                rules: [{ required: true }],
-                            })}
+								rules: [{ required: true }],
+							})}
 							className="forss"
 						>
 							<List.Item arrow="horizontal">Topic</List.Item>
@@ -165,6 +171,7 @@ class Send extends Component {
 const mapStateToProps = (state) => {
 	return {
 		loading: state.letter.loading,
+        userinfo: state.user.userinfo,
 	};
 };
 

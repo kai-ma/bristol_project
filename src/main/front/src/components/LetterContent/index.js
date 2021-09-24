@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { WingBlank, WhiteSpace, Card } from "antd-mobile";
 //letterbox 首封信、回信部分详情都用的这个  answerbook conversation详情全部用的这个
+import "./index.css"
 class LetterContent extends Component {
 	constructor(props) {
 		super(props);
@@ -12,7 +13,7 @@ class LetterContent extends Component {
 	render() {
 		const { letter } = this.props;
 		return (
-			<div>
+			<div className="card">
 				<WingBlank size="lg">
 					<WhiteSpace size="lg" />
 					<Card>

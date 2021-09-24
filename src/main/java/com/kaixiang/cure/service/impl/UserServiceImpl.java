@@ -1,15 +1,18 @@
 package com.kaixiang.cure.service.impl;
 
 import com.kaixiang.cure.dao.FeedbackDOMapper;
+import com.kaixiang.cure.dao.StampBonusDOMapper;
 import com.kaixiang.cure.dao.UserDOMapper;
 import com.kaixiang.cure.dao.UserPasswordDOMapper;
 import com.kaixiang.cure.dataobject.FeedbackDO;
+import com.kaixiang.cure.dataobject.StampBonusDO;
 import com.kaixiang.cure.dataobject.UserDO;
 import com.kaixiang.cure.dataobject.UserPasswordDO;
 import com.kaixiang.cure.error.BusinessException;
 import com.kaixiang.cure.error.EnumBusinessError;
 import com.kaixiang.cure.service.UserService;
 import com.kaixiang.cure.service.model.FeedbackModel;
+import com.kaixiang.cure.service.model.StampBonusModel;
 import com.kaixiang.cure.service.model.UserModel;
 import com.kaixiang.cure.utils.Convertor;
 import org.joda.time.DateTime;
@@ -21,6 +24,11 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -39,6 +47,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private FeedbackDOMapper feedbackDOMapper;
+
+    @Autowired
+    private StampBonusDOMapper stampBonusDOMapper;
 
     @Override
     public UserModel getUserById(Integer id) {
@@ -85,7 +96,11 @@ public class UserServiceImpl implements UserService {
         if (userPasswordDO == null) {
             return null;
         }
-        return convertor.userModelFromUserDOAndPasswordDO(userDO, userPasswordDO);
+        UserModel userModel = convertor.userModelFromUserDOAndPasswordDO(userDO, userPasswordDO);
+        if(userModel != null && userModel.getContinuousLoginDays() != null){
+            userModel.setBonusTomorrow(getBonus(userModel.getContinuousLoginDays() + 1));
+        }
+        return userModel;
     }
 
     /**
@@ -106,32 +121,43 @@ public class UserServiceImpl implements UserService {
     /**
      * 记录登录相关信息，并添加奖励
      *
-     * @param userModel
+     * @param userModel: userModel
+     * @return: Reward reminder display in the home page.
      */
     @Override
     public String loginBonus(UserModel userModel) throws BusinessException {
-        if (userModel.getContinuousLoginDays() == null || userModel.getLastLoginAt() == null) {
+        if (userModel.getContinuousLoginDays() == null) {
             return null;
         }
-        Integer bonus = null;
+        int bonus = 0;
+        boolean firstTimeLogin = false;
         DateTime now = new DateTime();
-        if (Days.daysBetween(userModel.getLastLoginAt(), now).getDays() >= 1 &&
-                Hours.hoursBetween(userModel.getLastLoginAt(), now).getHours() >= 48) {
-            //没有连续登录  连续登录天数归零
+        //login for the first time
+        if (userModel.getLastLoginAt() == null) {
+            userModel.setLastLoginAt(now);
             userModel.setContinuousLoginDays(1);
-            bonus = getBonus(1);
+            bonus = 3;
+            userModel.setStamp(3);
+            firstTimeLogin = true;
         } else {
-            //连续登录，且不在同一天
-            LocalDate localDate1 = userModel.getLastLoginAt().toLocalDate();
-            LocalDate localDate2 = now.toLocalDate();
-            if (!localDate1.equals(localDate2)) {
-                userModel.setContinuousLoginDays(userModel.getContinuousLoginDays() + 1);
-                bonus = getBonus(userModel.getContinuousLoginDays());
+            if (Days.daysBetween(userModel.getLastLoginAt(), now).getDays() >= 1 &&
+                    Hours.hoursBetween(userModel.getLastLoginAt(), now).getHours() >= 48) {
+                //没有连续登录  连续登录天数归零
+                userModel.setContinuousLoginDays(1);
+                bonus = getBonus(1);
+            } else {
+                //连续登录，且不在同一天
+                LocalDate localDate1 = userModel.getLastLoginAt().toLocalDate();
+                LocalDate localDate2 = now.toLocalDate();
+                if (!localDate1.equals(localDate2)) {
+                    userModel.setContinuousLoginDays(userModel.getContinuousLoginDays() + 1);
+                    bonus = getBonus(userModel.getContinuousLoginDays());
+                }
             }
-        }
-        userModel.setLastLoginAt(now);
-        if (bonus != null) {
-            userModel.setStamp(userModel.getStamp() + bonus);
+            userModel.setLastLoginAt(now);
+            if (bonus != 0) {
+                userModel.setStamp(userModel.getStamp() + bonus);
+            }
         }
 
         UserDO userDO = convertor.userDOFromUserModel(userModel);
@@ -139,12 +165,31 @@ public class UserServiceImpl implements UserService {
         if(rows != 1){
             throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
         }
-        if(bonus != null){
-            return "Continuous login " + userModel.getContinuousLoginDays() + " days, " + bonus +
-                    (bonus > 1 ? " stamps bonus" : " stamp bonus");
+
+        if(bonus != 0){
+            addBonusRecord(userModel, bonus);
+        }
+
+
+        if(firstTimeLogin){
+            return "Login for the first time, reward 3 stamps";
+        }
+        if (bonus != 0) {
+            return "Congratulations! Get " + bonus + (bonus > 1 ? " stamps bonus" : " stamp bonus")
+                    + " for logging in " + userModel.getContinuousLoginDays() + " consecutive days";
         }
         return null;
     }
+
+
+    private int addBonusRecord(UserModel userModel, int bonus){
+        StampBonusDO stampBonusDO = new StampBonusDO();
+        stampBonusDO.setUserId(userModel.getId());
+        stampBonusDO.setReason(0);
+        stampBonusDO.setBonus(bonus);
+        return stampBonusDOMapper.insertSelective(stampBonusDO);
+    }
+
 
     /**
      * 获取用户的信息 用于user页面展示
@@ -160,7 +205,11 @@ public class UserServiceImpl implements UserService {
         if (userDO == null) {
             throw new BusinessException(EnumBusinessError.USER_NOT_EXIST);
         }
-        return convertor.userModelFromUserDOAndPasswordDO(userDO, null);
+        UserModel userModel = convertor.userModelFromUserDOAndPasswordDO(userDO, null);
+        if(userModel != null && userModel.getContinuousLoginDays() != null){
+            userModel.setBonusTomorrow(getBonus(userModel.getContinuousLoginDays() + 1));
+        }
+        return userModel;
     }
 
     @Override
@@ -171,6 +220,16 @@ public class UserServiceImpl implements UserService {
 
         FeedbackDO feedbackDO = convertor.feedBackDOFromModel(feedbackModel);
         feedbackDOMapper.insertSelective(feedbackDO);
+    }
+
+    @Override
+    public List<StampBonusModel> getStampBonus(Integer userId) throws BusinessException {
+        if (userId == null) {
+            throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR);
+        }
+        List<StampBonusDO> stampBonusDOList = stampBonusDOMapper.listByUserId(userId);
+        return stampBonusDOList.stream().map(stampBonusDO -> convertor.stampBonusModelFromDO(stampBonusDO)
+        ).collect(Collectors.toList());
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -187,13 +246,26 @@ public class UserServiceImpl implements UserService {
         return userPasswordDO;
     }
 
+    @SuppressWarnings("serial")
+    private final static Map<Integer, Integer> loginBonus = new HashMap<Integer, Integer>() {
+        {
+            put(1, 1);
+            put(2, 2);
+            put(3, 2);
+            put(4, 2);
+            put(5, 3);
+            put(6, 3);
+            put(7, 3);
+        }
+    };
+
     private Integer getBonus(Integer continuousLoginDays) {
-        if (continuousLoginDays >= 7) {
-            return 3;
+        if (continuousLoginDays <= 0) {
+            return 0;
         }
-        if (continuousLoginDays == 1) {
-            return 1;
+        if (loginBonus.containsKey(continuousLoginDays)) {
+            return loginBonus.get(continuousLoginDays);
         }
-        return continuousLoginDays / 2;
+        return 4;
     }
 }

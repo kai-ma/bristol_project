@@ -6,13 +6,13 @@ import {
 	Button,
 	WhiteSpace,
 	Toast,
-	Modal,
 } from "antd-mobile";
 import { createForm } from "rc-form";
 import { FaSignInAlt, FaUserPlus } from "react-icons/fa";
 import { login } from "@src/redux/actions/user";
 import { connect } from "react-redux";
 import Loading from "@src/components/Loading";
+
 
 class Login extends Component {
 	constructor(props) {

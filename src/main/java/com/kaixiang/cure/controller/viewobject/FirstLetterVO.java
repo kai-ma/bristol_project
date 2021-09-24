@@ -13,6 +13,8 @@ public class FirstLetterVO extends LetterVO {
 
     private Integer replyNumber;
 
+    private Integer unread;
+
     public String getTitle() {
         return title;
     }
@@ -37,4 +39,11 @@ public class FirstLetterVO extends LetterVO {
         this.replyNumber = replyNumber;
     }
 
+    public Integer getUnread() {
+        return unread;
+    }
+
+    public void setUnread(Integer unread) {
+        this.unread = unread;
+    }
 }

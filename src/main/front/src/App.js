@@ -18,6 +18,7 @@ import PrivateRoute from './router/PrivateRoute';
 import ReplyToMe from "./pages/LetterBox/subpages/ReplyToMe";
 import Report from "./pages/LetterBox/subpages/Report";
 import Recommend from "./pages/LetterBox/subpages/Recommend";
+import Stamp from "./pages/User/subpages/Stamp";
 
 function App() {
 	return (
@@ -40,6 +41,7 @@ function App() {
                 <PrivateRoute path="/reply/:id" exact component={Reply} />
                 <PrivateRoute path="/letter/:id" exact component={Letter} />
                 <PrivateRoute path="/settings" exact component={Settings} />
+                <PrivateRoute path="/stamp" exact component={Stamp} />
 				<Route path="/register" exact component={Register} />
 				<Route path="/login/:router?" exact component={Login} />
 				{/* 其他所有的url都到home页面 */}

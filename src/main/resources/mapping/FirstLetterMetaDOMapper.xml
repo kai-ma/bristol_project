@@ -11,11 +11,11 @@
     <result column="last_replied_at" jdbcType="TIMESTAMP" property="lastRepliedAt" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="reply_number" jdbcType="INTEGER" property="replyNumber" />
-    <result column="quality" jdbcType="INTEGER" property="quality" />
+    <result column="unread" jdbcType="INTEGER" property="unread" />
   </resultMap>
   <sql id="Base_Column_List">
     id, letter_id, encrypt_user_id, title, topic_id, created_at, last_replied_at, status, reply_number,
-    quality
+    unread
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -38,7 +38,7 @@
     from first_letter_meta
     where encrypt_user_id != #{encryptUserId,jdbcType=VARCHAR}
     order by reply_number ASC, created_at DESC
-    limit 3;
+    limit 5;
   </select>
 
   <select id="selectByLetterId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -63,11 +63,11 @@
     insert into first_letter_meta (id, letter_id, encrypt_user_id, 
       title, topic_id, created_at, 
       last_replied_at, status, reply_number, 
-      quality)
+      unread)
     values (#{id,jdbcType=INTEGER}, #{letterId,jdbcType=INTEGER}, #{encryptUserId,jdbcType=VARCHAR}, 
       #{title,jdbcType=VARCHAR}, #{topicId,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, 
       #{lastRepliedAt,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{replyNumber,jdbcType=INTEGER}, 
-      #{quality,jdbcType=INTEGER})
+      #{unread,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.FirstLetterMetaDO" keyProperty="id" useGeneratedKeys="true">
     insert into first_letter_meta
@@ -99,8 +99,8 @@
       <if test="replyNumber != null">
         reply_number,
       </if>
-      <if test="quality != null">
-        quality,
+      <if test="unread != null">
+        unread,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -131,8 +131,8 @@
       <if test="replyNumber != null">
         #{replyNumber,jdbcType=INTEGER},
       </if>
-      <if test="quality != null">
-        #{quality,jdbcType=INTEGER},
+      <if test="unread != null">
+        #{unread,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -163,11 +163,44 @@
       <if test="replyNumber != null">
         reply_number = #{replyNumber,jdbcType=INTEGER},
       </if>
-      <if test="quality != null">
-        quality = #{quality,jdbcType=INTEGER},
+      <if test="unread != null">
+        unread = #{unread,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByLetterIdSelective" parameterType="com.kaixiang.cure.dataobject.FirstLetterMetaDO">
+    update first_letter_meta
+    <set>
+      <if test="letterId != null">
+        letter_id = #{letterId,jdbcType=INTEGER},
+      </if>
+      <if test="encryptUserId != null">
+        encrypt_user_id = #{encryptUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="topicId != null">
+        topic_id = #{topicId,jdbcType=INTEGER},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastRepliedAt != null">
+        last_replied_at = #{lastRepliedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="replyNumber != null">
+        reply_number = #{replyNumber,jdbcType=INTEGER},
+      </if>
+      <if test="unread != null">
+        unread = #{unread,jdbcType=INTEGER},
+      </if>
+    </set>
+    where letter_id = #{letterId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.kaixiang.cure.dataobject.FirstLetterMetaDO">
     update first_letter_meta
@@ -179,7 +212,7 @@
       last_replied_at = #{lastRepliedAt,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=INTEGER},
       reply_number = #{replyNumber,jdbcType=INTEGER},
-      quality = #{quality,jdbcType=INTEGER}
+      unread = #{unread,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

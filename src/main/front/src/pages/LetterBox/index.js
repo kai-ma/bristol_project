@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { NavBar, Tabs, WhiteSpace, Badge, Card, WingBlank } from "antd-mobile";
 import { connect } from "react-redux";
-import { loadMyFirstLetters, loadFirstLettersIReplied, changeLetterBoxPage } from "../../redux/actions/letter";
+import { loadMyFirstLetters, loadFirstLettersIReplied, changeLetterBoxPage, changeUnread} from "../../redux/actions/letter";
 import Loading from "../../components/Loading";
 
 const tabs = [
@@ -42,7 +42,12 @@ class LetterBox extends Component {
         }
     }
 
-    loadDetailISent = (letter) => {
+    loadDetailISent = (letter, index) => {
+        if(letter.unread > 0 ){
+            this.props.changeUnread(this.props.unread - letter.unread);
+        }
+        letter.unread = 0;
+        this.props.firstLettersIReplied[index] = letter;
         this.props.history.push("/letterbox/detail/" + letter.id);
     }
 
@@ -83,13 +88,12 @@ class LetterBox extends Component {
 							) : (
 								<div>
 									{myFirstLetters.map((letter, index) => (
-										<div key={index}>
+										<div key={index} className="card">
 											<WingBlank size="lg">
 												<WhiteSpace />
-												<Card onClick={() =>this.loadDetailISent(letter)}>
+												<Card onClick={() =>this.loadDetailISent(letter, index)}>
 													<Card.Header 
                                                         title={letter.title}
-                                                        extra={letter.replyNumber > 0 ?  letter.replyNumber + " replied" : null}
                                                     />
                                                     <WhiteSpace />
 													<Card.Body>
@@ -103,7 +107,9 @@ class LetterBox extends Component {
                                                     <WhiteSpace />
 													<Card.Footer
 														content={letter.createdAt}
-														extra={<div>{letter.pseudonym}</div>}
+														extra={<div>{letter.replyNumber > 0 ?  letter.replyNumber + " replied" : null}
+                                                        {letter.unread > 0 ?  " ," + letter.unread + " unread" : null}</div>
+                                                    }
 													/>
 												</Card>
 												<WhiteSpace />
@@ -122,7 +128,7 @@ class LetterBox extends Component {
 							) : (
 								<div>
 									{firstLettersIReplied.map((letter, index) => (
-										<div key={index}>
+										<div key={index} className="card">
 											<WingBlank size="lg">
 												<WhiteSpace />
 												<Card onClick={() =>this.loadDetailIReplied(letter)}>
@@ -168,6 +174,7 @@ const mapStateToProps = (state) => {
         reloadMyFirstLetters: state.letter.reloadMyFirstLetters,
 		reloadFirstLettersIReplied: state.letter.reloadFirstLettersIReplied,
         page: state.letter.page,
+        unread: state.letter.unread,
 	};
 };
 
@@ -176,6 +183,7 @@ const mapDispatchToProps = (dispatch) => {
 		loadMyFirstLetters: () => dispatch(loadMyFirstLetters()),
         loadFirstLettersIReplied: () => dispatch(loadFirstLettersIReplied()),
         changeLetterBoxPage : (page) => dispatch(changeLetterBoxPage(page)),
+        changeUnread:(number) => dispatch(changeUnread(number)),
 	};
 };
 export default connect(mapStateToProps, mapDispatchToProps)(LetterBox);

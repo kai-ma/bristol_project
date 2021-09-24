@@ -36,9 +36,9 @@ export default function Http({
 			body: JSON.stringify(body),
 		};
 	}
-    
 	console.log(params);
-	const URL = mock == null ? "test" + url : "http://110.40.140.243/api" + url;
+	const URL = mock == null ? "test" + url : "http://localhost:8080/api" + url;
+    // const URL = mock == null ? "test" + url : "http://110.40.140.243/api" + url;
 	return new Promise((resolve, reject) => {
 		fetch(URL, params)
 			.then((res) => res.json())

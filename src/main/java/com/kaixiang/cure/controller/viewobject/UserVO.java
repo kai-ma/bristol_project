@@ -1,7 +1,5 @@
 package com.kaixiang.cure.controller.viewobject;
 
-import java.util.Date;
-
 public class UserVO {
     private String pseudonym;
 
@@ -10,6 +8,8 @@ public class UserVO {
     private String lastLoginAt;
 
     private Integer continuousLoginDays;
+
+    private Integer bonusTomorrow;
 
     private Boolean allowCollect;
 
@@ -51,5 +51,13 @@ public class UserVO {
 
     public void setAllowCollect(Boolean allowCollect) {
         this.allowCollect = allowCollect;
+    }
+
+    public Integer getBonusTomorrow() {
+        return bonusTomorrow;
+    }
+
+    public void setBonusTomorrow(Integer bonusTomorrow) {
+        this.bonusTomorrow = bonusTomorrow;
     }
 }

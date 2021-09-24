@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-import { List, NavBar, Button, Toast, Popover, Modal } from "antd-mobile";
+import { List, NavBar, Button, Toast, Popover, WingBlank } from "antd-mobile";
 import { connect } from "react-redux";
 import LetterContent from "@src/components/LetterContent";
 import { getObjectFromLocalStorage, setObjectToLocalStorage } from "@src/utils";
 import Http from "@src/utils/http.js";
+import { BsPencilSquare } from "react-icons/bs";
 import { GoReport } from "react-icons/go";
 import { prepareReport } from "@src/redux/actions/letter";
-const alert = Modal.alert;
-
 class Letter extends Component {
 	constructor(props) {
 		super(props);
@@ -51,14 +50,13 @@ class Letter extends Component {
 	};
 
 	handelReport = () => {
-        const letter = this.props.letters.find(
-            (x) => x.id === this.props.match.params.id * 1
-        );
-
-        if (letter != null) {
-            this.props.prepareReport(letter);
-            this.props.history.push("/report");
-        }
+		const letter = this.props.letters.find(
+			(x) => x.id === this.props.match.params.id * 1
+		);
+		if (letter != null) {
+			this.props.prepareReport(letter);
+			this.props.history.push("/report");
+		}
 	};
 
 	showMessage = (message) => {
@@ -117,15 +115,20 @@ class Letter extends Component {
 							<div>
 								{/* 空行 */}
 								<List renderHeader={() => ""}></List>
-								<Button
-									type="primary"
-									onClick={this.navToReply}
-								>
-									Reply
-								</Button>
+								<WingBlank>
+									<Button
+										icon={<BsPencilSquare />}
+										type="primary"
+										style={{ marginRight: "2px" }}
+										onClick={this.navToReply}
+									>
+										Reply
+									</Button>
+								</WingBlank>
 							</div>
 						) : (
 							<div>
+                                <List renderHeader={() => "Your reply:"}></List>
 								{replies.map((reply, index) => (
 									<div key={index}>
 										<LetterContent

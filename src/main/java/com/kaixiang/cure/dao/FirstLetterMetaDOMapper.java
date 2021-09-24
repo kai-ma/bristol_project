@@ -15,6 +15,8 @@ public interface FirstLetterMetaDOMapper {
 
     int updateByPrimaryKeySelective(FirstLetterMetaDO record);
 
+    int updateByLetterIdSelective(FirstLetterMetaDO record);
+
     int updateByPrimaryKey(FirstLetterMetaDO record);
 
     List<FirstLetterMetaDO> listMyFirstLetterMetas(String encryptUserId);

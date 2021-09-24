@@ -21,7 +21,7 @@ public class FirstLetterMetaDO {
 
     private Integer replyNumber;
 
-    private Integer quality;
+    private Integer unread;
 
     public Integer getId() {
         return id;
@@ -95,11 +95,11 @@ public class FirstLetterMetaDO {
         this.replyNumber = replyNumber;
     }
 
-    public Integer getQuality() {
-        return quality;
+    public Integer getUnread() {
+        return unread;
     }
 
-    public void setQuality(Integer quality) {
-        this.quality = quality;
+    public void setUnread(Integer unread) {
+        this.unread = unread;
     }
 }

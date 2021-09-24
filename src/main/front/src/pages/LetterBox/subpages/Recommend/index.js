@@ -8,6 +8,7 @@ import {
 	WhiteSpace,
 	Modal,
 	WingBlank,
+    InputItem,
 } from "antd-mobile";
 import { createForm } from "rc-form";
 import { connect } from "react-redux";
@@ -122,10 +123,18 @@ class Recommend extends Component {
 								</div>
 							</Item>
 						</List>
+                        <List renderHeader={() => "Add a tag"}>
+							<InputItem
+								{...getFieldProps("title", {
+									rules: [{ required: true }],
+								})}
+								clear
+								placeholder="Optional: add a tag of 1-3 words"
+							></InputItem>
+						</List>
 					</div>
 				)}
 
-				<WhiteSpace size="lg" />
 
 				{this.props.recommending ? (
 					<div>
@@ -176,7 +185,7 @@ class Recommend extends Component {
 									type="primary"
 									onClick={this.handleSubmit}
 								>
-									Send
+									Recommend
 								</Button>
 							</div>
 						)}

@@ -6,11 +6,13 @@ import {
 	Button,
 	Toast,
 	WhiteSpace,
+	WingBlank,
 	Modal,
 } from "antd-mobile";
 import { createForm } from "rc-form";
 import { connect } from "react-redux";
 import { reply } from "@src/redux/actions/letter";
+import { BsPencilSquare } from "react-icons/bs";
 
 const alert = Modal.alert;
 
@@ -109,6 +111,8 @@ class Reply extends Component {
 				<Button
 					type="primary"
 					onClick={() => this.handleSubmit(letter)}
+					style={{ marginRight: "2px" }}
+					icon={<BsPencilSquare />}
 				>
 					Reply
 				</Button>
@@ -125,7 +129,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		reply: (letter, value, history) => dispatch(reply(letter, value, history)),
+		reply: (letter, value, history) =>
+			dispatch(reply(letter, value, history)),
 	};
 };
 export default connect(

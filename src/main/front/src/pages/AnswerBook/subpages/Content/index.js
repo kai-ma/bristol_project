@@ -32,7 +32,7 @@ class Content extends Component {
 		//{tag1:[id1, id2, ...]...}
 		tagToConversationIds: {},
 		//一页放多少个conversation，不会修改，写死为1，便于对这个进行操作
-		pageSize: 5,
+		pageSize: 3,
 		//根据点击会变
 		currentPage: 1,
 		//根据conversation总数会变
@@ -91,7 +91,7 @@ class Content extends Component {
 				totalPage: Math.ceil(conversations.length / pageSize),
 				tagToConversationIds: content.tagToConversationIds,
 				tags: Object.keys(content.tagToConversationIds),
-                loading:false,
+				loading: false,
 			});
 		}
 	}
@@ -180,7 +180,6 @@ class Content extends Component {
 		const {
 			currentPage,
 			pageSize,
-			totalPage,
 			topicName,
 			tags,
 			chooseByTags,
@@ -189,6 +188,7 @@ class Content extends Component {
 		let conversations = chooseByTags
 			? this.filterConversations()
 			: this.state.conversations;
+        let totalPage = parseInt(conversations.length / pageSize) + 1;
 		return (
 			<div>
 				<NavBar
@@ -208,8 +208,8 @@ class Content extends Component {
 							overlayStyle={{ color: "currentColor" }}
 							visible={this.state.visible}
 							overlay={[
-								<Item key="1">Sort by time</Item>,
-								<Item key="2">Sort by Likes</Item>,
+								<Item key="1">sort by dates</Item>,
+								<Item key="2">sort by likes</Item>,
 							]}
 							align={{
 								overflow: { adjustY: 0, adjustX: 0 },
@@ -239,18 +239,18 @@ class Content extends Component {
 					//按照tag显示
 					<div>
 						<List renderHeader={() => "Filter by tags"}></List>
-                        <div className="tag-container">
-						{tags.map((tag, index) => (
-							<Tag
-								key={index}
-								onChange={(selected) => {
-									this.selectTag(selected, tag);
-								}}
-							>
-								{tag}
-							</Tag>
-						))}
-                        </div>
+						<div className="tag-container">
+							{tags.map((tag, index) => (
+								<Tag
+									key={index}
+									onChange={(selected) => {
+										this.selectTag(selected, tag);
+									}}
+								>
+									{tag}
+								</Tag>
+							))}
+						</div>
 					</div>
 				) : (
 					//显示全部
@@ -266,7 +266,6 @@ class Content extends Component {
 						<WhiteSpace size="lg" />
 						<WhiteSpace size="lg" />
 						<div className="pagination-container">
-							{/* <p className="sub-title">Button with text</p> */}
 							<Pagination
 								total={totalPage}
 								className="custom-pagination-with-icon"

@@ -11,8 +11,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.kaixiang.cure.utils.Constants.FIRST_LETTER_TYPE;
 import static com.kaixiang.cure.utils.Constants.ROLE_USER;
@@ -116,14 +117,20 @@ public class Convertor {
                     toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
         }
         List<LetterModel> letterModelList = conversationModelInAnswerBook.getLetterModelList();
-        conversationVOInAnswerBook.setLetterVOList(letterModelList.stream().map(this::letterVOFromLetterModel).collect(Collectors.toList()));
+        List<LetterVO> letterVOList = new ArrayList<>();
+        for(LetterModel letterModel : letterModelList){
+            LetterVO letterVO = letterVOFromLetterModel(letterModel, false);
+            letterVO.setSenderStatus(null);
+            letterVOList.add(letterVO);
+        }
+        conversationVOInAnswerBook.setLetterVOList(letterVOList);
         return conversationVOInAnswerBook;
     }
 
     /**
      * 将lettterModel转换成lettervo，如果是firstLetterModel，type=2，转型以后转换成firstLetterVO
      */
-    public LetterVO letterVOFromLetterModel(LetterModel letterModel) {
+    public LetterVO letterVOFromLetterModel(LetterModel letterModel, boolean viewReply) {
         if (letterModel == null) {
             return null;
         }
@@ -140,6 +147,9 @@ public class Convertor {
                 firstLetterVO.setCreatedAt(((FirstLetterModel) letterModel).getLastRepliedAt().
                         toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
             }
+            if(!viewReply){
+                firstLetterVO.setAddresseeStatus(null);
+            }
             return firstLetterVO;
         } else {
             LetterVO letterVO = new LetterVO();
@@ -147,6 +157,9 @@ public class Convertor {
             if (letterModel.getCreatedAt() != null) {
                 letterVO.setCreatedAt(letterModel.getCreatedAt().
                         toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+            }
+            if(!viewReply){
+                letterVO.setAddresseeStatus(null);
             }
             return letterVO;
         }
@@ -183,7 +196,9 @@ public class Convertor {
         }
         UserModel userModel = new UserModel();
         BeanUtils.copyProperties(userDO, userModel);
-        userModel.setLastLoginAt(new DateTime(userDO.getLastLoginAt()));
+        if(userDO.getLastLoginAt() != null){
+            userModel.setLastLoginAt(new DateTime(userDO.getLastLoginAt()));
+        }
         if (userPasswordDO != null) {
             userModel.setEncryptPassword(userPasswordDO.getEncryptPassword());
         }
@@ -195,6 +210,9 @@ public class Convertor {
             return null;
         }
         UserDO userDO = new UserDO();
+        if(userModel.getLastLoginAt() != null){
+            userDO.setLastLoginAt(userModel.getLastLoginAt().toDate());
+        }
         BeanUtils.copyProperties(userModel, userDO);
         return userDO;
     }
@@ -330,5 +348,18 @@ public class Convertor {
         FeedbackDO feedbackDO = new FeedbackDO();
         BeanUtils.copyProperties(feedbackModel, feedbackDO);
         return feedbackDO;
+    }
+
+    public StampBonusModel stampBonusModelFromDO(StampBonusDO stampBonusDO) {
+        if (stampBonusDO == null) {
+            return null;
+        }
+        StampBonusModel stampBonusModel = new StampBonusModel();
+        BeanUtils.copyProperties(stampBonusDO, stampBonusModel);
+        if (stampBonusDO.getCreatedAt() != null) {
+            stampBonusModel.setCreatedAt(
+                    new DateTime(stampBonusDO.getCreatedAt()).toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+        }
+        return stampBonusModel;
     }
 }

@@ -1,0 +1,9 @@
+.card{
+    line-height:20px;
+}
+
+.card p{
+    text-align:pull-right;
+    color:red;
+    font-size: 110%;
+}

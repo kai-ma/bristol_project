@@ -24,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -99,9 +100,17 @@ public class LetterController {
         //1.构建完整的FirstLetterModel，从token中获取userId
         Integer userid = (Integer) request.getAttribute(ATTRIBUTE_KEY_USERID);
         List<FirstLetterModel> firstLetterModelList = letterService.getMyFirstLetters(userid);
+        Map<String, Object> returnMap = new HashMap<>(1);
         List<FirstLetterVO> firstLetterVOList = firstLetterModelList.stream().map(firstLetterModel -> this.convertFirstLetterVOFromModel(firstLetterModel, true)
         ).collect(Collectors.toList());
-        return CommonReturnType.create(firstLetterVOList);
+
+        returnMap.put("myFirstLetters", firstLetterVOList);
+        int unread = 0;
+        for(FirstLetterVO firstLetterVO : firstLetterVOList){
+            unread += firstLetterVO.getUnread();
+        }
+        returnMap.put("unread", unread);
+        return CommonReturnType.create(returnMap);
     }
 
     /**
@@ -113,7 +122,7 @@ public class LetterController {
     public CommonReturnType getFirstLetterIReplied(HttpServletRequest request) throws BusinessException {
         //1.构建完整的FirstLetterModel，从token中获取userId
         Integer userid = (Integer) request.getAttribute(ATTRIBUTE_KEY_USERID);
-        List<FirstLetterModel> firstLetterModelList = letterService.getFirstLetterListIReplied(userid);
+        List<FirstLetterModel> firstLetterModelList = letterService.getFirstLettersIReplied(userid);
         List<FirstLetterVO> firstLetterVOList = firstLetterModelList.stream().map(firstLetterModel -> this.convertFirstLetterVOFromModel(firstLetterModel, false)
         ).collect(Collectors.toList());
         return CommonReturnType.create(firstLetterVOList);
@@ -152,7 +161,7 @@ public class LetterController {
             throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR);
         }
         List<LetterModel> letterModels = letterService.getReplyLetters(Integer.valueOf(conversationId));
-        return CommonReturnType.create(letterModels.stream().map(letterModel -> convertor.letterVOFromLetterModel(letterModel)).collect(Collectors.toList()));
+        return CommonReturnType.create(letterModels.stream().map(letterModel -> convertor.letterVOFromLetterModel(letterModel, false)).collect(Collectors.toList()));
     }
 
     /**
@@ -164,7 +173,7 @@ public class LetterController {
     public CommonReturnType listRepliesByFirstLetterId(HttpServletRequest request) throws BusinessException {
         Integer firstLetterId = Integer.valueOf(request.getParameter("firstLetterId"));
         List<LetterModel> letterModels = letterService.listRepliesByFirstLetterId(firstLetterId);
-        return CommonReturnType.create(letterModels.stream().map(letterModel -> convertor.letterVOFromLetterModel(letterModel)
+        return CommonReturnType.create(letterModels.stream().map(letterModel -> convertor.letterVOFromLetterModel(letterModel, true)
         ).collect(Collectors.toList()));
     }
 
@@ -178,7 +187,7 @@ public class LetterController {
         Integer userId = (Integer) request.getAttribute(ATTRIBUTE_KEY_USERID);
         Integer firstLetterId = Integer.valueOf(request.getParameter("firstLetterId"));
         List<LetterModel> letterModels = letterService.listMyRepliesByFirstLetterId(userId,firstLetterId);
-        return CommonReturnType.create(letterModels.stream().map(letterModel -> convertor.letterVOFromLetterModel(letterModel)
+        return CommonReturnType.create(letterModels.stream().map(letterModel -> convertor.letterVOFromLetterModel(letterModel, false)
         ).collect(Collectors.toList()));
     }
 

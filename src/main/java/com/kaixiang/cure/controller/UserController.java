@@ -2,12 +2,14 @@ package com.kaixiang.cure.controller;
 
 import com.kaixiang.cure.controller.dataobject.FeedbackDTO;
 import com.kaixiang.cure.controller.dataobject.ReportDTO;
+import com.kaixiang.cure.dataobject.StampBonusDO;
 import com.kaixiang.cure.error.BusinessException;
 import com.kaixiang.cure.error.EnumBusinessError;
 import com.kaixiang.cure.response.CommonReturnType;
 import com.kaixiang.cure.service.UserService;
 import com.kaixiang.cure.service.model.FeedbackModel;
 import com.kaixiang.cure.service.model.ReportModel;
+import com.kaixiang.cure.service.model.StampBonusModel;
 import com.kaixiang.cure.service.model.UserModel;
 import com.kaixiang.cure.utils.Convertor;
 import com.kaixiang.cure.utils.annotation.UserLoginToken;
@@ -105,6 +107,21 @@ public class UserController extends BaseController {
         userService.feedback(feedbackModel);
         return CommonReturnType.create("feedback successfully!");
     }
+
+    /**
+     * 获取用户信息
+     */
+    @RequestMapping(value = "/bonus", method = {RequestMethod.GET})
+    @ResponseBody
+    @UserLoginToken
+    public CommonReturnType getBonusInfo(HttpServletRequest request) throws BusinessException {
+        Integer userId = (Integer) request.getAttribute(ATTRIBUTE_KEY_USERID);
+        if(userId == null){
+            throw new BusinessException(EnumBusinessError.TOKEN_ILLEGAL);
+        }
+        return CommonReturnType.create(userService.getStampBonus(userId));
+    }
+
 
     private Integer getUserIdFromToken(HttpServletRequest request){
         return (Integer) request.getAttribute(ATTRIBUTE_KEY_USERID);

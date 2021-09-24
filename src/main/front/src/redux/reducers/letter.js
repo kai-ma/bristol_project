@@ -3,6 +3,7 @@ import * as actionTypes from "../../constants/letter";
 const initialState = {
 	letters: [],
 	myFirstLetters: [],
+    unread: 0,
 	firstLettersIReplied: [],
 	detailOfFirstLetterReplied: [],
 	error: "",
@@ -46,6 +47,11 @@ const reducer = (preState = initialState, action) => {
 				...preState,
 				recommending: true,
 			};
+        case actionTypes.CHANGE_UNREAD:
+            return {
+				...preState,
+				unread: action.payload,
+			};
 		case actionTypes.LETTERS_SUCCESS:
 			return {
 				...preState,
@@ -57,7 +63,8 @@ const reducer = (preState = initialState, action) => {
 		case actionTypes.LOAD_MY_FIRST_LETTERS_SUCCESS:
 			return {
 				...preState,
-				myFirstLetters: action.payload,
+				myFirstLetters: action.payload.myFirstLetters,
+                unread: action.payload.unread,
 				loading: false,
 				error: "",
 				reloadMyFirstLetters: false,

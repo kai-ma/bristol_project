@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { WhiteSpace, Card, WingBlank } from "antd-mobile";
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 
 class LetterCard extends Component {
 	constructor(props) {
@@ -23,7 +23,7 @@ class LetterCard extends Component {
 		const { conversation } = this.props;
 		const letter = conversation.letterVOList[0];
 		return (
-			<div>
+			<div className="card">
 				<WingBlank size="lg">
 					<WhiteSpace size="lg" />
 					<Card onClick={() => this.handleClick(conversation)}>
@@ -42,10 +42,15 @@ class LetterCard extends Component {
 						</Card.Body>
 						<Card.Footer
 							content={<div>{conversation.collectedAt}</div>}
-							extra={<div>{letter.pseudonym}</div>}
+							extra={
+								<div>
+									{conversation.votes > 0
+										? conversation.votes + " likes"
+										: null}
+								</div>
+							}
 						/>
 					</Card>
-					<WhiteSpace size="lg" />
 				</WingBlank>
 			</div>
 		);

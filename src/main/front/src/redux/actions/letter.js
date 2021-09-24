@@ -55,6 +55,7 @@ export const loadMyFirstLetters = () => {
 };
 
 const loadMyFirstLettersSuccess = (res) => {
+    console.log(res);
 	return {
 		type: actionTypes.LOAD_MY_FIRST_LETTERS_SUCCESS,
 		payload: res,
@@ -321,3 +322,10 @@ const recommendFailure = (error) => {
 		payload: error,
 	};
 };
+
+export const changeUnread = (unread) => {
+    return {
+		type: actionTypes.CHANGE_UNREAD,
+		payload: unread,
+	};
+}

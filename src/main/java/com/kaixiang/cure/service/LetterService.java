@@ -24,7 +24,7 @@ public interface LetterService {
     /**
      * 获取我回复的所有首封信
      */
-    List<FirstLetterModel> getFirstLetterListIReplied(Integer userid) throws BusinessException;
+    List<FirstLetterModel> getFirstLettersIReplied(Integer userid) throws BusinessException;
 
     /**
      * letterBox：根据letterBox中我回复的首封信，获取detail-首期不支持继续回复，因此返回就是我的回复
