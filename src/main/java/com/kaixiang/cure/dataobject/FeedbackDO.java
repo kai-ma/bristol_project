@@ -5,15 +5,17 @@ import java.util.Date;
 public class FeedbackDO {
     private Integer id;
 
-    private Integer userid;
-
     private Integer score1;
 
     private Integer score2;
 
-    private String comment;
+    private String feedback;
 
     private Date createdAt;
+
+    private Integer stage;
+
+    private String md5;
 
     public Integer getId() {
         return id;
@@ -21,14 +23,6 @@ public class FeedbackDO {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getUserid() {
-        return userid;
-    }
-
-    public void setUserid(Integer userid) {
-        this.userid = userid;
     }
 
     public Integer getScore1() {
@@ -47,12 +41,12 @@ public class FeedbackDO {
         this.score2 = score2;
     }
 
-    public String getComment() {
-        return comment;
+    public String getFeedback() {
+        return feedback;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment == null ? null : comment.trim();
+    public void setFeedback(String feedback) {
+        this.feedback = feedback == null ? null : feedback.trim();
     }
 
     public Date getCreatedAt() {
@@ -61,5 +55,21 @@ public class FeedbackDO {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Integer getStage() {
+        return stage;
+    }
+
+    public void setStage(Integer stage) {
+        this.stage = stage;
+    }
+
+    public String getMd5() {
+        return md5;
+    }
+
+    public void setMd5(String md5) {
+        this.md5 = md5 == null ? null : md5.trim();
     }
 }

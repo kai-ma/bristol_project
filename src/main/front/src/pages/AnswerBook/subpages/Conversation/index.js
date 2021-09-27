@@ -50,7 +50,6 @@ class Conversation extends Component {
 			mock: false,
 		}).then(
 			(res) => {
-				console.log("operation successfully");
 				conversation.like = !conversation.like;
 				this.setState({
 					conversation: conversation,
@@ -77,7 +76,6 @@ class Conversation extends Component {
 
 	render() {
 		const conversation = this.state.conversation;
-		console.log(conversation);
 		return (
 			<div>
 				<NavBar

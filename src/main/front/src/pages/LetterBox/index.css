@@ -2,8 +2,7 @@
     line-height:20px;
 }
 
-.card p{
-    text-align:pull-right;
-    color:red;
+.note{
+    color:red !important;
     font-size: 110%;
 }

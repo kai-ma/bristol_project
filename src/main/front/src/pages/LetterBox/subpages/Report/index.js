@@ -93,7 +93,6 @@ class Report extends Component {
 	};
 
 	handleReport = (body) => {
-		console.log(body);
 		this.props.report(body, this.props.reportedIds);
 	};
 
@@ -207,7 +206,7 @@ class Report extends Component {
 										{...getFieldProps("description", {
 											initialValue: "",
 										})}
-										rows={2}
+										rows={4}
 										count={200}
 										placeholder="Optional messages for better handling of reports."
 									/>
@@ -217,7 +216,7 @@ class Report extends Component {
 									type="primary"
 									onClick={this.handleSubmit}
 								>
-									Send
+									Submit
 								</Button>
 							</div>
 						)}

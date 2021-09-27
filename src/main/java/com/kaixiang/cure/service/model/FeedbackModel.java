@@ -1,27 +1,20 @@
 package com.kaixiang.cure.service.model;
 
 
-
 /**
  * @description: FeedbackModel.java:
  * @author: Kaixiang Ma
  */
 public class FeedbackModel {
-    private Integer userid;
-
     private Integer score1;
 
     private Integer score2;
 
-    private String comment;
+    private String feedback;
 
-    public Integer getUserid() {
-        return userid;
-    }
+    private Integer stage;
 
-    public void setUserid(Integer userid) {
-        this.userid = userid;
-    }
+    private String md5;
 
     public Integer getScore1() {
         return score1;
@@ -39,11 +32,37 @@ public class FeedbackModel {
         this.score2 = score2;
     }
 
-    public String getComment() {
-        return comment;
+    public String getFeedback() {
+        return feedback;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
+    }
+
+    public Integer getStage() {
+        return stage;
+    }
+
+    public void setStage(Integer stage) {
+        this.stage = stage;
+    }
+
+    public String getMd5() {
+        return md5;
+    }
+
+    public void setMd5(String md5) {
+        this.md5 = md5;
+    }
+
+    @Override
+    public String toString() {
+        return "FeedbackModel{" +
+                "score1=" + score1 +
+                ", score2=" + score2 +
+                ", feedback='" + feedback + '\'' +
+                ", stage=" + stage +
+                '}';
     }
 }

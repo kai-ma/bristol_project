@@ -16,8 +16,11 @@ public class FeedbackDTO {
     @NotNull(message = "Please choose a score to report")
     private Integer score2;
 
+    @NotNull(message = "Network error")
+    private Integer stage;
+
     @Length(max = 1000, message = "Too much characters for comment")
-    private String comment;
+    private String feedback;
 
     public Integer getScore1() {
         return score1;
@@ -35,11 +38,19 @@ public class FeedbackDTO {
         this.score2 = score2;
     }
 
-    public String getComment() {
-        return comment;
+    public String getFeedback() {
+        return feedback;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
+    }
+
+    public Integer getStage() {
+        return stage;
+    }
+
+    public void setStage(Integer stage) {
+        this.stage = stage;
     }
 }

@@ -24,7 +24,11 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sun.misc.BASE64Encoder;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +101,7 @@ public class UserServiceImpl implements UserService {
             return null;
         }
         UserModel userModel = convertor.userModelFromUserDOAndPasswordDO(userDO, userPasswordDO);
-        if(userModel != null && userModel.getContinuousLoginDays() != null){
+        if (userModel != null && userModel.getContinuousLoginDays() != null) {
             userModel.setBonusTomorrow(getBonus(userModel.getContinuousLoginDays() + 1));
         }
         return userModel;
@@ -162,16 +166,16 @@ public class UserServiceImpl implements UserService {
 
         UserDO userDO = convertor.userDOFromUserModel(userModel);
         int rows = userDOMapper.updateByPrimaryKeySelective(userDO);
-        if(rows != 1){
+        if (rows != 1) {
             throw new BusinessException(EnumBusinessError.DATABASE_EXCEPTION);
         }
 
-        if(bonus != 0){
+        if (bonus != 0) {
             addBonusRecord(userModel, bonus);
         }
 
 
-        if(firstTimeLogin){
+        if (firstTimeLogin) {
             return "Login for the first time, reward 3 stamps";
         }
         if (bonus != 0) {
@@ -182,7 +186,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private int addBonusRecord(UserModel userModel, int bonus){
+    private int addBonusRecord(UserModel userModel, int bonus) {
         StampBonusDO stampBonusDO = new StampBonusDO();
         stampBonusDO.setUserId(userModel.getId());
         stampBonusDO.setReason(0);
@@ -206,20 +210,44 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException(EnumBusinessError.USER_NOT_EXIST);
         }
         UserModel userModel = convertor.userModelFromUserDOAndPasswordDO(userDO, null);
-        if(userModel != null && userModel.getContinuousLoginDays() != null){
+        if (userModel != null && userModel.getContinuousLoginDays() != null) {
             userModel.setBonusTomorrow(getBonus(userModel.getContinuousLoginDays() + 1));
         }
         return userModel;
     }
+
+    private static final String slat = "%fsf102%%1242e(&(&*%122";
 
     @Override
     public void feedback(FeedbackModel feedbackModel) throws BusinessException {
         if (feedbackModel == null) {
             throw new BusinessException(EnumBusinessError.UNKNOWN_ERROR);
         }
-
+        String md5 = null;
+        try {
+            md5 = encodeByMD5(feedbackModel.toString());
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        feedbackModel.setMd5(md5);
         FeedbackDO feedbackDO = convertor.feedBackDOFromModel(feedbackModel);
-        feedbackDOMapper.insertSelective(feedbackDO);
+        try {
+            feedbackDOMapper.insertSelective(feedbackDO);
+        } catch (DuplicateKeyException e) {
+            throw new BusinessException(EnumBusinessError.DUPLICATE_FEEDBACK);
+        }
+    }
+
+    /**
+     * 密码加密
+     */
+    public String encodeByMD5(String str) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        //确定计算方法
+        MessageDigest md5 = MessageDigest.getInstance("MD5");
+        BASE64Encoder base64Encoder = new BASE64Encoder();
+        //加密字符串
+        String newstr = base64Encoder.encode(md5.digest(str.getBytes("utf-8")));
+        return newstr;
     }
 
     @Override

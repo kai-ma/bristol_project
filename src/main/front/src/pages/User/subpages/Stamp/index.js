@@ -1,13 +1,5 @@
 import React, { Component } from "react";
-import {
-	List,
-	TextareaItem,
-	NavBar,
-	Toast,
-	WhiteSpace,
-	WingBlank,
-	Slider,
-} from "antd-mobile";
+import { List, NavBar, Toast, WhiteSpace, WingBlank } from "antd-mobile";
 import Loading from "@src/components/Loading";
 import "./index.css";
 import Http from "@src/utils/http.js";
@@ -59,7 +51,6 @@ class Stamp extends Component {
 
 	render() {
 		const bonus = this.state.bonus;
-		console.log(bonus);
 		return (
 			<div>
 				<NavBar
@@ -80,7 +71,7 @@ class Stamp extends Component {
 							<div></div>
 						) : (
 							<div>
-                                <WhiteSpace />
+								<WhiteSpace />
 								<p className="p">
 									Rewards for daily continuous login
 								</p>
@@ -96,7 +87,7 @@ class Stamp extends Component {
 										))}
 									</List>
 								</WingBlank>
-                                <WhiteSpace />
+								<WhiteSpace />
 								<WhiteSpace />
 								<p className="p">
 									Rewards for high-quality replies
@@ -104,10 +95,10 @@ class Stamp extends Component {
 								<WingBlank size="lg">
 									<List>
 										<Item extra={"+ " + 2}>
-											{"2021-08-26 14:55"}
+											{"2021-09-05 14:55"}
 										</Item>
 										<Item extra={"+ " + 2}>
-											{"2021-08-25 12:48"}
+											{"2021-09-04 12:48"}
 										</Item>
 									</List>
 								</WingBlank>

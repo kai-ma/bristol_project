@@ -31,7 +31,7 @@ class Register extends Component {
 		}
 		this.props.form.validateFields((error, value) => {
 			if (error) {
-				Toast.info(
+				Toast.fail(
 					this.props.form.getFieldError(Object.keys(error)[0])
 				);
 				return;
@@ -81,7 +81,7 @@ class Register extends Component {
 									rules: [{ required: true }],
 								})}
 								type="password"
-								placeholder="********"
+								placeholder="6-16 characters"
 								labelNumber={6}
 							>
 								Password

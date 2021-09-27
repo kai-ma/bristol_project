@@ -65,7 +65,6 @@ class Recommend extends Component {
 	};
 
 	handleRecommend = (body) => {
-		console.log(body);
 		this.props.recommend(body, this.props.recommendedConversationIds);
 	};
 

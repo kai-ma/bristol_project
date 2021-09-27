@@ -55,12 +55,12 @@ class Feedback extends Component {
 				body.score2 = this.state.score2;
 				if (
 					value != null &&
-					value.comment != null &&
-					value.comment.length != 0
+					value.feedback != null &&
+					value.feedback.length != 0
 				) {
-					body.comment = value.comment;
+					body.feedback = value.feedback;
 				}
-				console.log(body);
+				body.stage = 1;
 				Http({
 					url: "/user/feedback",
 					body: body,
@@ -115,7 +115,7 @@ class Feedback extends Component {
 					<div className="am-slider-example">
 						<WingBlank size="lg">
 							<p className="sub-title">
-								How would you rate the overall user interface?
+								How would you rate the user experience of the application?
 							</p>
 							<Slider
 								style={{ marginLeft: 30, marginRight: 30 }}
@@ -137,7 +137,8 @@ class Feedback extends Component {
 
 						<WingBlank size="lg">
 							<p className="sub-title">
-								How many points will you award to the app?
+								How would you rate the functionality of the
+								application?
 							</p>
 							<Slider
 								style={{ marginLeft: 30, marginRight: 30 }}
@@ -156,21 +157,23 @@ class Feedback extends Component {
 						</WingBlank>
 
 						<WhiteSpace size="xl" />
-						<List renderHeader={() => "Comment"}>
-							<TextareaItem
-								{...getFieldProps("comment", {
-									initialValue: "",
-								})}
-								rows={4}
-								count={1000}
-								placeholder="Please share your comments and suggestions with us to help make our application better!"
-							/>
-						</List>
-
-						<WhiteSpace size="xl" />
-						<Button type="primary" onClick={this.handleSubmit}>
-							Send
-						</Button>
+						<WingBlank size="lg">
+							<p className="sub-title">Comments</p>
+							<List>
+								<TextareaItem
+									{...getFieldProps("feedback", {
+										initialValue: "",
+									})}
+									rows={5}
+									count={1000}
+									placeholder="Please share your comments and suggestions with us to help make our application better!"
+								/>
+							</List>
+							<WhiteSpace size="xl" />
+							<Button type="primary" onClick={this.handleSubmit}>
+								Submit
+							</Button>
+						</WingBlank>
 					</div>
 				)}
 			</div>

@@ -50,7 +50,6 @@ class ReplyToMe extends Component {
 	};
 
 	render() {
-		// console.log(letter);
 		const Item = Popover.Item;
 		const { conversation } = this.props;
 		const reply = conversation.reply;

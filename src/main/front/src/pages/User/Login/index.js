@@ -6,6 +6,8 @@ import {
 	Button,
 	WhiteSpace,
 	Toast,
+	Checkbox,
+	Flex,
 } from "antd-mobile";
 import { createForm } from "rc-form";
 import { FaSignInAlt, FaUserPlus } from "react-icons/fa";
@@ -13,7 +15,7 @@ import { login } from "@src/redux/actions/user";
 import { connect } from "react-redux";
 import Loading from "@src/components/Loading";
 
-
+const AgreeItem = Checkbox.AgreeItem;
 class Login extends Component {
 	constructor(props) {
 		super(props);
@@ -24,7 +26,9 @@ class Login extends Component {
 		// 如果成功 const router = this.props.match.params.router;
 	}
 
-	initialState = {};
+	initialState = {
+        remember : false,
+    };
 
 	handleLogin = () => {
 		this.props.form.validateFields((error, value) => {
@@ -42,6 +46,12 @@ class Login extends Component {
 
 	navToRegister = () => {
 		this.props.history.push("/register");
+	};
+
+	selectRemember = () => {
+		this.setState({
+            remember : !this.state.remember,
+        })
 	};
 
 	render() {
@@ -75,7 +85,26 @@ class Login extends Component {
 						>
 							Password
 						</InputItem>
-						<WhiteSpace size="xl" />
+						{/* <Flex style={{ padding: "15px" }}>
+							<Flex.Item>
+								<Radio
+									className="my-radio"
+								>
+									Remember me for 7 days
+								</Radio>
+							</Flex.Item>
+						</Flex> */}
+						<Flex style={{ padding: "15px"}} >
+							<Flex.Item>
+								<AgreeItem
+									data-seed="logId"
+									onChange={() => this.selectRemember()} 
+								>
+									Remember me for 7 days
+								</AgreeItem>
+							</Flex.Item>
+						</Flex>
+
 						<Button
 							type="primary"
 							onClick={this.handleLogin}

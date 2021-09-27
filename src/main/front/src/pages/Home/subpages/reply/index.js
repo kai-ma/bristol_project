@@ -27,7 +27,6 @@ class Reply extends Component {
 	initialState = {};
 
 	handleSubmit = (letter) => {
-		// console.log(input);
 		this.props.form.validateFields((error, value) => {
 			if (error) {
 				Toast.info(

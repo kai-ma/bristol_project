@@ -67,7 +67,6 @@ class Letter extends Component {
 		const letter = this.props.letters.find(
 			(x) => x.id === this.props.match.params.id * 1
 		);
-		// console.log(letter);
 		const { replies } = this.state;
 		const Item = Popover.Item;
 		return (

@@ -55,7 +55,6 @@ export const loadMyFirstLetters = () => {
 };
 
 const loadMyFirstLettersSuccess = (res) => {
-    console.log(res);
 	return {
 		type: actionTypes.LOAD_MY_FIRST_LETTERS_SUCCESS,
 		payload: res,
@@ -283,7 +282,6 @@ export const recommend = (body, recommendedConversationIds) => {
 			dispatch({
 				type: actionTypes.RECOMMEND_REQUEST,
 			});
-            console.log(body);
 			Http({
 				url: "/letter/recommend",
 				body: body,

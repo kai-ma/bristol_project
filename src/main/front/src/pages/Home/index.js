@@ -23,9 +23,7 @@ class Home extends Component {
 	}
 
 	updateLetters = () => {
-		console.log("updateLetters");
 		this.props.updateLetters();
-		console.log(this.props);
 		const letters = this.props.letters;
 		if (letters != null) {
 			this.setState({

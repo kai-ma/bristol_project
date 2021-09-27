@@ -7,6 +7,8 @@ import com.kaixiang.cure.service.model.StampBonusModel;
 import com.kaixiang.cure.service.model.UserModel;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @Service
