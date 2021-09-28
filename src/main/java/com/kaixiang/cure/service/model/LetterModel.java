@@ -1,9 +1,6 @@
 package com.kaixiang.cure.service.model;
 
-import org.hibernate.validator.constraints.Length;
 import org.joda.time.DateTime;
-
-import javax.validation.constraints.NotBlank;
 
 /**
  * @description: LetterModel.java: 回信
@@ -13,9 +10,6 @@ import javax.validation.constraints.NotBlank;
 public class LetterModel {
     private Integer id;
 
-    @NotBlank(message = "Content can't be empty")
-    @Length(max = 1000, message = "Too much characters for content input")
-    @Length(min = 10, message = "Too few characters for content input")
     private String content;
 
     private Integer senderUserId;
@@ -29,6 +23,10 @@ public class LetterModel {
     private DateTime createdAt;
 
     private String pseudonym;
+
+    private Integer senderStatus;
+
+    private Integer addresseeStatus;
 
     /**
      * 默认0，接信人的回复；1是发信人再次回复接信人; 2是首封信 0和1是从数据库直接查询可得，2是自己添加的
@@ -105,5 +103,21 @@ public class LetterModel {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public Integer getSenderStatus() {
+        return senderStatus;
+    }
+
+    public void setSenderStatus(Integer senderStatus) {
+        this.senderStatus = senderStatus;
+    }
+
+    public Integer getAddresseeStatus() {
+        return addresseeStatus;
+    }
+
+    public void setAddresseeStatus(Integer addresseeStatus) {
+        this.addresseeStatus = addresseeStatus;
     }
 }

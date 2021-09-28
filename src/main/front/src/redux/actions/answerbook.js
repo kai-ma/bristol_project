@@ -38,3 +38,12 @@ const answerbookFailure = (error) => {
 		payload: error,
 	};
 };
+
+
+export const clearAnswerbooks = () => {
+	return (dispatch) => {
+		dispatch({
+			type: actionTypes.CLEAR_ANSWERBOOKS,
+		});
+	};
+};

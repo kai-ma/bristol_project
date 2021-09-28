@@ -5,7 +5,7 @@ export default class Answerbook extends Component {
   render() {
     return (
       <div>
-        <NavBar mode="light">Answer Book</NavBar>
+        <NavBar mode="light">Advice Book</NavBar>
         <Category></Category>
       </div>
     )

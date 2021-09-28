@@ -11,7 +11,7 @@ public class LetterDO {
 
     private Integer type;
 
-    private String filepath;
+    private String content;
 
     private Date createdAt;
 
@@ -51,12 +51,12 @@ public class LetterDO {
         this.type = type;
     }
 
-    public String getFilepath() {
-        return filepath;
+    public String getContent() {
+        return content;
     }
 
-    public void setFilepath(String filepath) {
-        this.filepath = filepath == null ? null : filepath.trim();
+    public void setContent(String content) {
+        this.content = content == null ? null : content.trim();
     }
 
     public Date getCreatedAt() {

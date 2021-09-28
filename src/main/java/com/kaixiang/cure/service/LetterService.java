@@ -4,6 +4,7 @@ import com.kaixiang.cure.error.BusinessException;
 import com.kaixiang.cure.service.model.ConversationModel;
 import com.kaixiang.cure.service.model.FirstLetterModel;
 import com.kaixiang.cure.service.model.LetterModel;
+import com.kaixiang.cure.service.model.RecommendModel;
 
 import java.util.List;
 
@@ -23,12 +24,12 @@ public interface LetterService {
     /**
      * 获取我回复的所有首封信
      */
-    List<FirstLetterModel> getFirstLetterListIReplied(Integer userid) throws BusinessException;
+    List<FirstLetterModel> getFirstLettersIReplied(Integer userid) throws BusinessException;
 
     /**
      * letterBox：根据letterBox中我回复的首封信，获取detail-首期不支持继续回复，因此返回就是我的回复
      */
-    List<LetterModel> getRestLettersOfConversation(Integer conversationId) throws BusinessException;
+    List<LetterModel> getReplyLetters(Integer conversationId) throws BusinessException;
 
     void replyFirstLetter(LetterModel letterModel) throws BusinessException;
 
@@ -41,4 +42,6 @@ public interface LetterService {
      * 获取回复：用于首页 点击某个信 显示信和信的回复
      */
     List<LetterModel> listMyRepliesByFirstLetterId(Integer userId, Integer firstLetterId) throws BusinessException;
+
+    void recommend(RecommendModel recommendModel) throws BusinessException;
 }

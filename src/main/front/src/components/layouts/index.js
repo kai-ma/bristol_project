@@ -4,7 +4,7 @@ import { WhiteSpace } from "antd-mobile";
 
 function Layout(props) {
 	const location = useLocation();
-	const paths = ["/", "/user", "/letterbox", "/answerbook", "/login", "/register"];
+	const paths = ["/", "/user", "/letterbox", "/answerbook"];  //"/login", "/register"
 
 	return (
 		<div>

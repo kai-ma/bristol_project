@@ -20,4 +20,6 @@ public interface LetterDOMapper {
     int updateByPrimaryKeySelective(LetterDO record);
 
     int updateByPrimaryKey(LetterDO record);
+
+    List<LetterDO> selectByIds(List<Integer> ids);
 }

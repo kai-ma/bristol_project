@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaixiang.cure.dao.FeedbackDOMapper">
+  <resultMap id="BaseResultMap" type="com.kaixiang.cure.dataobject.FeedbackDO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="score1" jdbcType="INTEGER" property="score1" />
+    <result column="score2" jdbcType="INTEGER" property="score2" />
+    <result column="feedback" jdbcType="VARCHAR" property="feedback" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="stage" jdbcType="INTEGER" property="stage" />
+    <result column="md5" jdbcType="VARCHAR" property="md5" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, score1, score2, feedback, created_at, stage, md5
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from feedback
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from feedback
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.kaixiang.cure.dataobject.FeedbackDO">
+    insert into feedback (id, score1, score2, 
+      feedback, created_at, stage, 
+      md5)
+    values (#{id,jdbcType=INTEGER}, #{score1,jdbcType=INTEGER}, #{score2,jdbcType=INTEGER}, 
+      #{feedback,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, #{stage,jdbcType=INTEGER}, 
+      #{md5,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.FeedbackDO">
+    insert into feedback
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="score1 != null">
+        score1,
+      </if>
+      <if test="score2 != null">
+        score2,
+      </if>
+      <if test="feedback != null">
+        feedback,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+      <if test="stage != null">
+        stage,
+      </if>
+      <if test="md5 != null">
+        md5,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="score1 != null">
+        #{score1,jdbcType=INTEGER},
+      </if>
+      <if test="score2 != null">
+        #{score2,jdbcType=INTEGER},
+      </if>
+      <if test="feedback != null">
+        #{feedback,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="stage != null">
+        #{stage,jdbcType=INTEGER},
+      </if>
+      <if test="md5 != null">
+        #{md5,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kaixiang.cure.dataobject.FeedbackDO">
+    update feedback
+    <set>
+      <if test="score1 != null">
+        score1 = #{score1,jdbcType=INTEGER},
+      </if>
+      <if test="score2 != null">
+        score2 = #{score2,jdbcType=INTEGER},
+      </if>
+      <if test="feedback != null">
+        feedback = #{feedback,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="stage != null">
+        stage = #{stage,jdbcType=INTEGER},
+      </if>
+      <if test="md5 != null">
+        md5 = #{md5,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kaixiang.cure.dataobject.FeedbackDO">
+    update feedback
+    set score1 = #{score1,jdbcType=INTEGER},
+      score2 = #{score2,jdbcType=INTEGER},
+      feedback = #{feedback,jdbcType=VARCHAR},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      stage = #{stage,jdbcType=INTEGER},
+      md5 = #{md5,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

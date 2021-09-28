@@ -66,13 +66,13 @@ public class AuthController extends BaseController {
     @RequestMapping(value = "/login", method = {RequestMethod.POST})
     @ResponseBody
     public CommonReturnType login(@RequestBody LoginDTO loginDTO) throws BusinessException {
-        //1.校验登录参数
+        //1.Verify login parameters
         ValidationResult result = validator.validate(loginDTO);
         if (result.isHasErrors()) {
             throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR, result.getErrMsg());
         }
 
-        //2.用户登录服务--校验账号密码是否匹配
+        //2.verify whether the account and password match
         UserModel userModel = userService.getUserModelByEmail(loginDTO.getEmail());
         if (userModel == null) {
             throw new BusinessException(EnumBusinessError.USER_NOT_EXIST);
@@ -80,7 +80,14 @@ public class AuthController extends BaseController {
         if (!bCryptPasswordEncoder.matches(loginDTO.getPassword(), userModel.getEncryptPassword())) {
             throw new BusinessException(EnumBusinessError.INVALID_PASSWORD);
         }
-        Map<String, Object> returnMap = new HashMap<>(2);
+
+        Map<String, Object> returnMap = new HashMap<>(3);
+
+        //3. Login related records and rewards
+        String message = userService.loginBonus(userModel);
+        if (message != null) {
+            returnMap.put("bonus", message);
+        }
         returnMap.put("token", JwtTokenUtils.createToken(userModel.getId(), userModel.getRole(), false));
         returnMap.put("user", convertor.userVOFromUserModel(userModel));
         return CommonReturnType.create(returnMap);

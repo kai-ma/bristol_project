@@ -2,14 +2,16 @@ import React, { Component } from "react";
 import { Button, Toast, WhiteSpace, NavBar, List } from "antd-mobile";
 import { FaSignInAlt, FaSignOutAlt, FaUserPlus } from "react-icons/fa";
 import { AiOutlineSetting } from "react-icons/ai";
-
-import { getObjectFromLocalStorage } from "@src/utils";
+import { RiFeedbackLine } from "react-icons/ri";
+import { clearLetters } from "../../redux/actions/letter";
+import { clearAnswerbooks } from "../../redux/actions/answerbook";
+import { loadUserInfo } from "../../redux/actions/user";
+import { connect } from "react-redux";
 
 const Item = List.Item;
-export default class User extends Component {
+class User extends Component {
 	constructor(props) {
 		super(props);
-		this.state = this.initialState;
 	}
 
 	navToLogin = () => {
@@ -24,49 +26,65 @@ export default class User extends Component {
 		this.props.history.push("/settings");
 	};
 
+	navtoFeedBack = () => {
+		this.props.history.push("/feedback");
+	};
+
 	handleLogOut = () => {
-        localStorage.clear();
-		Toast.success("Log out successfully", 1);
-		setTimeout(() => {
+		this.props.clearLetters();
+		Toast.success("Log out successfully", 1, () => {
+			localStorage.clear();
 			this.props.history.push("/");
-		}, 1000);
+		});
 	};
 
 	componentDidMount() {
-		let user = getObjectFromLocalStorage("user");
-		if (user != null) {
-			this.setState({ user: user });
+		if (this.props.reloadUserInfo) {
+			this.props.loadUserInfo();
 		}
 	}
 
-	initialState = {
-		user: [],
-	};
-
 	render() {
-		const { user } = this.state;
+		const { userinfo } = this.props;
+        const Brief = Item.Brief;
 		return (
 			<div>
-				{user != null ? (
+				<NavBar mode="light">User</NavBar>
+				{userinfo != null ? (
 					<div>
-						<NavBar mode="light">User</NavBar>
 						<List renderHeader={() => "User profile"}>
-							<Item extra={user.pseudonym}>pseudonym</Item>
-							<Item extra={user.stamp}>Stamps left</Item>
-							<Item extra={user.continuousLoginDays}>
+							<Item extra={userinfo.pseudonym}>pseudonym</Item>
+                            <Item extra={userinfo.continuousLoginDays}>
 								Consecutive login days
 							</Item>
+                            <Item
+								arrow="horizontal"
+								multipleLine
+								onClick={() => {
+                                    this.props.history.push("/stamp");
+                                }}
+							>
+								Stamp rewards <Brief>{"Remaining stamps: " + userinfo.stamp }</Brief>
+							</Item>
 						</List>
-						<List renderHeader={() => "Settings"}>
+						<List renderHeader={() => ""}>
 							<Button
-								type="primary"
 								onClick={this.navToSettings}
 								icon={<AiOutlineSetting />}
 							>
 								Settings
 							</Button>
 						</List>
-						<List renderHeader={() => "Log out"}>
+						<List renderHeader={() => ""}>
+							<Button
+								type="primary"
+								onClick={this.navtoFeedBack}
+								icon={<RiFeedbackLine />}
+							>
+								Feedback
+							</Button>
+						</List>
+						<List renderHeader={() => ""}>
 							<Button
 								type="warning"
 								onClick={this.handleLogOut}
@@ -75,6 +93,13 @@ export default class User extends Component {
 								Log Out
 							</Button>
 						</List>
+						<WhiteSpace />
+						<p className="p" onClick={this.navToAnswerBook}>
+							{/* {"Tomorrow login reward: " + userinfo.bonusTomorrow + " stamps"} */}
+							{"The reward for tomorrow's login: " +
+								userinfo.bonusTomorrow +
+								" stamps"}
+						</p>
 					</div>
 				) : (
 					<div>
@@ -100,3 +125,19 @@ export default class User extends Component {
 		);
 	}
 }
+
+const mapStateToProps = (state) => {
+	return {
+		userinfo: state.user.userinfo,
+		reloadUserInfo: state.user.reloadUserInfo,
+	};
+};
+
+const mapDispatchToProps = (dispatch) => {
+	return {
+		clearLetters: () => dispatch(clearLetters()),
+		clearAnswerbooks: () => dispatch(clearAnswerbooks()),
+		loadUserInfo: () => dispatch(loadUserInfo()),
+	};
+};
+export default connect(mapStateToProps, mapDispatchToProps)(User);

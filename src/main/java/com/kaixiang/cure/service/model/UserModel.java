@@ -24,6 +24,8 @@ public class UserModel {
 
     private String encryptPassword;
 
+    private Integer bonusTomorrow;
+
     public Integer getId() {
         return id;
     }
@@ -102,5 +104,13 @@ public class UserModel {
 
     public void setAllowCollect(Boolean allowCollect) {
         this.allowCollect = allowCollect;
+    }
+
+    public Integer getBonusTomorrow() {
+        return bonusTomorrow;
+    }
+
+    public void setBonusTomorrow(Integer bonusTomorrow) {
+        this.bonusTomorrow = bonusTomorrow;
     }
 }

@@ -6,15 +6,16 @@ import {
 	Button,
 	WhiteSpace,
 	Toast,
-	Modal,
+	Checkbox,
+	Flex,
 } from "antd-mobile";
 import { createForm } from "rc-form";
 import { FaSignInAlt, FaUserPlus } from "react-icons/fa";
-import Http from "@src/utils/http.js";
-import { setObjectToLocalStorage } from "@src/utils";
+import { login } from "@src/redux/actions/user";
+import { connect } from "react-redux";
+import Loading from "@src/components/Loading";
 
-const alert = Modal.alert;
-
+const AgreeItem = Checkbox.AgreeItem;
 class Login extends Component {
 	constructor(props) {
 		super(props);
@@ -25,7 +26,9 @@ class Login extends Component {
 		// 如果成功 const router = this.props.match.params.router;
 	}
 
-	initialState = {};
+	initialState = {
+        remember : false,
+    };
 
 	handleLogin = () => {
 		this.props.form.validateFields((error, value) => {
@@ -35,36 +38,20 @@ class Login extends Component {
 				);
 				return;
 			} else {
-				this.login(value);
+				this.props.login(value, this.props.history);
+				// this.login(value);
 			}
 		});
 	};
 
-	login = (value) => {
-		Http({
-			url: "/auth/login",
-			body: value,
-			mock: false,
-		}).then(
-			(res) => {
-				alert("Login successfully", "Stamp bonus:1", [
-					{ text: "Ok", onPress: this.navToHome },
-				]);
-				localStorage.setItem("token", res.token);
-                setObjectToLocalStorage("user", res.user);
-			},
-			(err) => {
-				Toast.fail(err.errMsg, 2);
-			}
-		);
-	};
-
-	navToHome = () => {
-		this.props.history.push("/");
-	};
-
 	navToRegister = () => {
 		this.props.history.push("/register");
+	};
+
+	selectRemember = () => {
+		this.setState({
+            remember : !this.state.remember,
+        })
 	};
 
 	render() {
@@ -72,65 +59,88 @@ class Login extends Component {
 		return (
 			<div>
 				<NavBar mode="light">Login</NavBar>
-				<WhiteSpace size="xl" />
-				<InputItem
-					{...getFieldProps("email", {
-						rules: [{ required: true }],
-					})}
-					labelNumber={6}
-					placeholder="email"
-				>
-					Email
-				</InputItem>
-				<InputItem
-					{...getFieldProps("password", {
-						rules: [{ required: true }],
-					})}
-					labelNumber={6}
-					type="password"
-					placeholder="********"
-				>
-					Password
-				</InputItem>
-				<WhiteSpace size="xl" />
-				<Button
-					type="primary"
-					onClick={this.handleLogin}
-					icon={<FaSignInAlt />}
-				>
-					Login
-				</Button>
-				<WhiteSpace size="xl" />
-				<List renderHeader={() => "Not registered yet?"}></List>
-				<Button
-					type="primary"
-					onClick={this.navToRegister}
-					icon={<FaUserPlus />}
-				>
-					Register
-				</Button>
+				{this.props.loading ? (
+					<div>
+						<Loading message={"Login..."}></Loading>
+					</div>
+				) : (
+					<div>
+						<WhiteSpace size="xl" />
+						<InputItem
+							{...getFieldProps("email", {
+								rules: [{ required: true }],
+							})}
+							labelNumber={6}
+							placeholder="email"
+						>
+							Email
+						</InputItem>
+						<InputItem
+							{...getFieldProps("password", {
+								rules: [{ required: true }],
+							})}
+							labelNumber={6}
+							type="password"
+							placeholder="********"
+						>
+							Password
+						</InputItem>
+						{/* <Flex style={{ padding: "15px" }}>
+							<Flex.Item>
+								<Radio
+									className="my-radio"
+								>
+									Remember me for 7 days
+								</Radio>
+							</Flex.Item>
+						</Flex> */}
+						<Flex style={{ padding: "15px"}} >
+							<Flex.Item>
+								<AgreeItem
+									data-seed="logId"
+									onChange={() => this.selectRemember()} 
+								>
+									Remember me for 7 days
+								</AgreeItem>
+							</Flex.Item>
+						</Flex>
+
+						<Button
+							type="primary"
+							onClick={this.handleLogin}
+							icon={<FaSignInAlt />}
+						>
+							Login
+						</Button>
+						<WhiteSpace size="xl" />
+						<List renderHeader={() => "Not registered yet?"}></List>
+						<Button
+							type="primary"
+							onClick={this.navToRegister}
+							icon={<FaUserPlus />}
+						>
+							Register
+						</Button>
+					</div>
+				)}
 			</div>
 		);
 	}
 }
 
-// const mapStateToProps = (state) => {
-// 	return {
-// 		user: state.user.user,
-// 		loading: state.user.loading,
-// 	};
-// };
+const mapStateToProps = (state) => {
+	return {
+		loading: state.user.loading,
+		userinfo: state.user.userinfo,
+	};
+};
 
-// const mapDispatchToProps = (dispatch) => {
-// 	return {
-// 		login: (value, history) => dispatch(login(value, history)),
-// 	};
-// };
-
-// export default connect(
-// 	mapStateToProps,
-// 	mapDispatchToProps
-// )(createForm()(Login));
-export default createForm()(Login);
-
-//可以把title换成icon
+const mapDispatchToProps = (dispatch) => {
+	return {
+		login: (value, history) => dispatch(login(value, history)),
+	};
+};
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(createForm()(Login));

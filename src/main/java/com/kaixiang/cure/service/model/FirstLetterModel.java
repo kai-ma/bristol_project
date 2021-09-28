@@ -12,7 +12,6 @@ import javax.validation.constraints.NotBlank;
 public class FirstLetterModel extends LetterModel{
     private Integer userId;
 
-    @NotBlank(message = "Title can't be empty")
     private String title;
 
     private DateTime lastRepliedAt;
@@ -20,6 +19,8 @@ public class FirstLetterModel extends LetterModel{
     private Integer replyNumber;
 
     private Integer topicId;
+
+    private Integer unread;
 
     public Integer getUserId() {
         return userId;
@@ -60,5 +61,13 @@ public class FirstLetterModel extends LetterModel{
 
     public void setTopicId(Integer topicId) {
         this.topicId = topicId;
+    }
+
+    public Integer getUnread() {
+        return unread;
+    }
+
+    public void setUnread(Integer unread) {
+        this.unread = unread;
     }
 }

@@ -5,11 +5,11 @@ import java.util.Date;
 public class FirstLetterDO {
     private Integer id;
 
-    private String userid;
+    private String encryptUserId;
 
     private String title;
 
-    private String filepath;
+    private String content;
 
     private Integer topicId;
 
@@ -23,8 +23,6 @@ public class FirstLetterDO {
 
     private Integer quality;
 
-    private String pseudonym;
-
     public Integer getId() {
         return id;
     }
@@ -33,12 +31,12 @@ public class FirstLetterDO {
         this.id = id;
     }
 
-    public String getUserid() {
-        return userid;
+    public String getEncryptUserId() {
+        return encryptUserId;
     }
 
-    public void setUserid(String userid) {
-        this.userid = userid == null ? null : userid.trim();
+    public void setEncryptUserId(String encryptUserId) {
+        this.encryptUserId = encryptUserId == null ? null : encryptUserId.trim();
     }
 
     public String getTitle() {
@@ -49,12 +47,12 @@ public class FirstLetterDO {
         this.title = title == null ? null : title.trim();
     }
 
-    public String getFilepath() {
-        return filepath;
+    public String getContent() {
+        return content;
     }
 
-    public void setFilepath(String filepath) {
-        this.filepath = filepath == null ? null : filepath.trim();
+    public void setContent(String content) {
+        this.content = content == null ? null : content.trim();
     }
 
     public Integer getTopicId() {
@@ -103,13 +101,5 @@ public class FirstLetterDO {
 
     public void setQuality(Integer quality) {
         this.quality = quality;
-    }
-
-    public String getPseudonym() {
-        return pseudonym;
-    }
-
-    public void setPseudonym(String pseudonym) {
-        this.pseudonym = pseudonym == null ? null : pseudonym.trim();
     }
 }

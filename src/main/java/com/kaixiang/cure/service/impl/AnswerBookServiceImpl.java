@@ -9,6 +9,7 @@ import com.kaixiang.cure.service.LetterService;
 import com.kaixiang.cure.service.TagService;
 import com.kaixiang.cure.service.model.ConversationModelInAnswerBook;
 import com.kaixiang.cure.service.model.FirstLetterModel;
+import com.kaixiang.cure.service.model.LetterModel;
 import com.kaixiang.cure.service.model.TopicModel;
 import com.kaixiang.cure.utils.Convertor;
 import com.kaixiang.cure.utils.encrypt.EncryptUtils;
@@ -39,8 +40,6 @@ public class AnswerBookServiceImpl implements AnswerBookService {
     @Autowired
     private ConversationDOMapper conversationDOMapper;
     @Autowired
-    private FirstLetterDOMapper firstLetterDOMapper;
-    @Autowired
     private LetterService letterService;
     @Autowired
     private EncryptUtils encryptUtils;
@@ -48,6 +47,10 @@ public class AnswerBookServiceImpl implements AnswerBookService {
     private ConversationTagDOMapper conversationTagDOMapper;
     @Autowired
     private TagService tagService;
+    @Autowired
+    private LetterDOMapper letterDOMapper;
+    @Autowired
+    private FirstLetterMetaDOMapper firstLetterMetaDOMapper;
 
     @Override
     public List<TopicModel> listAllTopics() throws BusinessException {
@@ -166,9 +169,10 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         }
         conversationModelInAnswerBook.setAddresseeUserid(Integer.valueOf(encryptUtils.decrypt(conversationDO.getEncryptAddresseeUserid())));
         conversationModelInAnswerBook.setSenderUserid(Integer.valueOf(encryptUtils.decrypt(conversationDO.getEncryptSenderUserid())));
-        FirstLetterDO firstLetterDO = firstLetterDOMapper.selectByPrimaryKey(conversationDO.getFirstLetterId());
-        FirstLetterModel firstLetterModel = convertor.firstLetterModelFromFirstLetterDO(firstLetterDO, conversationDO.getId());
-        conversationModelInAnswerBook.setLetterModelList(letterService.getRestLettersOfConversation(conversationDO.getId()));
+        FirstLetterMetaDO firstLetterMetaDO =  firstLetterMetaDOMapper.selectByLetterId(conversationDO.getFirstLetterId());
+        LetterDO letterModel = letterDOMapper.selectByPrimaryKey(conversationDO.getFirstLetterId());
+        FirstLetterModel firstLetterModel = convertor.firstLetterModelFromDOAndMeta(firstLetterMetaDO, letterModel);
+        conversationModelInAnswerBook.setLetterModelList(letterService.getReplyLetters(conversationDO.getId()));
         conversationModelInAnswerBook.getLetterModelList().add(0, firstLetterModel);
         return conversationModelInAnswerBook;
     }

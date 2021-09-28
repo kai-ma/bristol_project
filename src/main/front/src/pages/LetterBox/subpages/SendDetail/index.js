@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { NavBar, Toast, WhiteSpace } from "antd-mobile";
+import { NavBar, Toast, WhiteSpace, Card, WingBlank, List } from "antd-mobile";
 import { connect } from "react-redux";
 import LetterContent from "@src/components/LetterContent";
 import Http from "@src/utils/http.js";
+import { prepareReplyToMe } from "@src/redux/actions/letter";
 
 class SendDetail extends Component {
 	constructor(props) {
@@ -54,7 +55,6 @@ class SendDetail extends Component {
 	}
 
 	initialState = {
-		reload: true,
 		replies: [],
 	};
 
@@ -64,6 +64,11 @@ class SendDetail extends Component {
 
 	showMessage = (message) => {
 		Toast.fail(message);
+	};
+
+	showReplyToMe = (letter, reply) => {
+		this.props.prepareReplyToMe({letter: letter, reply: reply});
+		this.props.history.push("/letterbox/replytome");
 	};
 
 	render() {
@@ -78,7 +83,7 @@ class SendDetail extends Component {
 					mode="light"
 					onLeftClick={this.linkToBack}
 				>
-					Content
+					Replies
 				</NavBar>
 
 				{letter == null ? (
@@ -89,14 +94,64 @@ class SendDetail extends Component {
 					</div>
 				) : (
 					<div>
-						<WhiteSpace size="lg" />
 						<LetterContent letter={letter}></LetterContent>
 						<div>
+							{replies == null || replies.length == 0 ? (
+								<div>
+									<List
+										renderHeader={() => "No replies."}
+									></List>
+								</div>
+							) : (
+								<div>
+									<List
+										renderHeader={() =>
+											replies.length == 1
+												? "1 Reply : "
+												: replies.length + " replies: "
+										}
+									></List>
+								</div>
+							)}
+
 							{replies.map((reply, index) => (
 								<div key={index}>
-									<LetterContent
-										letter={reply}
-									></LetterContent>
+									<WingBlank size="lg">
+										<WhiteSpace size="lg" />
+										<Card
+											onClick={() =>
+												this.showReplyToMe(letter, reply)
+											}
+										>
+											{reply.title != null ? (
+												<Card.Header
+													title={reply.title}
+												/>
+											) : null}
+											<Card.Body>
+												{reply.content.substring(
+													0,
+													reply.content.length > 100
+														? 99
+														: reply.content
+																.length - 1
+												) + "..."}
+											</Card.Body>
+											<Card.Footer
+												content={
+													<div>
+														{reply.createdAt}
+													</div>
+												}
+												extra={
+													<div>
+														{reply.pseudonym}
+													</div>
+												}
+											/>
+										</Card>
+										<WhiteSpace size="lg" />
+									</WingBlank>
 								</div>
 							))}
 						</div>
@@ -113,4 +168,10 @@ const mapStateToProps = (state) => {
 	};
 };
 
-export default connect(mapStateToProps)(SendDetail);
+const mapDispatchToProps = (dispatch) => {
+	return {
+		prepareReplyToMe: (conversation) => dispatch(prepareReplyToMe(conversation)),
+	};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SendDetail);

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaixiang.cure.dao.ReportDOMapper">
+  <resultMap id="BaseResultMap" type="com.kaixiang.cure.dataobject.ReportDO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="letter_id" jdbcType="INTEGER" property="letterId" />
+    <result column="reason" jdbcType="VARCHAR" property="reason" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="process_result" jdbcType="VARCHAR" property="processResult" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, userid, letter_id, reason, description, created_at, updated_at, process_result
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from report
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from report
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.kaixiang.cure.dataobject.ReportDO">
+    insert into report (id, userid, letter_id, 
+      reason, description, created_at, 
+      updated_at, process_result)
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{letterId,jdbcType=INTEGER}, 
+      #{reason,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, 
+      #{updatedAt,jdbcType=TIMESTAMP}, #{processResult,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.ReportDO">
+    insert into report
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="letterId != null">
+        letter_id,
+      </if>
+      <if test="reason != null">
+        reason,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+      <if test="updatedAt != null">
+        updated_at,
+      </if>
+      <if test="processResult != null">
+        process_result,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="letterId != null">
+        #{letterId,jdbcType=INTEGER},
+      </if>
+      <if test="reason != null">
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="processResult != null">
+        #{processResult,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kaixiang.cure.dataobject.ReportDO">
+    update report
+    <set>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="letterId != null">
+        letter_id = #{letterId,jdbcType=INTEGER},
+      </if>
+      <if test="reason != null">
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="processResult != null">
+        process_result = #{processResult,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kaixiang.cure.dataobject.ReportDO">
+    update report
+    set userid = #{userid,jdbcType=INTEGER},
+      letter_id = #{letterId,jdbcType=INTEGER},
+      reason = #{reason,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      process_result = #{processResult,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

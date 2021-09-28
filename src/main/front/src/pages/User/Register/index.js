@@ -9,7 +9,9 @@ import {
 } from "antd-mobile";
 import { createForm } from "rc-form";
 import { FaSignInAlt, FaUserPlus } from "react-icons/fa";
-import Http from "@src/utils/http.js";
+import { register } from "@src/redux/actions/user";
+import { connect } from "react-redux";
+import Loading from "@src/components/Loading";
 
 class Register extends Component {
 	constructor(props) {
@@ -29,25 +31,12 @@ class Register extends Component {
 		}
 		this.props.form.validateFields((error, value) => {
 			if (error) {
-				Toast.info(
+				Toast.fail(
 					this.props.form.getFieldError(Object.keys(error)[0])
 				);
 				return;
 			} else {
-				Http({ url: "/auth/register", body: value, mock: false }).then(
-					(res) => {
-						console.log(res);
-						Toast.info(
-							"Register successfully!",
-							1,
-							this.props.history.push("/login")
-						);
-					},
-					(err) => {
-						console.log(err);
-						Toast.fail(err.errMsg, 2);
-					}
-				);
+				this.props.register(value, this.props.history);
 			}
 		});
 	};
@@ -61,66 +50,90 @@ class Register extends Component {
 		return (
 			<div>
 				<NavBar mode="light">Register</NavBar>
-				<List renderHeader={() => ""}>
-					<InputItem
-						{...getFieldProps("pseudonym", {
-							rules: [{ required: true }],
-						})}
-						labelNumber={6}
-						placeholder="pseudonym"
-					>
-						Pseudonym
-					</InputItem>
+				{this.props.loading ? (
+					<div>
+						<Loading message={"Register..."}></Loading>
+					</div>
+				) : (
+					<div>
+						<List renderHeader={() => ""}>
+							<InputItem
+								{...getFieldProps("pseudonym", {
+									rules: [{ required: true }],
+								})}
+								labelNumber={6}
+								placeholder="pseudonym"
+							>
+								Pseudonym
+							</InputItem>
 
-					<InputItem
-						{...getFieldProps("email", {
-							rules: [{ required: true }],
-						})}
-						labelNumber={6}
-						placeholder="email"
-					>
-						Email
-					</InputItem>
-					<InputItem
-						{...getFieldProps("password", {
-							rules: [{ required: true }],
-						})}
-						type="password"
-						placeholder="********"
-						labelNumber={6}
-					>
-						Password
-					</InputItem>
-					<InputItem
-						{...getFieldProps("confirm_password", {
-							rules: [{ required: true }],
-						})}
-						placeholder="confirm password"
-						type="password"
-						labelNumber={6}
-					>
-						Confirm
-					</InputItem>
-				</List>
-				<WhiteSpace size="xl" />
-				<Button
-					type="primary"
-					onClick={this.handleSubmit}
-					icon={<FaUserPlus />}
-				>
-					Register
-				</Button>
-				<List renderHeader={() => "Have account? Go to login"}></List>
-				<Button
-					type="primary"
-					onClick={this.navToLogin}
-					icon={<FaSignInAlt />}
-				>
-					Login
-				</Button>
+							<InputItem
+								{...getFieldProps("email", {
+									rules: [{ required: true }],
+								})}
+								labelNumber={6}
+								placeholder="email"
+							>
+								Email
+							</InputItem>
+							<InputItem
+								{...getFieldProps("password", {
+									rules: [{ required: true }],
+								})}
+								type="password"
+								placeholder="6-16 characters"
+								labelNumber={6}
+							>
+								Password
+							</InputItem>
+							<InputItem
+								{...getFieldProps("confirm_password", {
+									rules: [{ required: true }],
+								})}
+								placeholder="confirm password"
+								type="password"
+								labelNumber={6}
+							>
+								Confirm
+							</InputItem>
+						</List>
+						<WhiteSpace size="xl" />
+						<Button
+							type="primary"
+							onClick={this.handleSubmit}
+							icon={<FaUserPlus />}
+						>
+							Register
+						</Button>
+						<List
+							renderHeader={() => "Have account? Go to login"}
+						></List>
+						<Button
+							type="primary"
+							onClick={this.navToLogin}
+							icon={<FaSignInAlt />}
+						>
+							Login
+						</Button>
+					</div>
+				)}
 			</div>
 		);
 	}
 }
 
-export default createForm()(Register);
+const mapStateToProps = (state) => {
+	return {
+		loading: state.user.loading,
+	};
+};
+
+const mapDispatchToProps = (dispatch) => {
+	return {
+		register: (value, history) => dispatch(register(value, history)),
+	};
+};
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(createForm()(Register));

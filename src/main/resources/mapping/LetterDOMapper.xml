@@ -6,21 +6,30 @@
     <result column="first_letter_id" jdbcType="INTEGER" property="firstLetterId" />
     <result column="conversation_id" jdbcType="INTEGER" property="conversationId" />
     <result column="type" jdbcType="INTEGER" property="type" />
-    <result column="filepath" jdbcType="VARCHAR" property="filepath" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
     <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
     <result column="sender_status" jdbcType="INTEGER" property="senderStatus" />
     <result column="addressee_status" jdbcType="INTEGER" property="addresseeStatus" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, first_letter_id, conversation_id, type, filepath, created_at, sender_status, 
-    addressee_status
+    id, first_letter_id, conversation_id, type, content, created_at, sender_status, addressee_status
   </sql>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from letter
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="selectByIds" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from letter where id in
+    <foreach collection="ids" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+    order by created_at DESC;
+  </select>
+
   <select id="listLettersByConversationId" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List"/>
@@ -28,6 +37,7 @@
     where conversation_id = #{conversationId,jdbcType=INTEGER}
     order by created_at DESC;
   </select>
+
   <select id="listLettersByFirstLetterId" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List"/>
@@ -35,19 +45,20 @@
     where first_letter_id = #{firstLetterId,jdbcType=INTEGER}
     order by created_at DESC;
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from letter
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.kaixiang.cure.dataobject.LetterDO">
     insert into letter (id, first_letter_id, conversation_id, 
-      type, filepath, created_at, 
+      type, content, created_at, 
       sender_status, addressee_status)
     values (#{id,jdbcType=INTEGER}, #{firstLetterId,jdbcType=INTEGER}, #{conversationId,jdbcType=INTEGER}, 
-      #{type,jdbcType=INTEGER}, #{filepath,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, 
+      #{type,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, 
       #{senderStatus,jdbcType=INTEGER}, #{addresseeStatus,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.LetterDO">
+  <insert id="insertSelective" parameterType="com.kaixiang.cure.dataobject.LetterDO" keyProperty="id" useGeneratedKeys="true">
     insert into letter
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -62,8 +73,8 @@
       <if test="type != null">
         type,
       </if>
-      <if test="filepath != null">
-        filepath,
+      <if test="content != null">
+        content,
       </if>
       <if test="createdAt != null">
         created_at,
@@ -88,8 +99,8 @@
       <if test="type != null">
         #{type,jdbcType=INTEGER},
       </if>
-      <if test="filepath != null">
-        #{filepath,jdbcType=VARCHAR},
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
       </if>
       <if test="createdAt != null">
         #{createdAt,jdbcType=TIMESTAMP},
@@ -114,8 +125,8 @@
       <if test="type != null">
         type = #{type,jdbcType=INTEGER},
       </if>
-      <if test="filepath != null">
-        filepath = #{filepath,jdbcType=VARCHAR},
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
       </if>
       <if test="createdAt != null">
         created_at = #{createdAt,jdbcType=TIMESTAMP},
@@ -134,7 +145,7 @@
     set first_letter_id = #{firstLetterId,jdbcType=INTEGER},
       conversation_id = #{conversationId,jdbcType=INTEGER},
       type = #{type,jdbcType=INTEGER},
-      filepath = #{filepath,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
       created_at = #{createdAt,jdbcType=TIMESTAMP},
       sender_status = #{senderStatus,jdbcType=INTEGER},
       addressee_status = #{addresseeStatus,jdbcType=INTEGER}

@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { updateLetters, loadLetters } from "../../redux/actions/letter";
+import { updateLetters, loadLetters, loadMyFirstLetters } from "../../redux/actions/letter";
 //redux可以参考：https://www.freecodecamp.org/news/loading-data-in-react-redux-thunk-redux-saga-suspense-hooks-666b21da1569/
 import { BsPencilSquare } from "react-icons/bs";
 import "./index.css";
-import { Card, WingBlank, WhiteSpace, Button } from "antd-mobile";
+import { Card, WingBlank, WhiteSpace, Button, NavBar, List } from "antd-mobile";
 
 import Loading from "../../components/Loading";
 class Home extends Component {
@@ -17,12 +17,13 @@ class Home extends Component {
 		if (this.props.reLoadLetters) {
 			this.props.loadLetters();
 		}
+        if(this.props.reloadMyFirstLetters){
+            this.props.loadMyFirstLetters();
+        }
 	}
 
 	updateLetters = () => {
-		console.log("updateLetters");
 		this.props.updateLetters();
-		console.log(this.props);
 		const letters = this.props.letters;
 		if (letters != null) {
 			this.setState({
@@ -33,6 +34,10 @@ class Home extends Component {
 
 	writeLetter = () => {
 		this.props.history.push("/send");
+	};
+
+	navToAnswerBook = () => {
+		this.props.history.push("/answerbook");
 	};
 
 	initialState = {
@@ -55,9 +60,10 @@ class Home extends Component {
 
 		return (
 			<div>
-				<div>
-					<h2 className="pull-left">Welcome to Cure</h2>
-				</div>
+				<NavBar mode="light">Home</NavBar>
+				{/* <div>
+					<h2 className="pull-left">Welcome to Cure!</h2>
+				</div> */}
 				{/* 根据loading判读是否显示loading图标 */}
 				{this.props.loading ? (
 					<div>
@@ -65,33 +71,45 @@ class Home extends Component {
 					</div>
 				) : (
 					<div>
+						<List renderHeader={() => "Letters recieved:"}></List>
 						{/* 参考：https://www.robinwieruch.de/react-state-array-add-update-remove */}
 						{letters.map((letter, index) => (
 							<div key={index}>
 								<WingBlank size="lg">
 									<WhiteSpace />
-									<Card
-										onClick={() => this.handleClick(letter)}
-									>
-										<Card.Header title={letter.title} />
-										<Card.Body>
-											<div>
-												{letter.content.substring(
-													0,
-													letter.content.length > 100
-														? 99
-														: letter.content
-																.length - 1
-												) + "..."}
-											</div>
-										</Card.Body>
-										<Card.Footer
-											content={letter.createdAt}
-											extra={
-												<div>{letter.pseudonym}</div>
+									<div className="card">
+										<Card
+											onClick={() =>
+												this.handleClick(letter)
 											}
-										/>
-									</Card>
+										>
+											<Card.Header title={letter.title} />
+											<WhiteSpace />
+											<Card.Body>
+												<div>
+													{letter.content.substring(
+														0,
+														letter.content.length >
+															100
+															? 99
+															: letter.content
+																	.length - 1
+													) + "..."}
+												</div>
+											</Card.Body>
+											<WhiteSpace />
+											<WhiteSpace />
+											<Card.Footer
+												content={letter.createdAt}
+												extra={
+													<div>
+														{letter.pseudonym}
+													</div>
+												}
+											/>
+										</Card>
+									</div>
+
 									{index < letters.length - 1 ? (
 										<div>
 											<WhiteSpace />
@@ -102,7 +120,8 @@ class Home extends Component {
 								</WingBlank>
 							</div>
 						))}
-						<p className="p">{2} hours to refresh</p>
+						<WhiteSpace />
+						<WhiteSpace />
 						<WingBlank>
 							<Button
 								icon={<BsPencilSquare />}
@@ -111,9 +130,12 @@ class Home extends Component {
 								// style={{float:"right",marginBottom:10}}
 								onClick={this.writeLetter}
 							>
-								write letter
+								Seek advice
 							</Button>
 						</WingBlank>
+						<p className="p" onClick={this.navToAnswerBook}>
+							See more?{" "}
+						</p>
 						<WhiteSpace />
 					</div>
 				)}
@@ -127,6 +149,7 @@ const mapStateToProps = (state) => {
 		letters: state.letter.letters,
 		loading: state.letter.loading,
 		reLoadLetters: state.letter.reLoadLetters,
+        reloadMyFirstLetters: state.letter.reloadMyFirstLetters,
 	};
 };
 
@@ -134,6 +157,7 @@ const mapDispatchToProps = (dispatch) => {
 	return {
 		loadLetters: () => dispatch(loadLetters()),
 		updateLetters: () => dispatch(updateLetters()),
+        loadMyFirstLetters: () => dispatch(loadMyFirstLetters()),
 	};
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

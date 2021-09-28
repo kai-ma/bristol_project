@@ -2,9 +2,6 @@ import * as actionTypes from "../../constants/letter";
 import Http from "@src/utils/http.js";
 import { Toast } from "antd-mobile";
 
-//是把数据从应用（这些数据有可能是服务器响应，用户输入或其它非 view 的数据 ）传到 store 的有效载荷。
-//它是 store 数据的唯一来源。
-
 //获取首页的信
 export const loadLetters = () => {
 	return (dispatch) => {
@@ -17,25 +14,10 @@ export const loadLetters = () => {
 				dispatch(letterSuccess(res));
 			},
 			(err) => {
-                //todo: 应该把这里的toast换成根据errorcode判断，如果是刷新时间未到，不显示；
-                //如果是空，转换到答案之书
 				Toast.fail(err.errMsg, 1);  
 				dispatch(letterFailure(err));
 			}
 		);
-
-		// setTimeout(
-		// 	() =>
-		// 		Http({ url: "/loadletters", method: "get" }).then(
-		// 			(res) => {
-		// 				dispatch(letterSuccess(res));
-		// 			},
-		// 			(err) => {
-		// 				dispatch(letterFailure(err));
-		// 			}
-		// 		),
-		// 	1000
-		// );
 	};
 };
 
@@ -65,7 +47,7 @@ export const loadMyFirstLetters = () => {
 				dispatch(loadMyFirstLettersSuccess(res));
 			},
 			(err) => {
-				Toast.fail(err, 1);  
+				Toast.fail(err.errMsg, 1);
 				dispatch(loadMyFirstLettersFailure(err));
 			}
 		);
@@ -99,7 +81,7 @@ export const loadFirstLettersIReplied = () => {
 				dispatch(loadFirstLettersRepliedSuccess(res));
 			},
 			(err) => {
-				Toast.fail(err, 1);  
+				Toast.fail(err.errMsg, 1);   
 				dispatch(loadFirstLettersRepliedFailure(err));
 			}
 		);
@@ -121,32 +103,6 @@ const loadFirstLettersRepliedFailure = (error) => {
 };
 
 
-//根据letterBox中我发出的某个信，获取detail
-export const loadDetailOfMyFirstLetter = () => {
-	return (dispatch) => {
-		dispatch({
-			type: actionTypes.LOAD_DETAIL_OF_MY_FIRST_LETTER,
-		});
-
-		Http({ url: "/letter/letterbox/detail/my", method: "get", mock:false}).then(
-			(res) => {
-				dispatch(loadDetailOfMyFirstLetterSuccess(res));
-			},
-			(err) => {
-				Toast.fail(err, 1);  
-				dispatch(loadMyFirstLettersFailure(err));
-			}
-		);
-	};
-};
-
-const loadDetailOfMyFirstLetterSuccess = (res) => {
-	return {
-		type: actionTypes.LOAD_DETAIL_OF_MY_FIRST_LETTER_SUCCESS,
-		payload: res,
-	};
-};
-
 //根据letterBox中我回复的首封信，获取detail
 export const loadDetailOfFirstLetterReplied = (conversationId) => {
 	return (dispatch) => {
@@ -159,7 +115,7 @@ export const loadDetailOfFirstLetterReplied = (conversationId) => {
 				dispatch(loadDetailOfFirstLetterRepliedSuccess(res));
 			},
 			(err) => {
-				Toast.fail(err, 1);  
+				Toast.fail(err.errMsg, 1);  
 				dispatch(loadMyFirstLettersFailure(err));
 			}
 		);
@@ -190,33 +146,184 @@ export const updateLetters = () => {
 	};
 };
 
-export const loadConversationsStarted = () => {
+
+export const clearLetters = () => {
 	return (dispatch) => {
 		dispatch({
-			type: actionTypes.LOAD_CONVERSATIONS_STARTED,
+			type: actionTypes.CLEAR_LETTERS,
+		});
+	};
+};
+
+export const reply = (letter, value, history) => {
+	return (dispatch) => {
+		dispatch({
+			type: actionTypes.REPLY,
 		});
 
-		Http({ url: "/loadconversations/started", method: "get" }).then(
-			(res) => {
-                dispatch(conversationStartedSuccess(res));
-			},
-			(err) => {
-				dispatch(conversationFailure(err));
-			}
-		);
+        //回信 type是0
+        Http({
+            url: "/letter/reply",
+            body: { ...value, firstLetterId: letter.id, type: 0 },
+            mock: false,
+        }).then(
+            () => {
+                dispatch(replySuccess());
+                dispatch(reloadUserInfo());
+                Toast.success("Reply successfully!", 2, () => {
+                    history.push("/");
+                    let key = "home_replies_" + letter.id;
+                    localStorage.removeItem(key);
+                });
+            },
+            (err) => {
+                dispatch(replyFailure(err));
+                Toast.fail(err.errMsg, 2, () => {
+                    history.push("/");
+                });
+            }
+        );
 	};
 };
 
-const conversationStartedSuccess = (res) => {
+const replySuccess = () => {
 	return {
-		type: actionTypes.CONVERSATION_STARTED_SUCCESS,
-		payload: res,
+		type: actionTypes.REPLY_SUCCESS,
 	};
 };
 
-const conversationFailure = (error) => {
+const reloadUserInfo = () => {
+    return {
+		type: 'RELOAD_USER_INFO',
+	};
+}
+
+
+const replyFailure = (error) => {
 	return {
-		type: actionTypes.CONVERSATION_STARTED_FAILURE,
+		type: actionTypes.REPLY_FAILURE,
+        payload: error,
+	};
+};
+
+export const send = (value, history) => {
+	return (dispatch) => {
+		dispatch({
+			type: actionTypes.SEND,
+		});
+
+        Http({
+            url: "/letter/send/first",
+            body: { ...value, topicId: value.topic[0] },
+            mock: false,
+        }).then(
+            (res) => {
+                dispatch(sendSuccess());
+                dispatch(reloadUserInfo());
+                Toast.success("Send successfully!", 2, () => {
+                    history.push("/");
+                });
+            },
+            (err) => {
+                dispatch(sendFailure(err));
+                Toast.fail(err.errMsg, 2, () => {
+                    history.push("/");
+                });
+            }
+        );
+	};
+};
+
+const sendSuccess = () => {
+	return {
+		type: actionTypes.SEND_SUCCESS,
+	};
+};
+
+const sendFailure = (error) => {
+	return {
+		type: actionTypes.SEND_FAILURE,
+        payload: error,
+	};
+};
+
+export const changeLetterBoxPage = (page) => {
+	return (dispatch) => {
+		dispatch({
+			type: actionTypes.CHANGE_LETTER_BOX_PAGE,
+            payload: page,
+		});
+	};
+};
+
+export const prepareReplyToMe = (conversation) => {
+	return (dispatch) => {
+		dispatch({
+			type: actionTypes.PREPARE_REPLY_TO_ME,
+            payload: conversation,
+		});
+	};
+};
+
+export const prepareReport = (letter) => {
+	return (dispatch) => {
+		dispatch({
+			type: actionTypes.PREPARE_REPORT,
+            payload: letter,
+		});
+	};
+};
+
+export const recommend = (body, recommendedConversationIds) => {
+	return (dispatch) => {
+		if (recommendedConversationIds != null && recommendedConversationIds.indexOf(body.conversationId) > -1) {
+			Toast.fail("You have recommened the conversation", 2);
+		} else {
+			dispatch({
+				type: actionTypes.RECOMMEND_REQUEST,
+			});
+			Http({
+				url: "/letter/recommend",
+				body: body,
+				mock: false,
+			}).then(
+				(res) => {
+					dispatch(recommendSuccess(body, recommendedConversationIds));
+					Toast.success("Recommend successfully", 2);
+				},
+				(err) => {
+					//已经举报过
+					if (err.errCode != null && err.errCode === 20006) {
+						recommendedConversationIds.push(body.conversationId);
+					}
+					dispatch(recommendFailure(err));
+					Toast.fail(err.errMsg, 2);
+				}
+			);
+		}
+	};
+};
+
+const recommendSuccess = (body, recommendedConversationIds) => {
+	//向数组中添加已经recommend过的letterId
+	recommendedConversationIds.push(body.conversationId);
+
+	return {
+		type: actionTypes.RECOMMEND_SUCCESS,
+		payload: recommendedConversationIds,
+	};
+};
+
+const recommendFailure = (error) => {
+	return {
+		type: actionTypes.RECOMMEND_FAILURE,
 		payload: error,
 	};
 };
+
+export const changeUnread = (unread) => {
+    return {
+		type: actionTypes.CHANGE_UNREAD,
+		payload: unread,
+	};
+}

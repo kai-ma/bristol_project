@@ -32,7 +32,8 @@ const reducer = (preState = initialState, action) => {
 				loading: false,
 				error: action.payload,
 			};
-
+        case AT.CLEAR_ANSWERBOOKS:
+            return initialState;
 		default:
 			return preState;
 	}

@@ -1,6 +1,6 @@
 package com.kaixiang.cure.utils;
 
-import com.kaixiang.cure.controller.dataobject.RegisterDTO;
+import com.kaixiang.cure.controller.dataobject.*;
 import com.kaixiang.cure.controller.viewobject.*;
 import com.kaixiang.cure.dataobject.*;
 import com.kaixiang.cure.service.model.*;
@@ -9,11 +9,11 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.kaixiang.cure.utils.Constants.FIRST_LETTER_TYPE;
 import static com.kaixiang.cure.utils.Constants.ROLE_USER;
@@ -54,8 +54,7 @@ public class Convertor {
             return null;
         }
         LetterDO letterDO = new LetterDO();
-        letterDO.setFilepath(letterModel.getContent());
-        letterDO.setType(letterModel.getType());
+        BeanUtils.copyProperties(letterModel, letterDO);
         return letterDO;
     }
 
@@ -65,7 +64,6 @@ public class Convertor {
         }
         LetterModel letterModel = new LetterModel();
         BeanUtils.copyProperties(letterDO, letterModel);
-        letterModel.setContent(letterDO.getFilepath());
         letterModel.setCreatedAt(new DateTime(letterDO.getCreatedAt()));
         return letterModel;
     }
@@ -100,8 +98,7 @@ public class Convertor {
         if (firstLetterDO.getReplyNumber() != null && firstLetterDO.getReplyNumber() != 0) {
             firstLetterModel.setLastRepliedAt(new DateTime(firstLetterDO.getLastRepliedAt()));
         }
-        firstLetterModel.setContent(firstLetterDO.getFilepath());
-        firstLetterModel.setUserId(Integer.valueOf(encryptUtils.decrypt(firstLetterDO.getUserid())));
+        firstLetterModel.setUserId(Integer.valueOf(encryptUtils.decrypt(firstLetterDO.getEncryptUserId())));
         if (conversationId != null) {
             firstLetterModel.setConversationId(conversationId);
         }
@@ -120,14 +117,20 @@ public class Convertor {
                     toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
         }
         List<LetterModel> letterModelList = conversationModelInAnswerBook.getLetterModelList();
-        conversationVOInAnswerBook.setLetterVOList(letterModelList.stream().map(this::letterVOFromLetterModel).collect(Collectors.toList()));
+        List<LetterVO> letterVOList = new ArrayList<>();
+        for(LetterModel letterModel : letterModelList){
+            LetterVO letterVO = letterVOFromLetterModel(letterModel, false);
+            letterVO.setSenderStatus(null);
+            letterVOList.add(letterVO);
+        }
+        conversationVOInAnswerBook.setLetterVOList(letterVOList);
         return conversationVOInAnswerBook;
     }
 
     /**
      * 将lettterModel转换成lettervo，如果是firstLetterModel，type=2，转型以后转换成firstLetterVO
      */
-    public LetterVO letterVOFromLetterModel(LetterModel letterModel) {
+    public LetterVO letterVOFromLetterModel(LetterModel letterModel, boolean viewReply) {
         if (letterModel == null) {
             return null;
         }
@@ -144,6 +147,9 @@ public class Convertor {
                 firstLetterVO.setCreatedAt(((FirstLetterModel) letterModel).getLastRepliedAt().
                         toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
             }
+            if(!viewReply){
+                firstLetterVO.setAddresseeStatus(null);
+            }
             return firstLetterVO;
         } else {
             LetterVO letterVO = new LetterVO();
@@ -151,6 +157,9 @@ public class Convertor {
             if (letterModel.getCreatedAt() != null) {
                 letterVO.setCreatedAt(letterModel.getCreatedAt().
                         toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+            }
+            if(!viewReply){
+                letterVO.setAddresseeStatus(null);
             }
             return letterVO;
         }
@@ -163,8 +172,7 @@ public class Convertor {
         }
         FirstLetterDO firstLetterDO = new FirstLetterDO();
         BeanUtils.copyProperties(firstLetterModel, firstLetterDO);
-        firstLetterDO.setUserid(encryptUtils.encrypt(String.valueOf(firstLetterModel.getUserId())));
-        firstLetterDO.setFilepath(firstLetterModel.getContent());
+        firstLetterDO.setEncryptUserId(encryptUtils.encrypt(String.valueOf(firstLetterModel.getUserId())));
         return firstLetterDO;
     }
 
@@ -188,7 +196,9 @@ public class Convertor {
         }
         UserModel userModel = new UserModel();
         BeanUtils.copyProperties(userDO, userModel);
-        userModel.setLastLoginAt(new DateTime(userDO.getLastLoginAt()));
+        if(userDO.getLastLoginAt() != null){
+            userModel.setLastLoginAt(new DateTime(userDO.getLastLoginAt()));
+        }
         if (userPasswordDO != null) {
             userModel.setEncryptPassword(userPasswordDO.getEncryptPassword());
         }
@@ -200,6 +210,9 @@ public class Convertor {
             return null;
         }
         UserDO userDO = new UserDO();
+        if(userModel.getLastLoginAt() != null){
+            userDO.setLastLoginAt(userModel.getLastLoginAt().toDate());
+        }
         BeanUtils.copyProperties(userModel, userDO);
         return userDO;
     }
@@ -214,5 +227,139 @@ public class Convertor {
         userModel.setEncryptPassword(registerDTO.getPassword());
         userModel.setRole(ROLE_USER);
         return userModel;
+    }
+
+    public FirstLetterModel FirstLetterModelFromDTO(FirstLetterDTO firstLetterDTO) {
+        if (firstLetterDTO == null) {
+            return null;
+        }
+        FirstLetterModel firstLetterModel = new FirstLetterModel();
+        BeanUtils.copyProperties(firstLetterDTO, firstLetterModel);
+        return firstLetterModel;
+    }
+
+    public LetterModel LetterModelFromDTO(ReplyLetterDTO replyLetterDTO) {
+        if (replyLetterDTO == null) {
+            return null;
+        }
+        LetterModel letterModel = new LetterModel();
+        BeanUtils.copyProperties(replyLetterDTO, letterModel);
+        return letterModel;
+    }
+
+    public LetterDO letterDOFromFirstLetterModel(FirstLetterModel firstLetterModel) {
+        if (firstLetterModel == null) {
+            return null;
+        }
+        LetterDO letterDO = new LetterDO();
+        letterDO.setType(FIRST_LETTER_TYPE);
+        letterDO.setContent(firstLetterModel.getContent());
+        return letterDO;
+    }
+
+    public FirstLetterMetaDO firstLetterMetaDOFromFirstLetterModel(FirstLetterModel firstLetterModel) {
+        if (firstLetterModel == null) {
+            return null;
+        }
+        FirstLetterMetaDO firstLetterMetaDO = new FirstLetterMetaDO();
+        BeanUtils.copyProperties(firstLetterModel, firstLetterMetaDO);
+        firstLetterMetaDO.setEncryptUserId(encryptUtils.encrypt(String.valueOf(firstLetterModel.getUserId())));
+        return firstLetterMetaDO;
+    }
+
+    public FirstLetterModel firstLetterModelFromDOAndMeta(FirstLetterMetaDO firstLetterMetaDO, LetterDO letterDO) {
+        if(firstLetterMetaDO == null || letterDO == null){
+            return null;
+        }
+        FirstLetterModel firstLetterModel = new FirstLetterModel();
+        BeanUtils.copyProperties(firstLetterMetaDO, firstLetterModel);
+        BeanUtils.copyProperties(letterDO, firstLetterModel);
+        firstLetterModel.setCreatedAt(new DateTime(letterDO.getCreatedAt()));
+        if (firstLetterMetaDO.getReplyNumber() != null && firstLetterMetaDO.getReplyNumber() != 0) {
+            firstLetterModel.setLastRepliedAt(new DateTime(firstLetterMetaDO.getLastRepliedAt()));
+        }
+        firstLetterModel.setUserId(Integer.valueOf(encryptUtils.decrypt(firstLetterMetaDO.getEncryptUserId())));
+        if (letterDO.getConversationId() != null) {
+            firstLetterModel.setConversationId(letterDO.getConversationId());
+        }
+        firstLetterModel.setType(FIRST_LETTER_TYPE);
+        return firstLetterModel;
+    }
+
+    public FirstLetterModel firstLetterModelFromLetterDO(LetterDO letterDO) {
+        if(letterDO == null){
+            return null;
+        }
+        FirstLetterModel firstLetterModel = new FirstLetterModel();
+        BeanUtils.copyProperties(letterDO, firstLetterModel);
+        firstLetterModel.setCreatedAt(new DateTime(letterDO.getCreatedAt()));
+        return firstLetterModel;
+    }
+
+    public ReportModel reportModelFromReportDTO(ReportDTO reportDTO) {
+        if(reportDTO == null){
+            return null;
+        }
+        ReportModel reportModel = new ReportModel();
+        BeanUtils.copyProperties(reportDTO, reportModel);
+        return reportModel;
+    }
+
+    public ReportDO reportDOFromModel(ReportModel reportModel) {
+        if(reportModel == null){
+            return null;
+        }
+        ReportDO reportDO = new ReportDO();
+        BeanUtils.copyProperties(reportModel, reportDO);
+        return reportDO;
+    }
+
+    public RecommendModel recommendModelFromReportDTO(RecommendDTO recommendDTO) {
+        if(recommendDTO == null){
+            return null;
+        }
+        RecommendModel recommendModel = new RecommendModel();
+        BeanUtils.copyProperties(recommendDTO, recommendModel);
+        return recommendModel;
+    }
+
+    public RecommendDO recommendDOFromModel(RecommendModel recommendModel) {
+        if(recommendModel == null){
+            return null;
+        }
+        RecommendDO recommendDO = new RecommendDO();
+        BeanUtils.copyProperties(recommendModel, recommendDO);
+        return recommendDO;
+    }
+
+    public FeedbackModel feedbackModelFromDTO(FeedbackDTO feedbackDTO) {
+        if(feedbackDTO == null){
+            return null;
+        }
+        FeedbackModel feedbackModel = new FeedbackModel();
+        BeanUtils.copyProperties(feedbackDTO, feedbackModel);
+        return feedbackModel;
+    }
+
+    public FeedbackDO feedBackDOFromModel(FeedbackModel feedbackModel) {
+        if(feedbackModel == null){
+            return null;
+        }
+        FeedbackDO feedbackDO = new FeedbackDO();
+        BeanUtils.copyProperties(feedbackModel, feedbackDO);
+        return feedbackDO;
+    }
+
+    public StampBonusModel stampBonusModelFromDO(StampBonusDO stampBonusDO) {
+        if (stampBonusDO == null) {
+            return null;
+        }
+        StampBonusModel stampBonusModel = new StampBonusModel();
+        BeanUtils.copyProperties(stampBonusDO, stampBonusModel);
+        if (stampBonusDO.getCreatedAt() != null) {
+            stampBonusModel.setCreatedAt(
+                    new DateTime(stampBonusDO.getCreatedAt()).toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+        }
+        return stampBonusModel;
     }
 }

@@ -1,7 +1,15 @@
 package com.kaixiang.cure.service;
 
+import com.kaixiang.cure.dataobject.StampBonusDO;
+import com.kaixiang.cure.error.BusinessException;
+import com.kaixiang.cure.service.model.FeedbackModel;
+import com.kaixiang.cure.service.model.StampBonusModel;
 import com.kaixiang.cure.service.model.UserModel;
 import org.springframework.stereotype.Service;
+
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 @Service
 public interface UserService {
@@ -9,16 +17,26 @@ public interface UserService {
 
     void register(UserModel userModel) throws Exception;
 
-    /**
-     * 判断是否是合法的账号和密码
-     * telephone是用户传入的telephone，encrptPassword：加密后的密码
-     */
-    UserModel validateLogin(String email, String encryptPassword) throws Exception;
-
     UserModel getUserModelByEmail(String email);
 
     /**
      * 修改用户设置
      */
-    void changeSettings(UserModel userModel);
+    void changeSettings(UserModel userModel) throws BusinessException;
+
+    /**
+     * 根据登录，添加奖励
+     * @param userModel
+     */
+    String loginBonus(UserModel userModel) throws BusinessException;
+
+    /**
+     * 获取用户的信息 用于user页面展示
+     * @param userId
+     */
+    UserModel getUserInfo(Integer userId) throws BusinessException;
+
+    List<StampBonusModel> getStampBonus(Integer userId) throws BusinessException;
+
+    void feedback(FeedbackModel feedbackModel) throws BusinessException;
 }
